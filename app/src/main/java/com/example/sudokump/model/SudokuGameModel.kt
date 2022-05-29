@@ -4,8 +4,8 @@ import com.example.sudokump.persistency.entities.SavedGameDBEntity
 import com.google.gson.Gson
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import kotlin.time.Duration.Companion.seconds
+
 
 class SudokuGameModel(savedGameDBEntity: SavedGameDBEntity) {
     val id = savedGameDBEntity.id
@@ -22,14 +22,10 @@ class SudokuGameModel(savedGameDBEntity: SavedGameDBEntity) {
         val gson = Gson()
 
         var json = String(savedGameDBEntity.savedSchema)
+        json = json.substring(0, json.length -1)
 
         val board = gson.fromJson(json, SudokuBoard::class.java)
 
         schema = board.board
-
-
-        /*json = json.substring(9, json.length -1)
-        schema = gson.fromJson(json, arrayListOf<List<Int>>()::class.java)*/
     }
-
 }
