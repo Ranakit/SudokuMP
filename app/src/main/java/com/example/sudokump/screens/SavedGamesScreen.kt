@@ -1,13 +1,18 @@
 package com.example.sudokump.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,7 +24,6 @@ fun SavedGamesScreen() {
 
     val viewModel: SavedGamesScreenViewModel = viewModel()
 
-    //val savedGames = rememberSaveable { viewModel.savedGames }
     val savedGames = viewModel.savedGames
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -36,11 +40,17 @@ fun SavedGameCard(sudokuGameModel: SudokuGameModel)
     Card(modifier = Modifier.fillMaxWidth()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-            val (id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
+            val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
 
-            Text("ID: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
+            CompletionGridCanvas(schema = sudokuGameModel.schema, modifier = Modifier.size(50.dp).constrainAs(grid) {
                 top.linkTo(parent.top, 5.dp)
                 start.linkTo(parent.start, 5.dp)
+                bottom.linkTo(parent.bottom, 5.dp)
+            })
+
+            Text("ID: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
+                top.linkTo(grid.top, 0.dp)
+                start.linkTo(grid.end, 5.dp)
             })
 
             Text("Time Passed: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
@@ -63,6 +73,57 @@ fun SavedGameCard(sudokuGameModel: SudokuGameModel)
                 top.linkTo(id.top)
                 start.linkTo(completionPercent.end, 5.dp)
             })
+        }
+    }
+}
+
+@Composable
+fun CompletionGridCanvas(schema : List<List<Int>>, modifier: Modifier)
+{
+    Canvas(modifier = modifier) {
+        val unitSize = minOf(size.height, size.width)/9
+
+        for(i in 0..8)
+        {
+            for(j in 0..8)
+            {
+                if (schema[i][j] != 0)
+                    drawRect(
+                        color = Color.Green,
+                        topLeft = Offset(unitSize*i, unitSize*j),
+                        size = Size(unitSize, unitSize),
+                        style = Fill
+                    )
+                else
+                    drawRect(
+                        color = Color.White,
+                        topLeft = Offset(unitSize*i, unitSize*j),
+                        size = Size(unitSize, unitSize),
+                        style = Fill
+                    )
+            }
+
+
+        }
+
+        for(i in 0..9)
+        {
+            drawLine(
+                color = Color.Black,
+                start = Offset(unitSize*i, 0F),
+                end = Offset(unitSize*i, size.height),
+                strokeWidth = 2.5F
+            )
+        }
+
+        for(j in 0..9)
+        {
+            drawLine(
+                color = Color.Black,
+                start = Offset(0F,unitSize*j),
+                end = Offset(size.width, unitSize*j),
+                strokeWidth = 2.5F
+            )
         }
     }
 }

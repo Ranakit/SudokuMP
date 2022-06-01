@@ -1,6 +1,5 @@
 package com.example.sudokump.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.sudokump.model.SudokuGameModel
 import dagger.hilt.android.lifecycle.HiltViewModel

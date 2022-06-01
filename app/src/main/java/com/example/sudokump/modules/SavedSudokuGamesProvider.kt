@@ -1,6 +1,5 @@
 package com.example.sudokump.modules
 
-import android.content.Context
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.persistency.db.SudokuDB
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
@@ -8,14 +7,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
