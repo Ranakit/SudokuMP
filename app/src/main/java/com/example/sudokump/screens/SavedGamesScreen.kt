@@ -13,9 +13,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.sudokump.R
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.viewmodel.SavedGamesScreenViewModel
 
@@ -42,33 +44,35 @@ fun SavedGameCard(sudokuGameModel: SudokuGameModel)
 
             val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
 
-            CompletionGridCanvas(schema = sudokuGameModel.schema, modifier = Modifier.size(50.dp).constrainAs(grid) {
-                top.linkTo(parent.top, 5.dp)
-                start.linkTo(parent.start, 5.dp)
-                bottom.linkTo(parent.bottom, 5.dp)
-            })
+            CompletionGridCanvas(schema = sudokuGameModel.schema, modifier = Modifier
+                .size(50.dp)
+                .constrainAs(grid) {
+                    top.linkTo(parent.top, 5.dp)
+                    start.linkTo(parent.start, 5.dp)
+                    bottom.linkTo(parent.bottom, 5.dp)
+                })
 
-            Text("ID: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
+            Text("${stringResource(id = R.string.id)}: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
                 top.linkTo(grid.top, 0.dp)
                 start.linkTo(grid.end, 5.dp)
             })
 
-            Text("Time Passed: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
+            Text("${stringResource(id = R.string.timePassed)}: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
                 top.linkTo(id.bottom, margin = 5.dp)
                 start.linkTo(id.start)
             })
 
-            Text("Completion Percent: ${sudokuGameModel.completionPercent}", modifier = Modifier.constrainAs(completionPercent){
+            Text("${stringResource(id = R.string.completionPercent)}: ${sudokuGameModel.completionPercent}", modifier = Modifier.constrainAs(completionPercent){
                 top.linkTo(id.top)
                 start.linkTo(id.end, margin = 5.dp)
             })
 
-            Text("Difficulty: ${sudokuGameModel.difficulty}", modifier = Modifier.constrainAs(difficulty){
+            Text("${stringResource(id = R.string.difficulty)}: ${sudokuGameModel.difficulty}", modifier = Modifier.constrainAs(difficulty){
                 top.linkTo(completionPercent.bottom, margin = 5.dp)
                 start.linkTo(timePassed.end, margin = 5.dp)
             })
 
-            Text("Saved: ${sudokuGameModel.saveDate.dayOfMonth}/${sudokuGameModel.saveDate.monthValue}/${sudokuGameModel.saveDate.year}",
+            Text("${stringResource(id = R.string.savedWhen)}: ${sudokuGameModel.saveDate.dayOfMonth}/${sudokuGameModel.saveDate.monthValue}/${sudokuGameModel.saveDate.year}",
                 modifier = Modifier.constrainAs(saveDate){
                 top.linkTo(id.top)
                 start.linkTo(completionPercent.end, 5.dp)

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">SudokuMP</string>
+    <string name="id" translatable="false">ID</string>
+    <string name="timePassed">Time Passed</string>
+    <string name="completionPercent">Completion percent</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="savedWhen">Saved</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
 </resources>

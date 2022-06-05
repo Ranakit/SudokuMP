@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SudokuMP</string>
+    <string name="timePassed">Timp trecut</string>
+    <string name="completionPercent">Procent finalizare</string>
+    <string name="difficulty">Dificultate</string>
+    <string name="savedWhen">Salvat</string>
+    <string name="easy">Ușor</string>
+    <string name="medium">Intermediar</string>
+    <string name="hard">Dificil</string>
+</resources>
