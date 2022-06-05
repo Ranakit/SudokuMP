@@ -1,31 +1,106 @@
 package com.example.sudokump.model
 
+import android.content.Context
+import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
 import com.google.gson.Gson
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 
-class SudokuGameModel(savedGameDBEntity: SavedGameDBEntity) {
-    val id = savedGameDBEntity.id
-    val timePassed  = savedGameDBEntity.secondsPassed.seconds
-    val completionPercent = savedGameDBEntity.completionPercent
+class SudokuGameModel {
+    val id : Int
+    val timePassed  : Duration
+    val completionPercent : String
     val schema : List<List<Int>>
-    val difficulty = Difficulties.valueOf(savedGameDBEntity.difficulty) //Will be assured to be saved correctly to DB
-    val saveDate : LocalDate //Will be assured to be saved correctly to DB
+    val difficulty : Difficulties
+    val saveDate : LocalDate
 
-    init {
+    constructor(savedGameDBEntity: SavedGameDBEntity) {
+        id = savedGameDBEntity.id
+        timePassed  = savedGameDBEntity.secondsPassed.seconds
+        completionPercent = savedGameDBEntity.completionPercent
+        difficulty = Difficulties.valueOf(savedGameDBEntity.difficulty) //Will be assured to be saved correctly to DB
+        //Will be assured to be saved correctly to DB
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         saveDate = LocalDate.parse(savedGameDBEntity.savedDate, formatter)
 
-        val gson = Gson()
-
         var json = String(savedGameDBEntity.savedSchema)
         json = json.substring(0, json.length -1)
+        schema = extractBoardFromJson(json)
+    }
 
-        val board = gson.fromJson(json, SudokuBoard::class.java)
+    constructor(gameDifficulty: Difficulties, json: String)
+    {
+        id = 0
+        timePassed = Duration.ZERO
+        completionPercent = "0%"
+        difficulty = gameDifficulty
+        saveDate = LocalDate.now()
 
-        schema = board.board
+        schema = extractBoardFromJson(json)
+    }
+
+    private fun extractBoardFromJson(json: String) : List<List<Int>> =
+        Gson().fromJson(json, SudokuBoard::class.java).board
+
+    private fun compressToDBEntity() : SavedGameDBEntity
+    {
+        val gson = Gson()
+        val dataArray = gson.toJson(SudokuBoard(this.schema)).toByteArray()
+        val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val dateString = this.saveDate.format(myFormatter)
+        return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,
+            dataArray, this.difficulty.toString(), dateString)
+    }
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface SudokuGameModelEntryPoint {
+        fun getSavedGamesDAO() : SavedGamesDAO
+    }
+
+    fun saveInDB(appContext: Context)
+    {
+        val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
+        val dbEntity = compressToDBEntity()
+
+        runBlocking {
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                dao.saveGame(dbEntity)
+            }
+
+            job.join()
+        }
+    }
+
+    fun deleteFromDB(appContext: Context)
+    {
+        if(this.id != 0)
+        {
+            val dbEntity = compressToDBEntity()
+            val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
+
+            runBlocking {
+                val job = CoroutineScope(Dispatchers.IO).launch {
+
+                    dao.deleteGame(dbEntity)
+                }
+
+                job.join()
+            }
+        }
     }
 }

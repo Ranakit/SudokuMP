@@ -2,6 +2,7 @@ package com.example.sudokump.modules
 
 import android.content.Context
 import androidx.room.Room
+import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.db.SudokuDB
 import dagger.Module
 import dagger.Provides
@@ -23,5 +24,12 @@ object DBProvider {
             SudokuDB::class.java,
             "SavedGamesDB"
         ).createFromAsset("SavedGamesDB.db").build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSavedGamesDAO(db: SudokuDB) : SavedGamesDAO
+    {
+        return db.getSavedGamesDAO()
     }
 }
