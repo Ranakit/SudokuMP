@@ -15,8 +15,8 @@ val Typography = Typography(
         ),
         button = TextStyle(
                 fontFamily = FontFamily.Default,
-                fontWeight = FontWeight.W500,
-                fontSize = 12.sp
+                fontWeight = FontWeight.W700,
+                fontSize = 20.sp
         ),
         caption = TextStyle(
            fontFamily = FontFamily.Default,
