@@ -10,8 +10,10 @@ import androidx.compose.material.ButtonDefaults.outlinedButtonColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -23,6 +25,9 @@ import com.example.sudokump.ThemeSwitcher
 @Composable
 fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwitcher, navController: NavHostController) {
     val isSystemInDarkTheme = isSystemInDarkTheme()
+    var isNewGameClicked by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -73,10 +78,13 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
                 modifier = Modifier.align(Alignment.Center),
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {isNewGameClicked = !isNewGameClicked},
                     shape = MaterialTheme.shapes.medium,
                     colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
-                    modifier = Modifier.height(70.dp).width(350.dp).padding(vertical = 10.dp)
+                    modifier = Modifier
+                        .height(70.dp)
+                        .width(350.dp)
+                        .padding(vertical = 10.dp)
                 )
                 {
                     Text(
@@ -84,12 +92,63 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
                         style = MaterialTheme.typography.button
                     )
                 }
+                if (isNewGameClicked){
+                    Button(
+                        onClick = {//TODO
+                            },
+                        shape = MaterialTheme.shapes.medium,
+                        colors = outlinedButtonColors(Green, Black),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(250.dp)
+                            .padding(vertical = 5.dp, horizontal = 30.dp)
+                    )
+                    {
+                        Text(
+                            text = "Easy",
+                            style = MaterialTheme.typography.h1
+                        )
+                    }
+                    Button(
+                        onClick = {isNewGameClicked = true},
+                        shape = MaterialTheme.shapes.medium,
+                        colors = outlinedButtonColors(Yellow, Black),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(250.dp)
+                            .padding(vertical = 5.dp, horizontal = 30.dp)
+                    )
+                    {
+                        Text(
+                            text = "Medium",
+                            style = MaterialTheme.typography.h1
+                        )
+                    }
+                    Button(
+                        onClick = {isNewGameClicked = true},
+                        shape = MaterialTheme.shapes.medium,
+                        colors = outlinedButtonColors(Red, Black),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(250.dp)
+                            .padding(vertical = 5.dp, horizontal = 30.dp)
+                    )
+                    {
+                        Text(
+                            text = "Hard",
+                            style = MaterialTheme.typography.h1
+                        )
+                    }
+                }
                 if (isSystemInDarkTheme){
                 Button(
                     onClick = { /*TODO*/ },
                     shape = MaterialTheme.shapes.medium,
                     colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
-                    modifier = Modifier.height(70.dp).width(350.dp).padding(vertical = 10.dp)
+                    modifier = Modifier
+                        .height(70.dp)
+                        .width(350.dp)
+                        .padding(vertical = 10.dp)
                 )
                 {
                     Text(
@@ -101,7 +160,10 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
                     onClick = { /*TODO*/ },
                     shape = MaterialTheme.shapes.medium,
                     colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
-                    modifier = Modifier.height(70.dp).width(350.dp).padding(vertical = 10.dp)
+                    modifier = Modifier
+                        .height(70.dp)
+                        .width(350.dp)
+                        .padding(vertical = 10.dp)
                 )
                 {
                     Text(
@@ -113,7 +175,10 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
                     onClick = { /*TODO*/ },
                     shape = MaterialTheme.shapes.medium,
                     colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
-                    modifier = Modifier.height(70.dp).width(350.dp).padding(vertical = 10.dp)
+                    modifier = Modifier
+                        .height(70.dp)
+                        .width(350.dp)
+                        .padding(vertical = 10.dp)
                 )
                 {
                     Text(
