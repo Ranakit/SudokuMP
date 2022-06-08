@@ -1,42 +1,48 @@
 package com.example.sudokump.screens
 
-import androidx.compose.material.IconButton
+import android.content.SharedPreferences
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
+import com.example.sudokump.R
+import com.example.sudokump.ThemeSwitcher
 
 @Composable
-fun InitialScreen(navController: NavHostController) {
-    var name by remember { mutableStateOf("") }
+fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwitcher, navController: NavHostController) {
+    val isSystemInDarkTheme = isSystemInDarkTheme()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {name = ", you pressed a button"}) {
-                Text(
-                    text = "+",
-                    style = MaterialTheme.typography.body1
-                )
+                onClick = {
+                    themeSwitcher.themeSwitch()
+                    val edit : SharedPreferences.Editor = sharedPreferences.edit()
+                    edit.putBoolean("isDark", !(sharedPreferences.getBoolean("isDark", isSystemInDarkTheme)))
+                    edit.apply()
+                }) {
+                if(sharedPreferences.getBoolean("isDark", isSystemInDarkTheme)){
+                Image(
+                    painterResource(R.drawable.ic_action_name),"content description")
+                }
+                else{
+                    Image(
+                        painterResource(R.drawable.ic_moon),"content description")
+                }
             }
         },
         isFloatingActionButtonDocked = true,
         bottomBar = {
             BottomAppBar(
+                backgroundColor = MaterialTheme.colors.primary,
                 cutoutShape = MaterialTheme.shapes.small.copy(
                     CornerSize(percent = 50)
                 )
@@ -45,58 +51,26 @@ fun InitialScreen(navController: NavHostController) {
         }
     ) {
         TopAppBar(
-            title = { Text(text = "SudokuMP") },
-            navigationIcon = {
-                IconButton(
-                    onClick = {
-                        navController.navigate("settings")
-                              },
-                ){Text(
-                    text = "settings",
-                    style = MaterialTheme.typography.button
-                )}
-            }
+            title = { Text(
+                text = "SudokuMP",
+                color = MaterialTheme.colors.onBackground
+            ) },
+            backgroundColor = MaterialTheme.colors.primary
         )
         Box(
                 modifier = Modifier.fillMaxSize()
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
-                text = "Hello $name!",
+                text = "Hello!",
             )
         }
     }
 }
 
 @Composable
-fun NavigationComponent(navController: NavHostController) {
+fun NavigationComponent(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwitcher, navController: NavHostController) {
     NavHost(navController = navController, startDestination = "init") {
-        composable("init") { InitialScreen(navController)}
-        composable("settings") { Settings(navController) }
-    }
-}
-
-
-@Composable
-fun Settings(navController: NavHostController) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Button(
-            onClick = {
-                navController.navigate("init")
-                      },
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(200.dp, 200.dp),
-            shape = MaterialTheme.shapes.small,
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary, Color.White)
-        ) {
-            Text(
-                text = "go back",
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier.padding(all = 4.dp)
-            )
-        }
+        composable("init") { InitialScreen(sharedPreferences ,themeSwitcher, navController)}
     }
 }
