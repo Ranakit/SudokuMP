@@ -8,4 +8,6 @@
     <string name="easy">Easy</string>
     <string name="medium">Medium</string>
     <string name="hard">Hard</string>
+    <string name="delete_game">Delete</string>
+    <string name="continue_game">Continue</string>
 </resources>

@@ -45,11 +45,12 @@ class SudokuGameModel {
     {
         id = 0
         timePassed = Duration.ZERO
-        completionPercent = "0%"
         difficulty = gameDifficulty
         saveDate = LocalDate.now()
 
         schema = extractBoardFromJson(json)
+
+        completionPercent = evaluateCompletionPercent(schema)
     }
 
     private fun extractBoardFromJson(json: String) : List<List<Int>> =
@@ -63,6 +64,23 @@ class SudokuGameModel {
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,
             dataArray, this.difficulty.toString(), dateString)
+    }
+
+    private fun evaluateCompletionPercent(schema: List<List<Int>>) : String
+    {
+        var counter = 0
+        for(i in 0..8)
+        {
+            for(j in 0..8)
+            {
+                if(schema[i][j] != 0)
+                {
+                    counter++
+                }
+            }
+        }
+
+        return String.format("%.2f%%", counter/81.0f*100)
     }
 
     @EntryPoint

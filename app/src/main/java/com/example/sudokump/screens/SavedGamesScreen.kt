@@ -1,13 +1,15 @@
 package com.example.sudokump.screens
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -28,55 +30,83 @@ fun SavedGamesScreen() {
 
     val savedGames = viewModel.savedGames
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize().clickable {
+        viewModel.selectedGame.value = -1
+    }) {
         items(savedGames.size)
         {
-            SavedGameCard(savedGames[it])
+            SavedGameCard(savedGames[it], it, viewModel.selectedGame)
         }
     }
 }
 
 @Composable
-fun SavedGameCard(sudokuGameModel: SudokuGameModel)
+fun SavedGameCard(sudokuGameModel: SudokuGameModel, position: Int, mutableFlag: MutableState<Int>)
 {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+    Card(modifier = Modifier.fillMaxWidth().clickable {
+        mutableFlag.value = position
+    }) {
+        Column(modifier = Modifier.fillMaxWidth()) {
 
-            val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-            CompletionGridCanvas(schema = sudokuGameModel.schema, modifier = Modifier
-                .size(50.dp)
-                .constrainAs(grid) {
-                    top.linkTo(parent.top, 5.dp)
-                    start.linkTo(parent.start, 5.dp)
-                    bottom.linkTo(parent.bottom, 5.dp)
+                val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
+
+                CompletionGridCanvas(schema = sudokuGameModel.schema, modifier = Modifier
+                    .size(50.dp)
+                    .constrainAs(grid) {
+                        top.linkTo(parent.top, 5.dp)
+                        start.linkTo(parent.start, 5.dp)
+                        bottom.linkTo(parent.bottom, 5.dp)
+                    })
+
+                Text("${stringResource(id = R.string.id)}: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
+                    top.linkTo(grid.top, 0.dp)
+                    start.linkTo(grid.end, 5.dp)
                 })
 
-            Text("${stringResource(id = R.string.id)}: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
-                top.linkTo(grid.top, 0.dp)
-                start.linkTo(grid.end, 5.dp)
-            })
+                Text("${stringResource(id = R.string.timePassed)}: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
+                    top.linkTo(id.bottom, margin = 5.dp)
+                    start.linkTo(id.start)
+                })
 
-            Text("${stringResource(id = R.string.timePassed)}: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
-                top.linkTo(id.bottom, margin = 5.dp)
-                start.linkTo(id.start)
-            })
+                Text("${stringResource(id = R.string.completionPercent)}: ${sudokuGameModel.completionPercent}", modifier = Modifier.constrainAs(completionPercent){
+                    top.linkTo(id.top)
+                    start.linkTo(id.end, margin = 5.dp)
+                })
 
-            Text("${stringResource(id = R.string.completionPercent)}: ${sudokuGameModel.completionPercent}", modifier = Modifier.constrainAs(completionPercent){
-                top.linkTo(id.top)
-                start.linkTo(id.end, margin = 5.dp)
-            })
+                Text("${stringResource(id = R.string.difficulty)}: ${sudokuGameModel.difficulty}", modifier = Modifier.constrainAs(difficulty){
+                    top.linkTo(completionPercent.bottom, margin = 5.dp)
+                    start.linkTo(timePassed.end, margin = 5.dp)
+                })
 
-            Text("${stringResource(id = R.string.difficulty)}: ${sudokuGameModel.difficulty}", modifier = Modifier.constrainAs(difficulty){
-                top.linkTo(completionPercent.bottom, margin = 5.dp)
-                start.linkTo(timePassed.end, margin = 5.dp)
-            })
+                Text("${stringResource(id = R.string.savedWhen)}: ${sudokuGameModel.saveDate.dayOfMonth}/${sudokuGameModel.saveDate.monthValue}/${sudokuGameModel.saveDate.year}",
+                    modifier = Modifier.constrainAs(saveDate){
+                        top.linkTo(id.top)
+                        start.linkTo(completionPercent.end, 5.dp)
+                    })
+            }
 
-            Text("${stringResource(id = R.string.savedWhen)}: ${sudokuGameModel.saveDate.dayOfMonth}/${sudokuGameModel.saveDate.monthValue}/${sudokuGameModel.saveDate.year}",
-                modifier = Modifier.constrainAs(saveDate){
-                top.linkTo(id.top)
-                start.linkTo(completionPercent.end, 5.dp)
-            })
+            if (mutableFlag.value == position)
+            {
+                Divider(thickness = 1.dp, color = Color.LightGray)
+
+                OptionButtons()
+            }
+        }
+    }
+}
+
+@Composable
+fun OptionButtons()
+{
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = stringResource(id = R.string.delete_game))
+        }
+
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = stringResource(id = R.string.continue_game))
         }
     }
 }

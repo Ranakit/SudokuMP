@@ -8,4 +8,6 @@
     <string name="easy">Ușor</string>
     <string name="medium">Intermediar</string>
     <string name="hard">Dificil</string>
+    <string name="delete_game">Șterge</string>
+    <string name="continue_game">Continuă</string>
 </resources>

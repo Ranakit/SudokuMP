@@ -1,9 +1,11 @@
 package com.example.sudokump.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ fun CompletedGameCardPW(sudokuGameModel: SudokuGameModel = SudokuGameModel(
     CompletedGameCard(sudokuGameModel = sudokuGameModel)
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 fun SavedGameCardPW(sudokuGameModel: SudokuGameModel = SudokuGameModel(
@@ -48,5 +51,5 @@ fun SavedGameCardPW(sudokuGameModel: SudokuGameModel = SudokuGameModel(
     "{\"board\":[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,6,0],[0,0,0,3,0,0,0,0,0],[2,1,0,0,0,0,0,0,9],[4,5,0,0,0,0,0,0,0],[0,0,8,2,0,3,5,4,0],[6,3,1,0,7,2,0,9,5],[8,4,2,0,3,0,0,0,1],[9,0,0,6,0,1,0,3,0]]}\n")
 )
 {
-    SavedGameCard(sudokuGameModel = sudokuGameModel)
+    SavedGameCard(sudokuGameModel = sudokuGameModel,0, mutableStateOf(-1))
 }
