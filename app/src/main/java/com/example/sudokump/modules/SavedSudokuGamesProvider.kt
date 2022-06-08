@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 @InstallIn(ViewModelComponent::class)
 object SavedSudokuGamesProvider {
 
+    @SavedSudokuGames
     @Provides
     fun provideSavedSudokuGames(gamesDAO : SavedGamesDAO) : List<SudokuGameModel> {
 
@@ -37,4 +38,28 @@ object SavedSudokuGamesProvider {
 
         return savedGames
     }
+
+    @CompletedSudokuGames
+    @Provides
+    fun provideCompletedSudokuGames(gamesDAO : SavedGamesDAO) : List<SudokuGameModel> {
+
+        var savedGamesDBEntities : List<SavedGameDBEntity> = listOf()
+        val savedGames : MutableList<SudokuGameModel> = mutableListOf()
+
+        runBlocking {
+            val recoverJob = CoroutineScope(Dispatchers.IO).launch {
+                savedGamesDBEntities = gamesDAO.getCompletedGames()
+            }
+
+            recoverJob.join()
+        }
+
+        for (savedGame in savedGamesDBEntities)
+        {
+            savedGames.add(SudokuGameModel(savedGame))
+        }
+
+        return savedGames
+    }
+
 }

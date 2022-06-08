@@ -15,8 +15,11 @@ interface SavedGamesDAO {
     @Delete
     fun deleteGame(savedGame: SavedGameDBEntity)
 
-    @Query("SELECT * FROM saved_games")
+    @Query("SELECT * FROM saved_games WHERE completion_percent != '100'")
     fun getSavedGames() : List<SavedGameDBEntity>
+
+    @Query("SELECT * FROM saved_games WHERE completion_percent == '100'")
+    fun getCompletedGames() : List<SavedGameDBEntity>
 
     @Query("SELECT * FROM saved_games WHERE id == :id")
     fun getLastSavedGame(id: String) : SavedGameDBEntity

@@ -13,3 +13,11 @@ annotation class MediumSudokuGame
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class HardSudokuGame
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CompletedSudokuGames
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SavedSudokuGames

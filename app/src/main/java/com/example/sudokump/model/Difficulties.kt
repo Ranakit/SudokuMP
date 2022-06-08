@@ -1,8 +1,5 @@
 package com.example.sudokump.model
 
-import android.content.res.Resources
-import com.example.sudokump.R
-
 enum class Difficulties {
     EASY, MEDIUM, HARD;
 
