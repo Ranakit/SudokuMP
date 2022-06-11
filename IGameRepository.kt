@@ -1,5 +1,7 @@
 package com.fabrizio.sudoku.domain
 
+import kotlinx.coroutines.Job
+
 
 interface IGameRepository {
 
@@ -31,8 +33,8 @@ interface IGameRepository {
 
      */
     suspend fun getCurrentGame(
-        onSuccess: (currentGame: SudokuPuzzle, isComplete : Boolean) -> Unit,
-        onError : (Exception )->Unit
+        onSuccess: (Any, Any) -> Job,
+        onError: (Exception )->Unit
     )
 
 
