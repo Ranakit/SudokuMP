@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SudokuMP</string>
+    <string name="timePassed">Tempo trascorso</string>
+    <string name="completionPercent">Percentuale completamento</string>
+    <string name="difficulty">Difficoltà</string>
+    <string name="savedWhen">Salvato</string>
+    <string name="easy">Facile</string>
+    <string name="medium">Intermedio</string>
+    <string name="hard">Difficile</string>
+    <string name="delete_game">Elimina</string>
+    <string name="continue_game">Continua</string>
+</resources>
