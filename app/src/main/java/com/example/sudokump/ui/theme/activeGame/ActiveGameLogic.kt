@@ -1,6 +1,7 @@
 package com.fabrizio.sudoku.ui.activegame
 
 import com.fabrizio.sudoku.common.BaseLogic
+import com.fabrizio.sudoku.common.DispatcherProvider
 import com.fabrizio.sudoku.domain.IGameRepository
 import com.fabrizio.sudoku.domain.IStatisticsRepository
 import com.fabrizio.sudoku.domain.SudokuPuzzle
@@ -19,7 +20,7 @@ class ActiveGameLogic (
     private val viewModel: ActiveGameViewModel,
     private val gameRepo: IGameRepository,
     private val statsRepo: IStatisticsRepository,
-    private val dispatcher: Disp atcherProvider
+    private val dispatcher: DispatcherProvider
 
 
 ): BaseLogic<ActiveGameEvent>() , CoroutineScope {
