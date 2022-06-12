@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../layout/compose-model-1653642883883.xml" value="0.33" />
+        <entry key="../../../../../../layout/compose-model-1653642941410.xml" value="1.0" />
+        <entry key="../../../../../../layout/compose-model-1653825778719.xml" value="1.6137184115523466" />
+        <entry key="../../../../../../layout/compose-model-1654694957093.xml" value="0.1" />
+        <entry key="../../../../../../layout/compose-model-1654694957100.xml" value="0.5569620253164557" />
+        <entry key="../../../../../../layout/compose-model-1654694981171.xml" value="0.41596638655462187" />
+        <entry key="../../../../../../layout/compose-model-1654698506097.xml" value="0.36895910780669144" />
+        <entry key="../../../../../../layout/compose-model-1654699610560.xml" value="0.6180904522613065" />
+        <entry key="../../../../../../layout/compose-model-1654701791474.xml" value="0.6172529313232831" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1545" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1545" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
