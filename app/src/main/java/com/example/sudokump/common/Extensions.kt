@@ -2,7 +2,7 @@ package com.fabrizio.sudoku.common
 
 import android.app.Activity
 import android.widget.Toast
-import com.fabrizio.sudoku.R
+import com.example.sudokump.R
 import com.fabrizio.sudoku.domain.Difficulty
 
 

@@ -65,9 +65,37 @@ fun mutableSudokuSquare(tileOffset: Float) = TextStyle(
 
 
     )
+
 val statsLabel = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Light,
     fontSize = 24.sp,
     textAlign = TextAlign.Center
+)
+
+
+// the typography object below uses the text styles declared after for
+// gave styles to the various objects that we can use on the app
+val typography = Typography(
+    body1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    button = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+    ),
+    caption = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    ),
+
+    h1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W900,
+        fontSize = 12.sp
+    )
 )

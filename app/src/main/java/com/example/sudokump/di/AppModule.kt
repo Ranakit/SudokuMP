@@ -1,7 +1,7 @@
 package com.example.sudokump.di
 
 import android.content.Context
-import com.example.sudokump.ThemeSwitcher
+import com.example.sudokump.SudokuMP
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ object AppModule {
 
     @ActivityScoped
     @Provides
-    fun provideApplication(@ApplicationContext app: Context) : ThemeSwitcher{
-        return app as ThemeSwitcher
+    fun provideApplication(@ApplicationContext app: Context) : SudokuMP{
+        return app as SudokuMP
     }
 }

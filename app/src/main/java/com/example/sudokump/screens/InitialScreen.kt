@@ -2,6 +2,7 @@ package com.example.sudokump.screens
 
 import android.content.SharedPreferences
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
@@ -16,14 +17,17 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.sudokump.R
-import com.example.sudokump.ThemeSwitcher
+import com.example.sudokump.SudokuMP
+import com.example.sudokump.viewmodel.SavedGamesScreenViewModel
 
 @Composable
-fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwitcher, navController: NavHostController) {
+fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
     val isSystemInDarkTheme = isSystemInDarkTheme()
     var isNewGameClicked by remember {
         mutableStateOf(false)
@@ -32,7 +36,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    themeSwitcher.themeSwitch()
+                    sudokuMP.themeSwitch()
                     val edit: SharedPreferences.Editor = sharedPreferences.edit()
                     edit.putBoolean(
                         "isDark",
@@ -157,7 +161,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
                     )
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate("SavedGames")  },
                     shape = MaterialTheme.shapes.medium,
                     colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
                     modifier = Modifier
@@ -172,7 +176,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
                     )
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate("CompletedGames") },
                     shape = MaterialTheme.shapes.medium,
                     colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
                     modifier = Modifier
@@ -193,8 +197,16 @@ fun InitialScreen(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwit
 }
 
 @Composable
-fun NavigationComponent(sharedPreferences: SharedPreferences, themeSwitcher: ThemeSwitcher, navController: NavHostController) {
+fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
     NavHost(navController = navController, startDestination = "init") {
-        composable("init") { InitialScreen(sharedPreferences ,themeSwitcher, navController)}
+        composable("init") { InitialScreen(sharedPreferences ,sudokuMP, navController)}
+        composable("SavedGames"){SavedGamesScreen(
+            viewModel = hiltViewModel()
+            )}
+        composable("CompletedGames"){
+            CompletedGamesScreen(
+                viewModel = hiltViewModel()
+            )
+        }
     }
 }

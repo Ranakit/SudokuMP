@@ -1,4 +1,4 @@
-package com.fabrizio.sudoku.ui.activegame
+/*package com.fabrizio.sudoku.ui.activegame
 
 import com.fabrizio.sudoku.domain.Difficulty
 import com.fabrizio.sudoku.domain.SudokuPuzzle
@@ -100,4 +100,4 @@ class SudokuTile(
     var value : Int,
     var hasFocus : Boolean,   /*user has clicked on a tile , after he can change the number */
     val readOnly : Boolean    /*Can be a precompiled tile , in which the user can't change the number*/
-)
+)*/

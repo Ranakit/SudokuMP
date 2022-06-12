@@ -1,4 +1,4 @@
-package com.fabrizio.sudoku.ui.activegame
+/*package com.fabrizio.sudoku.ui.activegame
 
 import com.fabrizio.sudoku.common.BaseLogic
 import com.fabrizio.sudoku.common.DispatcherProvider
@@ -248,4 +248,4 @@ class ActiveGameLogic (
         )
     }
 
-}
+}*/

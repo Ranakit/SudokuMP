@@ -26,9 +26,7 @@ import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.viewmodel.CompletedGamesScreenViewModel
 
 @Composable
-fun CompletedGamesScreen() {
-
-    val viewModel: CompletedGamesScreenViewModel = viewModel()
+fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
     val savedGames = viewModel.completedGames
 
