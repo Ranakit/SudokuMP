@@ -5,6 +5,7 @@ import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = primaryGreen ,
@@ -12,7 +13,12 @@ private val DarkColorPalette = darkColors(
     surface = lightGrey,
     primaryVariant = gridLineColorLight,
     onPrimary = accentAmber,
-    onSurface = accentAmber
+    onSurface = accentAmber,
+    onBackground = Teal100,
+    onSecondary = Color.DarkGray,
+    secondaryVariant = RedD,
+    error = YellowD,
+    onError = GreenD
 )
 
 private val LightColorPalette = lightColors(
@@ -21,7 +27,12 @@ private val LightColorPalette = lightColors(
     surface = lightGreyAlpha,
     primaryVariant = gridLineColorLight,
     onPrimary = accentAmber,
-    onSurface = accentAmber
+    onSurface = accentAmber,
+    onBackground = Color.Black,
+    onSecondary = Purple200,
+    secondaryVariant = Color.Red,
+    error = Color.Yellow,
+    onError = Color.Green
 )
 
 @Composable

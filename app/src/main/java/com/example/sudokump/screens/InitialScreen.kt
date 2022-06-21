@@ -2,7 +2,6 @@ package com.example.sudokump.screens
 
 import android.content.SharedPreferences
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
@@ -12,19 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
-import com.example.sudokump.viewmodel.SavedGamesScreenViewModel
 
 @Composable
 fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
@@ -58,7 +52,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
         isFloatingActionButtonDocked = true,
         bottomBar = {
             BottomAppBar(
-                backgroundColor = MaterialTheme.colors.primary,
+                backgroundColor = MaterialTheme.colors.onSecondary,
                 cutoutShape = MaterialTheme.shapes.small.copy(
                     CornerSize(percent = 50)
                 )
@@ -67,13 +61,13 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
         }
     ) {
         TopAppBar(
+            backgroundColor = MaterialTheme.colors.onSecondary,
             title = {
                 Text(
                     text = "Welcome back!",
                     color = MaterialTheme.colors.onBackground
                 )
-            },
-            backgroundColor = MaterialTheme.colors.primary
+            }
         )
         Box(
             modifier = Modifier.fillMaxSize()
@@ -96,53 +90,8 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                         style = MaterialTheme.typography.button
                     )
                 }
-                if (isNewGameClicked){
-                    Button(
-                        onClick = {//TODO
-                            },
-                        shape = MaterialTheme.shapes.medium,
-                        colors = outlinedButtonColors(Green, Black),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .width(250.dp)
-                            .padding(vertical = 5.dp, horizontal = 30.dp)
-                    )
-                    {
-                        Text(
-                            text = "Easy",
-                            style = MaterialTheme.typography.h1
-                        )
-                    }
-                    Button(
-                        onClick = {isNewGameClicked = true},
-                        shape = MaterialTheme.shapes.medium,
-                        colors = outlinedButtonColors(Yellow, Black),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .width(250.dp)
-                            .padding(vertical = 5.dp, horizontal = 30.dp)
-                    )
-                    {
-                        Text(
-                            text = "Medium",
-                            style = MaterialTheme.typography.h1
-                        )
-                    }
-                    Button(
-                        onClick = {isNewGameClicked = true},
-                        shape = MaterialTheme.shapes.medium,
-                        colors = outlinedButtonColors(Red, Black),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .width(250.dp)
-                            .padding(vertical = 5.dp, horizontal = 30.dp)
-                    )
-                    {
-                        Text(
-                            text = "Hard",
-                            style = MaterialTheme.typography.h1
-                        )
-                    }
+                if (isNewGameClicked) {
+                    Buttons()
                 }
                 if (isSystemInDarkTheme){
                 Button(
@@ -195,6 +144,58 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
         }
     }
 }
+
+
+@Composable
+fun Buttons() {
+    Button(
+        onClick = {//TODO
+        },
+        shape = MaterialTheme.shapes.medium,
+        colors = outlinedButtonColors(MaterialTheme.colors.onError, Black),
+        modifier = Modifier
+            .height(50.dp)
+            .width(250.dp)
+            .padding(vertical = 5.dp, horizontal = 30.dp)
+    )
+    {
+        Text(
+            text = "Easy"
+        )
+    }
+    Button(
+        onClick = {//TODO
+             },
+        shape = MaterialTheme.shapes.medium,
+        colors = outlinedButtonColors(MaterialTheme.colors.error, Black),
+        modifier = Modifier
+            .height(50.dp)
+            .width(250.dp)
+            .padding(vertical = 5.dp, horizontal = 30.dp)
+    )
+    {
+        Text(
+            text = "Medium"
+        )
+    }
+    Button(
+        onClick = {
+            //TODO
+        },
+        shape = MaterialTheme.shapes.medium,
+        colors = outlinedButtonColors(MaterialTheme.colors.secondaryVariant, Black),
+        modifier = Modifier
+            .height(50.dp)
+            .width(250.dp)
+            .padding(vertical = 5.dp, horizontal = 30.dp)
+    )
+    {
+        Text(
+            text = "Hard"
+        )
+    }
+}
+
 
 @Composable
 fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {

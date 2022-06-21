@@ -18,4 +18,7 @@ val lightGreyAlpha = Color (0XDCf3f3f3)
 val userInputtedNumberLight = Color(0XFF629749)
 val userInputtedDark = Color (0XFF629749)
 val victoryColor = Color(0XFFffeb3b)
+val GreenD = Color(red = 0, green = 107, blue = 0, alpha = 255)
+val RedD = Color(red = 143, green = 3, blue = 3, alpha = 255)
+val YellowD = Color(red = 207, green = 192, blue = 59, alpha = 255)
 
