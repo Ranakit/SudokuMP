@@ -1,4 +1,4 @@
-/*package com.fabrizio.sudoku.ui.activegame
+package com.example.sudokump.ui.theme.activeGame
 
 import com.fabrizio.sudoku.common.BaseLogic
 import com.fabrizio.sudoku.common.DispatcherProvider

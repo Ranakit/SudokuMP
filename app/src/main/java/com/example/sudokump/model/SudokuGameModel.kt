@@ -59,7 +59,7 @@ class SudokuGameModel {
     private fun compressToDBEntity() : SavedGameDBEntity
     {
         val gson = Gson()
-        val dataArray = gson.toJson(SudokuBoard(this.schema)).toByteArray()
+        val dataArray = gson.toJson(SudokuBoard(this.schema, viewModel, screenWidth - margin.dp)).toByteArray()
         val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,

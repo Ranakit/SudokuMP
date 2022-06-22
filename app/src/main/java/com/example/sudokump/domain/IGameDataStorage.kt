@@ -1,4 +1,4 @@
-/*package com.fabrizio.sudoku.domain
+package com.fabrizio.sudoku.domain
 
 interface IGameDataStorage {
 
@@ -10,10 +10,10 @@ interface IGameDataStorage {
 sealed class GameStorageResult{
 
     data class OnSuccess(val currentgame: SudokuPuzzle): GameStorageResult()
-    data class OnErrore(val exception: Exception): GameStorageResult()
+    data class OnError(val exception: Exception): GameStorageResult()
 
 
-}*/
+}
 
 /*
 this class allows to return an object from a particular function contained in the upper interface , and this

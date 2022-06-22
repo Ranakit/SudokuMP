@@ -5,7 +5,6 @@ import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = primaryGreen ,
@@ -48,4 +47,14 @@ fun SudokuMPTheme(darkTheme: Boolean, content: @Composable () -> Unit) {
             shapes = Shapes,
             content = content
     )
+}
+
+@Composable
+public fun AppToolbar(
+    modifier: androidx.compose.ui.Modifier,
+    title: String,
+    icon: @Composable
+        () -> Unit
+) : Unit {
+    return Unit
 }

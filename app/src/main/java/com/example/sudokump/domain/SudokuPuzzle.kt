@@ -1,4 +1,4 @@
-/*package com.fabrizio.sudoku.domain
+package com.fabrizio.sudoku.domain
 
 import java.io.Serializable
 import java.util.*
@@ -11,4 +11,4 @@ data class SudokuPuzzle(
 ): Serializable {
     fun getValue(): LinkedHashMap<Int , LinkedList<SudokuNode>> = graph
 
-}*/
+}
