@@ -1,8 +1,9 @@
-package com.fabrizio.sudoku.common
+package com.example.sudokump.common
 
 import android.app.Activity
 import android.widget.Toast
 import com.example.sudokump.R
+import com.example.sudokump.domain.Difficulty
 import com.fabrizio.sudoku.domain.Difficulty
 
 

@@ -1,10 +1,10 @@
 package com.example.sudokump.ui.theme.activeGame
 
-import com.fabrizio.sudoku.common.BaseLogic
-import com.fabrizio.sudoku.common.DispatcherProvider
-import com.fabrizio.sudoku.domain.IGameRepository
-import com.fabrizio.sudoku.domain.IStatisticsRepository
-import com.fabrizio.sudoku.domain.SudokuPuzzle
+import com.example.sudokump.common.BaseLogic
+import com.example.sudokump.common.DispatcherProvider
+import com.example.sudokump.domain.IGameRepository
+import com.example.sudokump.domain.IStatisticsRepository
+import com.example.sudokump.domain.SudokuPuzzle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

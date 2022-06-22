@@ -16,14 +16,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.sudokump.R
-import com.example.sudokump.model.SudokuBoard
 import com.example.sudokump.ui.theme.*
 import java.lang.reflect.Modifier
 import java.util.HashMap
@@ -44,8 +42,6 @@ fun ActiveGameScreen(
     val contentTransitionState = remember {
         MutableTransitionState(
             ActiveGameScreenState.LOADING
-
-
         )
     }
 
@@ -118,7 +114,6 @@ fun ActiveGameScreen(
                         GameCompleteContent(
                             viewModel.timerState,
                             viewModel.isNewRecordedState
-
                         )
                     }
                     else -> {}

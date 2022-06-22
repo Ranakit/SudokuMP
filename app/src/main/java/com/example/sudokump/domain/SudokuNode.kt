@@ -1,4 +1,4 @@
-package com.fabrizio.sudoku.domain
+package com.example.sudokump.domain
 
 import java.io.Serializable
 

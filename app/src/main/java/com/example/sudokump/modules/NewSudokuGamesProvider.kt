@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object NewSudokuGamesProvider {
 
-    private val url = "https://sugoku.herokuapp.com/board?difficulty="
+    private const val url = "https://sugoku.herokuapp.com/board?difficulty="
 
     @EasySudokuGame
     @Provides

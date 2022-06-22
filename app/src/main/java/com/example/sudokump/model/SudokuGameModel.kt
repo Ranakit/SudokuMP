@@ -54,12 +54,12 @@ class SudokuGameModel {
     }
 
     private fun extractBoardFromJson(json: String) : List<List<Int>> =
-        Gson().fromJson(json, SudokuBoard::class.java).board
+        Gson().fromJson(json, SudokuGrid::class.java).board
 
     private fun compressToDBEntity() : SavedGameDBEntity
     {
         val gson = Gson()
-        val dataArray = gson.toJson(SudokuBoard(this.schema, viewModel, screenWidth - margin.dp)).toByteArray()
+        val dataArray = gson.toJson(SudokuGrid(this.schema)).toByteArray()
         val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,

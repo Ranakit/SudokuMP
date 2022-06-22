@@ -206,7 +206,7 @@ fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP
             )}
         composable("CompletedGames"){
             CompletedGamesScreen(
-                viewModel = hiltViewModel()
+            viewModel = hiltViewModel()
             )
         }
     }

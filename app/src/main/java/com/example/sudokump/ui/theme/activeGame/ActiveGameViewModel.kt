@@ -1,8 +1,8 @@
 package com.example.sudokump.ui.theme.activeGame
 
-import com.fabrizio.sudoku.domain.Difficulty
-import com.fabrizio.sudoku.domain.SudokuPuzzle
-import com.fabrizio.sudoku.domain.getHash
+import com.example.sudokump.domain.Difficulty
+import com.example.sudokump.domain.SudokuPuzzle
+import com.example.sudokump.domain.getHash
 
 
 class ActiveGameViewModel {

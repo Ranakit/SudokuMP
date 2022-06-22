@@ -58,10 +58,14 @@ fun SavedGameCard(sudokuGameModel: SudokuGameModel, position: Int, mutableFlag: 
                         bottom.linkTo(parent.bottom, 5.dp)
                     })
 
-                Text("${stringResource(id = R.string.id)}: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
+                Text(
+                    "${stringResource(id = R.string.id)}: ${sudokuGameModel.id}",
+                    modifier = Modifier.constrainAs(id){
                     top.linkTo(grid.top, 0.dp)
                     start.linkTo(grid.end, 5.dp)
-                })
+                    },
+                    //style =
+                )
 
                 Text("${stringResource(id = R.string.timePassed)}: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
                     top.linkTo(id.bottom, margin = 5.dp)

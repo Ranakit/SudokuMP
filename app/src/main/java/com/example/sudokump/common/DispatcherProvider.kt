@@ -1,4 +1,4 @@
-package com.fabrizio.sudoku.common
+package com.example.sudokump.common
 
 import kotlin.coroutines.CoroutineContext
 

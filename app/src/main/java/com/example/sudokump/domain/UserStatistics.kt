@@ -1,4 +1,4 @@
-package com.fabrizio.sudoku.domain
+package com.example.sudokump.domain
 /*
 in this class we can implement the handlers for the user's statistics that will bene generated
 after each game

@@ -1,4 +1,4 @@
-package com.fabrizio.sudoku.domain
+package com.example.sudokump.domain
 
 import androidx.compose.ui.text.android.selection.WordBoundary
 

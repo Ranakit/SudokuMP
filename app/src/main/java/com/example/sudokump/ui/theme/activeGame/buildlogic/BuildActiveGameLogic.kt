@@ -1,4 +1,4 @@
-/*package com.example.sudokump.ui.theme.activeGame.buildlogic
+package com.example.sudokump.ui.theme.activeGame.buildlogic
 
 import android.content.Context
 import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
@@ -16,5 +16,3 @@ internal fun buildActiveGameLogic(
         GameReposotoryImpl
     )
 }
-
- */
