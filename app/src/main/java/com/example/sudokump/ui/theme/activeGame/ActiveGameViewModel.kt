@@ -28,7 +28,7 @@ class ActiveGameViewModel {
     fun initializeBoard(
         puzzle: SudokuPuzzle,
         isComplete : Boolean
-
+graph
     ) {
         puzzle.graph.forEach {
             val node = it.value[0]

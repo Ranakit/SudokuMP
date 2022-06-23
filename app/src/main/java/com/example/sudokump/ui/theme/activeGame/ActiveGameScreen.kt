@@ -1,27 +1,30 @@
 package com.example.sudokump.ui.theme.activeGame
 
+import android.provider.BlockedNumberContract
+import android.widget.Space
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.sudokump.R
+import com.example.sudokump.common.toTime
+import com.example.sudokump.model.SudokuBoard
 import com.example.sudokump.ui.theme.*
 import java.lang.reflect.Modifier
 import java.util.HashMap
@@ -202,7 +205,66 @@ fun GameContent(
 
                 )
             }
+            
+            Row(
+                androidx.compose.ui.Modifier
+                    .wrapContentSize()
+                    .constrainAs(diff) {
+                        top.linkTo(board.bottom)
+                        end.linkTo(parent.end)
+                    }
+            ){
+                (0..viewModel.difficulty.ordinal).forEach{
+                    Icon(
+                        contentDescription = stringResource(R.string.difficulty),
+                        imageVector = Icons.Filled.Star,
+                        tint = MaterialTheme.colors.secondary,
+                        modifier  = androidx.compose.ui.Modifier
+                            .size(32.dp)
+                            .padding(top = 4.dp)
 
+                    )
+                }
+        }
+        Box(
+            androidx.compose.ui.Modifier
+                .wrapContentSize()
+                .constrainAs(timer) {
+                    top.linkTo(board.bottom)
+                    start.linkTo(parent.start)
+                }
+                .padding(start = 16.dp)
+
+        ){
+            TimerText(viewModel)
+
+
+
+        }
+            /*
+            Layout container for the input buttons
+            */
+
+        Column(
+            modifier = androidx.compose.ui.Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .constrainAs(inputs) {
+                    top.linkTo(timer.bottom)
+                },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (viewModel.boundary == 4){
+                InputButtonRow(
+                    (0..4).toList(),
+                    onEventHandler
+                )
+
+                InputButtonRow(
+                    (5..9).toList(),
+                    onEventHandler
+                )
+            }
         }
 
 
@@ -244,91 +306,207 @@ fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
 }
 
 @Composable
-fun BoardGrid(boundary: Int, tileOffset: Float) {
-    (1 until boundary).forEach{
-        val width = if (it % boundary.sqrt == 0) 3.dp
-        else 1.dp
-
-        Divier(
-            color = MaterialTheme.colors.primaryVariant,
-            modifier = androidx.compose.ui.Modifier
-                .absoluteOffset((tileOffset * it).dp , 0.dp)
-                .fillMaxHeight()
-                .width(width)
-        )
-
-        (1 until boundary).forEach{
-            val height = if (it % boundary.sqrt == 0) 3.dp
-            else 1.dp
-
-            Divier(
-                color = MaterialTheme.colors.primaryVariant,
-                modifier = androidx.compose.ui.Modifier
-                    .absoluteOffset((tileOffset * it).dp , 0.dp)
-                    .fillMaxWidth()
-                    .height(width)
-            )
-
-    }
-}
-
-@Composable
 fun SudokuTextFields(
     onEventHandler: (ActiveGameEvent) -> Unit,
     tileOffset: Any,
     boardState: HashMap<Int, SudokuTile>
 ) {
 
-    /*
-    Here we are going to implement the real grid , where some icons are mutable
-     */
-    boardState.values.forEach{
-        var text = tile.value.toString()
+        /*
+        Here we are going to implement the real grid , where some icons are mutable
+         */
+        boardState.values.forEach { _ ->
+            var text = tile.value.toString()
 
-        if (!tile.readOnly){
-            if (text == "0") text = ""
-            Text(
-                text = text,
-                style = mutableSudokuSquare(tileOffset).copy(
-                    color = if(MaterialTheme.colors.isLight) userInputtedNumberLight
-                else userInputtedDark
-                ),
-                modifier = androidx.compose.ui.Modifier
-                    .absoluteOffset(
-                        (tileOffset * (tile.x - 1)).dp,
-                        (tileOffset * (tile.y - 1)).dp,
+            if (!tile.readOnly) {
+                if (text == "0") text = ""
+                Text(
+                    text = text,
+                    style = mutableSudokuSquare(tileOffset).copy(
+                        color = if (MaterialTheme.colors.isLight) userInputtedNumberLight
+                        else userInputtedDark
+                    ),
+                    modifier = androidx.compose.ui.Modifier
+                        .absoluteOffset(
+                            (tileOffset * (tile.x - 1)).dp,
+                            (tileOffset * (tile.y - 1)).dp,
 
 
-                    )
-                    .size(tileOffset.dp)
-                    .background(
-                        if(tile.hasFocus) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
-                        else MaterialTheme.colors.surface
-                    )
-                    .clickable {
-                        onEventHandler.invoke(
-                            ActiveGameEvent.OnTileFocused(tile.x , tile.y)
+                            )
+                        .size(tileOffset.dp)
+                        .background(
+                            if (tile.hasFocus) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
+                            else MaterialTheme.colors.surface
                         )
-                    }
+                        .clickable {
+                            onEventHandler.invoke(
+                                ActiveGameEvent.OnTileFocused(tile.x, tile.y)
+                            )
+                        }
 
+                )
+            } else {
+                Text(
+                    text = text,
+                    style = readOnlySudokuSquare(
+                        tileOffset
+                    ),
+                    modifier = androidx.compose.ui.Modifier
+                        .absoluteOffset(
+
+                            (tileOffset * (tile.x - 1)).dp,
+                            (tileOffset * (tile.y - 1)).dp,
+
+                            )
+
+
+                )
+
+            }
+
+        }
+    }
+}
+
+@Composable
+fun InputButtonRow(numbers: List<Int>, onEventHandler: (ActiveGameEvent) -> Unit) {
+    Row{
+        numbers.forEach{
+            SudokuInputButton(
+                onEventHandler,
+                it
             )
-        }else {
-            Text(
-                text = text,
-                style = readOnlySudokuSquare(
-                    tileOffset
-                ),
+        }
+    }
+
+    // Add space in the layout
+    Spacer(androidx.compose.ui.Modifier.size(2.dp))
+}
+
+@Composable
+fun SudokuInputButton(onEventHandler: (ActiveGameEvent) -> Unit, number: Int) {
+    TextButton(
+        onClick = { onEventHandler.invoke(ActiveGameEvent.OnInput(number)) },
+        modifier = androidx.compose.ui.Modifier
+            .requiredSize(56.dp)
+            .padding(2.dp),
+        border = BorderStroke(
+            ButtonDefaults.OutlinedBorderSize,
+            MaterialTheme.colors.onPrimary
+        )
+
+    ) {
+        Text(
+            text = number.toString(),
+            style = inputButton.copy(color = MaterialTheme.colors.onPrimary),
+            modifier = androidx.compose.ui.Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun TimerText(viewModel: ActiveGameViewModel) {
+    var timerState by remember {
+        mutableStateOf("")
+
+    }
+
+    viewModel.timerState ={
+        timerState = it.toTime()
+
+    }
+
+
+    Text(
+        modifier = androidx.compose.ui.Modifier.requiredHeight(36.dp),
+        text = timerState,
+        style = activeGameSubtitle.copy(
+            color = MaterialTheme.colors.secondary
+        )
+    )
+}
+
+@Composable
+fun BoardGrid(boundary: Int, tileOffset: Float) {
+    (1 until boundary).forEach {
+        val width = if (it % boundary.sqrt == 0) 3.dp
+        else 1.dp
+
+        Divider(
+            color = MaterialTheme.colors.primaryVariant,
+            modifier = androidx.compose.ui.Modifier
+                .absoluteOffset((tileOffset * it).dp, 0.dp)
+                .fillMaxHeight()
+                .width(width)
+        )
+
+        (1 until boundary).forEach {
+            val height = if (it % boundary.sqrt == 0) 3.dp
+            else 1.dp
+
+            Divider(
+                color = MaterialTheme.colors.primaryVariant,
                 modifier = androidx.compose.ui.Modifier
-                    .absoluteOffset(
-
-                        (tileOffset * (tile.x - 1)).dp,
-                        (tileOffset * (tile.y - 1)).dp,
-
-                    )
-
+                    .absoluteOffset((tileOffset * it).dp, 0.dp)
+                    .fillMaxWidth()
+                    .height(width)
             )
 
         }
-
     }
 }
+
+@@Composable
+fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
+    /*
+    The composable for the case when the user effectively completes a game
+
+     */
+    Column (
+        androidx.compose.ui.Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primary),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Box(
+            modifier = androidx.compose.ui.Modifier.wrapContentSize(),
+            contentAlignment = Alignment.Center
+        ){
+            Image(
+                contentDescription = stringResource(R.string.game_complete),
+                imageVector = Icons.Filled.EmojiEvents,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
+                modifier = androidx.compose.ui.Modifier.size(128.dp)
+            )
+
+            if (isNewRecordState) Image(
+                contentDescription = null,
+                imageVector = Icons.Filled.Star,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
+                modifier = androidx.compose.ui.Modifier.size(128.dp)
+
+            )
+        }
+
+        Text(
+            text = stringResource(R.string.total_time),
+            style = newGameSubtitle.copy(
+                color = MaterialTheme.colors.secondary
+            )
+
+        )
+
+        Text(
+            text = timerState.toTime(),
+            style = newGameSubtitle.copy(
+                color = MaterialTheme.colors.secondary
+            )
+        )
+
+    }
+
+}
+
+
+
