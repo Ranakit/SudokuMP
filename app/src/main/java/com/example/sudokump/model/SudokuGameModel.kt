@@ -1,8 +1,11 @@
 package com.example.sudokump.model
 
 import android.content.Context
+import com.example.sudokump.domain.Difficulty
+import com.example.sudokump.domain.getHash
 import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
+import com.example.sudokump.ui.theme.activeGame.SudokuTile
 import com.google.gson.Gson
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -52,6 +55,41 @@ class SudokuGameModel {
 
         completionPercent = evaluateCompletionPercent(schema)
     }
+
+    constructor(elapsedTime: Long,
+                id:Int,
+                board: Map<Int , SudokuTile>,
+                difficulty: Difficulties){
+        this.id = id
+        this.timePassed = elapsedTime.seconds
+        this.difficulty= difficulty
+        val list = mutableListOf<List<Int>>()
+        for (i in (0..9)) {
+
+            val list1 = mutableListOf<Int>()
+            for (j in(0..9)){
+
+                val value = if ( board[getHash(i,j)] != null) board[getHash(i,j)]?.value else 0
+                if (value != null) {
+                    list1.add(value)
+                }
+
+
+
+            }
+
+            list.add(list1)
+
+
+        }
+        this.schema = list
+        completionPercent = evaluateCompletionPercent(this.schema)
+        this.saveDate = LocalDate.now()
+
+
+    }
+
+
 
     private fun extractBoardFromJson(json: String) : List<List<Int>> =
         Gson().fromJson(json, SudokuGrid::class.java).board

@@ -1,5 +1,8 @@
 package com.example.sudokump.domain
 
+import android.content.Context
+import com.example.sudokump.model.Difficulties
+import com.example.sudokump.ui.theme.activeGame.SudokuTile
 import kotlinx.coroutines.Job
 
 
@@ -7,18 +10,23 @@ interface IGameRepository {
 
     suspend fun saveGame(
         elapsedTime: Long,
+        id:Int,
+        board: Map<Int , SudokuTile>,
+        difficulty: Difficulties,
         onSuccess: (Unit)-> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
+        context: Context
+
     )
 
 
-    suspend fun updateGame(
-//        game: SudokuPuzzle,
+    suspend fun updateGame(   // Potrebbe essere cancellata
+        //game: SudokuPuzzle,
         onSuccess: (Unit) -> Unit,
         onError: (Exception ) -> Unit
     )
 
-    suspend fun updateNode(
+    suspend fun updateNode(     // Potrebbe essere cancellata
         x: Int,
         y: Int,
         color: Int,
@@ -33,8 +41,11 @@ interface IGameRepository {
 
      */
     suspend fun getCurrentGame(
+
         onSuccess: (Any, Any) -> Job,
-        onError: (Exception )->Unit
+        onError: (Exception )->Unit,
+        context: Context
+
     )
 
 

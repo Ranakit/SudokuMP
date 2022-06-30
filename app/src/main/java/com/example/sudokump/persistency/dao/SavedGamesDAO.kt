@@ -22,5 +22,5 @@ interface SavedGamesDAO {
     fun getCompletedGames() : List<SavedGameDBEntity>
 
     @Query("SELECT * FROM saved_games WHERE id == :id")
-    fun getLastSavedGame(id: String) : SavedGameDBEntity
+    fun getLastSavedGame(id: Int) : SavedGameDBEntity
 }

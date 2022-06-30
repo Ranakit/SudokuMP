@@ -197,7 +197,7 @@ class ActiveGameLogic (
                 input ,
                 elapsedTime,
                 /*
-                Creating the lambda ecxpression for the success case
+                Creating the lambda expression for the success case
                  */
                 { isComplete ->
                     focusedTile?.let {
