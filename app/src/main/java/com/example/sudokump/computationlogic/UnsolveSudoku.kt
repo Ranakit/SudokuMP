@@ -14,7 +14,7 @@ import kotlin.random.Random
  * Givens are the nodes which are left colored
  * "remove" refers to the nodes which are made uncolored relative to the difficulty
  */
-internal fun SudokuPuzzle.unsolve(): SudokuPuzzle {
+/*internal fun SudokuPuzzle.unsolve(): SudokuPuzzle {
     var remove = ((boundary * boundary) - (boundary * boundary * difficulty.modifier)).toInt()
 
     //track allocations for easy backtracking. Used both to remove and add allocations back in
@@ -348,11 +348,4 @@ enum class SolvingStrategy {
     BASIC,
     ADVANCED,
     UNSOLVABLE
-}
-
-
-
-
-
-
-
+}*/

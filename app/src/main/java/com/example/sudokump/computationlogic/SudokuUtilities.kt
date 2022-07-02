@@ -3,11 +3,41 @@ package com.example.sudokump.computationlogic
 import com.example.sudokump.domain.SudokuNode
 import com.example.sudokump.domain.SudokuPuzzle
 import com.example.sudokump.domain.getHash
+import com.example.sudokump.ui.theme.activeGame.SudokuTile
 import java.util.*
 import kotlin.math.sqrt
 
 internal val Int.sqrt: Int
     get() = sqrt(this.toDouble()).toInt()
+
+internal fun tileToNode(sudokuTile: SudokuTile): SudokuNode {
+    return SudokuNode(sudokuTile.x, sudokuTile.y, sudokuTile.value)
+}
+
+fun mapToList (board: Map<Int, SudokuNode>) : List<List<Int>>{
+    val list = mutableListOf<List<Int>>()
+    for (i in (0..9)) {
+
+        val list1 = mutableListOf<Int>()
+        for (j in(0..9)){
+
+            val value = if ( board[getHash(i,j)] != null) board[getHash(i,j)]?.color else 0
+            if (value != null) {
+                list1.add(value)
+            }
+        }
+        list.add(list1)
+    }
+    return list
+}
+
+internal fun nodeMapToTileMap(tileMap: HashMap<Int, SudokuTile>): HashMap<Int, SudokuNode> {
+    val nodeMap = HashMap<Int, SudokuNode>()
+    tileMap.forEach{
+        nodeMap[it.key] = tileToNode(it.value)
+    }
+    return nodeMap
+}
 
 
 internal fun puzzleIsComplete(puzzle: SudokuPuzzle): Boolean {

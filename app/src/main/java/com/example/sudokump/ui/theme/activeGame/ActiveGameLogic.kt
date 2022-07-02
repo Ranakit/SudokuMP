@@ -2,9 +2,9 @@ package com.example.sudokump.ui.theme.activeGame
 
 import com.example.sudokump.common.BaseLogic
 import com.example.sudokump.common.DispatcherProvider
+import com.example.sudokump.computationlogic.nodeMapToTileMap
 import com.example.sudokump.domain.IGameRepository
 import com.example.sudokump.domain.IStatisticsRepository
-import com.example.sudokump.domain.SudokuPuzzle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,14 +15,11 @@ import kotlin.coroutines.CoroutineContext
 Presentation logic for this particular function
  */
 class ActiveGameLogic (
-
     private val container: ActiveGameContainer?,
     private val viewModel: ActiveGameViewModel,
     private val gameRepo: IGameRepository,
     private val statsRepo: IStatisticsRepository,
     private val dispatcher: DispatcherProvider
-
-
 ): BaseLogic<ActiveGameEvent>() , CoroutineScope {
     override val coroutineContext : CoroutineContext
         get() = dispatcher.provideUIContext() + jobTracker
@@ -46,7 +43,12 @@ class ActiveGameLogic (
     the lambda expression passed as an argument
 
      */
-    inline fun startCoroutineTimer(
+    private val Long.timeOffset: Long
+        get() {
+            return if (this <= 0) 0
+            else this - 1
+        }
+    private inline fun startCoroutineTimer(
         crossinline action : () -> Unit
 
     ) = launch {
@@ -56,6 +58,7 @@ class ActiveGameLogic (
         }
     }
 
+    private var timerTracker: Job? = null
 
     /*
      Instead of implementing a single function that describes a single event, below we
@@ -71,7 +74,7 @@ class ActiveGameLogic (
             ActiveGameEvent.OnNewGameClicked -> onNewGameClicked()
             ActiveGameEvent.OnStart -> onStart()
             ActiveGameEvent.OnStop -> onStop()
-            is ActiveGameEvent.OnTileFocused -> onTileFocused()
+            is ActiveGameEvent.OnTileFocused -> onTileFocused(event.x, event.y)
         }
 
     }
@@ -90,13 +93,11 @@ class ActiveGameLogic (
             launch {
                 gameRepo.saveGame(
                     viewModel.timerState.timeOffset,
-                    {deleteStuff()},
-                    {
-                        deleteStuff()
-                        container?.showErr()
-                    }
-                )
-            }
+                    nodeMapToTileMap(viewModel.boardState),
+                    viewModel.difficulty,
+                    {},
+                    {}
+                    )}
         }
         else
             deleteStuff()
@@ -104,78 +105,47 @@ class ActiveGameLogic (
 
 
     private fun onStart() = launch {
-        gameRepo.getCurrentGame(
-            { puzzle, isComplete ->
-                viewModel.initializeBoard(
-                    puzzle,
-                    isComplete
-                )
-                if (!isComplete) timerTracker = startCoroutineTimer {
-                    viewModel.updateTimerState()
-
-                }
-
-            }
-            {
-                container?.onNewGameClick()
-            }
-
+        gameRepo.getCurrentGame({
+            puzzle, isComplete ->
+        viewModel.initializeBoardState(
+            puzzle,
+            isComplete
         )
-    }
+        if (!isComplete) timerTracker = startCoroutineTimer {
+            viewModel.updateTimerState()
+        }
+    },
+    {})
+}
 
     private fun onNewGameClicked() = launch {
         viewModel.showLoadingState()
 
-
-        /*
-        We're asking to the view model if the user has completed the current game ,
-        and if not we have to store the current progresss.
-        This has to happen even if the users clicked  for accident on a new game button or they're trying
-        to ga back through the app.
-        So in this particular case the progresses has to be saved.
-        */
         if(!viewModel.isCompleteState){
             gameRepo.getCurrentGame(
-                { puzzle, _ ->
-                    updateWithTime(puzzle)
+                { _, _ ->
+                    updateWithTime()
                 }
-
             ) {
                 container?.showErr()
 
             }
         } else {
-            openNewGame()
-
+            //openNewGame()
         }
     }
 
-    private fun updateWithTime(puzzle: SudokuPuzzle)  = launch{
-
-        gameRepo.updateGame(
-            puzzle.copy(elapsedTime = viewModel.timerState.timeOffset),
-            // Success case
-            {
-                openNewGame()
-
-            },
-            //Errore case
-            {
-                container?.showErr()
-                openNewGame()
-            }
-
-        )
+    private fun updateWithTime() = launch {
 
     }
 
-    private fun openNewGame() {
+    /*private fun openNewGame() {
 
         deleteStuff()
         container?.openNewGame()
 
         TODO("Not yet implemented")
-    }
+    }*/
 
     private fun deleteStuff() {
         if (timerTracker?.isCancelled == false) timerTracker?.cancel()
@@ -206,7 +176,7 @@ class ActiveGameLogic (
                             it.y,
                             input,
                             false,
-
+                            false
                             )
                     }
 
@@ -248,4 +218,4 @@ class ActiveGameLogic (
         )
     }
 
-}}
+}

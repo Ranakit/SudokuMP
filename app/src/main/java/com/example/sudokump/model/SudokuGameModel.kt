@@ -1,11 +1,11 @@
 package com.example.sudokump.model
 
 import android.content.Context
-import com.example.sudokump.domain.Difficulty
+import com.example.sudokump.computationlogic.mapToList
+import com.example.sudokump.domain.SudokuNode
 import com.example.sudokump.domain.getHash
 import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
-import com.example.sudokump.ui.theme.activeGame.SudokuTile
 import com.google.gson.Gson
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -26,7 +26,7 @@ class SudokuGameModel {
     val id : Int
     val timePassed  : Duration
     val completionPercent : String
-    val schema : List<List<Int>>
+    val schema : HashMap<Int, SudokuNode>
     val difficulty : Difficulties
     val saveDate : LocalDate
 
@@ -38,7 +38,6 @@ class SudokuGameModel {
         //Will be assured to be saved correctly to DB
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         saveDate = LocalDate.parse(savedGameDBEntity.savedDate, formatter)
-
         var json = String(savedGameDBEntity.savedSchema)
         json = json.substring(0, json.length -1)
         schema = extractBoardFromJson(json)
@@ -50,68 +49,54 @@ class SudokuGameModel {
         timePassed = Duration.ZERO
         difficulty = gameDifficulty
         saveDate = LocalDate.now()
-
         schema = extractBoardFromJson(json)
-
         completionPercent = evaluateCompletionPercent(schema)
     }
 
-    constructor(elapsedTime: Long,
-                id:Int,
-                board: Map<Int , SudokuTile>,
-                difficulty: Difficulties){
+    constructor(
+        elapsedTime: Long,
+        id:Int,
+        board: HashMap<Int, SudokuNode>,
+        difficulty: Difficulties){
         this.id = id
         this.timePassed = elapsedTime.seconds
         this.difficulty= difficulty
-        val list = mutableListOf<List<Int>>()
-        for (i in (0..9)) {
-
-            val list1 = mutableListOf<Int>()
-            for (j in(0..9)){
-
-                val value = if ( board[getHash(i,j)] != null) board[getHash(i,j)]?.value else 0
-                if (value != null) {
-                    list1.add(value)
-                }
-
-
-
-            }
-
-            list.add(list1)
-
-
-        }
-        this.schema = list
+        this.schema = board
         completionPercent = evaluateCompletionPercent(this.schema)
         this.saveDate = LocalDate.now()
 
 
     }
 
-
-
-    private fun extractBoardFromJson(json: String) : List<List<Int>> =
-        Gson().fromJson(json, SudokuGrid::class.java).board
+    private fun extractBoardFromJson(json: String) : HashMap<Int, SudokuNode> {
+        val sudokuGrid = Gson().fromJson(json, SudokuGrid::class.java).board
+        val hashMap: HashMap<Int, SudokuNode> = HashMap()
+        for (i in (0..9)){
+            for (j in (0..9)){
+                hashMap[getHash(i,j)] = SudokuNode(i, j, sudokuGrid[i][j])
+            }
+        }
+        return hashMap
+    }
 
     private fun compressToDBEntity() : SavedGameDBEntity
     {
         val gson = Gson()
-        val dataArray = gson.toJson(SudokuGrid(this.schema)).toByteArray()
+        val dataArray = gson.toJson(SudokuGrid(mapToList(this.schema))).toByteArray()
         val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,
             dataArray, this.difficulty.toString(), dateString)
     }
 
-    private fun evaluateCompletionPercent(schema: List<List<Int>>) : String
+    private fun evaluateCompletionPercent(schema: HashMap<Int, SudokuNode>) : String
     {
         var counter = 0
         for(i in 0..8)
         {
             for(j in 0..8)
             {
-                if(schema[i][j] != 0)
+                if(schema[getHash(i,j)]?.color != 0)
                 {
                     counter++
                 }

@@ -1,15 +1,32 @@
 package com.example.sudokump.ui.theme.activeGame
 
-import com.example.sudokump.domain.Difficulty
+import androidx.lifecycle.ViewModel
+import com.example.sudokump.domain.SudokuNode
 import com.example.sudokump.domain.SudokuPuzzle
 import com.example.sudokump.domain.getHash
+import com.example.sudokump.model.Difficulties
+import com.example.sudokump.model.SudokuGameModel
 
-class ActiveGameViewModel {
+class ActiveGameViewModel(): ViewModel() {
+    internal var onStartBehavior: (() -> Unit)? = null
+    internal var onStopBehavior: (() -> Unit)? = null
     internal var subBoardState: ((HashMap<Int , SudokuTile>)-> Unit)? = null
     internal var subContentState: ((ActiveGameScreenState) -> Unit)? = null
     internal var subTimerState : ((Long)-> Unit)?= null //the time needed by the user for complete a given sudoku
 
+    fun onStart() {
+        if (onStartBehavior == null){}
+        else{
+            onStartBehavior!!.invoke()
+        }
+    }
 
+    fun onStop(){
+        if (onStopBehavior == null){}
+        else{
+            onStopBehavior!!.invoke()
+        }
+    }
 
     internal fun updateTimerState(){
         timerState++
@@ -17,10 +34,9 @@ class ActiveGameViewModel {
     }
     internal var subIsCompleteState: ((Boolean) -> Unit)? = null
     internal var timerState: Long = 0L
-    internal var difficulty = Difficulty.MEDIUM
+    internal var difficulty: Difficulties = Difficulties.MEDIUM
     internal var boundary = 9
     internal var boardState : HashMap<Int, SudokuTile> = HashMap()
-
     internal var isCompleteState : Boolean = false
     internal var isNewRecordedState: Boolean = false
 
@@ -55,6 +71,18 @@ class ActiveGameViewModel {
 
     }
 
+    fun initializeBoardState(puzzle: SudokuGameModel, isComplete: Boolean) {
+        puzzle.schema.forEach {
+            val node = it.value
+            boardState[it.key] = SudokuTile(
+                node.x,
+                node.y,
+                node.color,
+                false,
+                node.readOnly
+            )
+        }
+    }
 
     internal fun updateBoardState(
         x: Int ,
@@ -88,8 +116,8 @@ class ActiveGameViewModel {
         subContentState?.invoke(ActiveGameScreenState.COMPLETE)
     }
 
-
 }
+
 
 
 class SudokuTile(
@@ -97,5 +125,4 @@ class SudokuTile(
     val y : Int,
     var value : Int,
     var hasFocus : Boolean,   /*user has clicked on a tile , after he can change the number */
-    val readOnly : Boolean    /*Can be a precompiled tile , in which the user can't change the number*/
-)
+    val readOnly : Boolean    /*Can be a precompiled tile , in which the user can't change the number*/)

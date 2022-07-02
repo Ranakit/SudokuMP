@@ -26,7 +26,6 @@ class MainActivity : ComponentActivity(),ActiveGameContainer {
 
     @Inject
     lateinit var sudokuMP : SudokuMP
-    private lateinit var logic : ActiveGameLogic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +39,6 @@ class MainActivity : ComponentActivity(),ActiveGameContainer {
                 NavigationComponent(sharedPreferences, sudokuMP, navController, this)
             }
         }
-        logic = buildActiveGameLogic(this , viewModel, applicationContext)
-    }
-
-    private val sharedPreferences: SharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE)
-    @Provides
-
-    fun provideSharedPreferences(): SharedPreferences{
-        return this.sharedPreferences
     }
 
     override fun showErr() {

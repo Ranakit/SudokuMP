@@ -26,7 +26,9 @@ import com.example.sudokump.model.SudokuBoard
 import com.example.sudokump.ui.theme.*
 import com.example.sudokump.ui.theme.activeGame.buildlogic.buildActiveGameLogic
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sudokump.computationlogic.sqrt
+import com.example.sudokump.model.Difficulties
 import com.example.sudokump.screens.LoadingScreen
 import java.util.HashMap
 
@@ -40,8 +42,18 @@ enum class ActiveGameScreenState {
 @Composable
 fun ActiveGameScreen(
     container: ActiveGameContainer,
-    viewModel: ActiveGameViewModel
+    difficultyString: String?
 ) {
+    val viewModel = ActiveGameViewModel()
+    try
+    {
+        val difficulty = if( difficultyString != null) Difficulties.valueOf(difficultyString) else throw IllegalArgumentException()
+        viewModel.difficulty = difficulty
+    }
+    catch (e :IllegalArgumentException ){
+        println(e)
+    }
+
     val logic =
         buildActiveGameLogic(container, viewModel, (container as MainActivity).applicationContext)
     val contentTransitionState = remember {
@@ -54,6 +66,18 @@ fun ActiveGameScreen(
         contentTransitionState.targetState = it
     }
 
+    viewModel.onStartBehavior = {
+        logic.onEvent(ActiveGameEvent.OnStart)
+    }
+
+    viewModel.onStopBehavior = {
+        logic.onEvent(ActiveGameEvent.OnStop)
+    }
+
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
+    }
 
     val transition = updateTransition(contentTransitionState)
 
@@ -496,6 +520,3 @@ fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
     }
 
 }
-
-
-

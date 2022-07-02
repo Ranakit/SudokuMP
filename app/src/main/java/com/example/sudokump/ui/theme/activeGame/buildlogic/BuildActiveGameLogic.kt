@@ -1,7 +1,9 @@
 package com.example.sudokump.ui.theme.activeGame.buildlogic
 
 import android.content.Context
+import com.example.sudokump.common.ProductionDispatcherProvider
 import com.example.sudokump.domain.IStatisticsRepository
+import com.example.sudokump.domain.LocalStatisticsStorageImpl
 import com.example.sudokump.persistency.GameRepoImplementation
 import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
 import com.example.sudokump.ui.theme.activeGame.ActiveGameLogic
@@ -15,7 +17,8 @@ internal fun buildActiveGameLogic(
     return ActiveGameLogic(
         container,
         viewModel,
-        GameRepoImplementation(),
-
+        GameRepoImplementation(context),
+        LocalStatisticsStorageImpl(),
+        ProductionDispatcherProvider
     )
 }

@@ -4,18 +4,19 @@ import com.example.sudokump.domain.getHash
 import com.example.sudokump.domain.Difficulty
 import com.example.sudokump.domain.SudokuNode
 import com.example.sudokump.domain.SudokuPuzzle
+import com.example.sudokump.model.Difficulties
 import java.util.*
 import kotlin.random.Random
 
 
 internal fun buildNewSudoku(
     boundary: Int,
-    difficulty: Difficulty
+    difficulty: Difficulties
 ): SudokuPuzzle = buildNodes(boundary, difficulty)
         .buildEdges()
         .seedColors()
         .solve()
-        .unsolve()
+        //.unsolve()
 
 /**
  * 1. Generate a Map which contains n*n nodes.
@@ -35,7 +36,7 @@ internal fun buildNewSudoku(
  *
  *
  *  */
-internal fun buildNodes(n: Int, difficulty: Difficulty): SudokuPuzzle {
+internal fun buildNodes(n: Int, difficulty: Difficulties): SudokuPuzzle {
     val newMap = LinkedHashMap<Int, LinkedList<SudokuNode>>()
 
     (1..n).forEach { xIndex ->
