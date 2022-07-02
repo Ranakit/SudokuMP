@@ -23,4 +23,8 @@ interface SavedGamesDAO {
 
     @Query("SELECT * FROM saved_games WHERE id == :id")
     fun getLastSavedGame(id: Int) : SavedGameDBEntity
+
+    @Query("SELECT MAX(id) FROM saved_games")
+    fun getNewGameId() : Int
+
 }

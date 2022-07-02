@@ -13,6 +13,6 @@ interface ISettingStorage {
 sealed class SettingsStorageResult{
 
     data class OnSuccess(val settings: Settings) : SettingsStorageResult()
-    data class OnErrore(val exception : Exception): SettingsStorageResult()
+    data class OnError(val exception : Exception): SettingsStorageResult()
 
 }

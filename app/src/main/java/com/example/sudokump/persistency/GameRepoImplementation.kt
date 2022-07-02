@@ -6,6 +6,9 @@ import com.example.sudokump.domain.IGameRepository
 import com.example.sudokump.domain.Settings
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
+import com.example.sudokump.modules.EasySudokuGame
+import com.example.sudokump.modules.HardSudokuGame
+import com.example.sudokump.modules.MediumSudokuGame
 import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.ui.theme.activeGame.SudokuTile
 import dagger.hilt.EntryPoint
@@ -21,6 +24,16 @@ class GameRepoImplementation(private val context: Context): IGameRepository {
 
 
     override suspend fun createGame(difficulty: Difficulties, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+            val sudokugame=
+                when (difficulty)
+                {
+                    Difficulties.EASY -> EntryPointAccessors.fromApplication(context, GameRepoEntry::class.java).getNewEasyGame()
+                    Difficulties.MEDIUM -> EntryPointAccessors.fromApplication(context, GameRepoEntry::class.java).getNewMediumGame()
+                    Difficulties.HARD -> EntryPointAccessors.fromApplication(context, GameRepoEntry::class.java).getNewHardGame()
+                }
+
+            sudokugame.saveInDB(context)
+            onSuccess.invoke()
 
     }
 
@@ -93,6 +106,13 @@ class GameRepoImplementation(private val context: Context): IGameRepository {
     interface GameRepoEntry{
         fun getSharedPreferences(): SharedPreferences
         fun getGamesDao(): SavedGamesDAO
+        @EasySudokuGame
+        fun getNewEasyGame() : SudokuGameModel
+        @MediumSudokuGame
+        fun getNewMediumGame(): SudokuGameModel
+        @HardSudokuGame
+        fun getNewHardGame(): SudokuGameModel
+
 
     }
 }

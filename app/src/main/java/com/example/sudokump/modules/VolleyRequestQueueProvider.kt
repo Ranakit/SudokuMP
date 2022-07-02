@@ -12,6 +12,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
+
+
+
+/*Utilizzata per generare una coda di richieste HTTP*/
 object VolleyRequestQueueProvider {
 
     @Provides
