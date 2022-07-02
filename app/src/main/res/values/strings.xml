@@ -10,5 +10,9 @@
     <string name="hard">Hard</string>
     <string name="delete_game">Delete</string>
     <string name="continue_game">Continue</string>
-    <string name="generic_error" />
+    <string name="generic_error">Error</string>
+    <string name="logo_description">App Logo.</string>
+    <string name="loading">Sudoku</string>
+    <string name="game_complete">Game Complete!</string>
+    <string name="total_time">"Total Time: "</string>
 </resources>

@@ -2,9 +2,6 @@ package com.example.sudokump.persistency
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.activity.ComponentActivity
-import com.example.sudokump.domain.Difficulty
-import com.example.sudokump.domain.GameStorageResult
 import com.example.sudokump.domain.IGameRepository
 import com.example.sudokump.domain.Settings
 import com.example.sudokump.model.Difficulties
@@ -18,7 +15,15 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Job
 
 
-class GameRepoImplementation: IGameRepository {
+class GameRepoImplementation(private val context: Context): IGameRepository {
+
+    private val sharedPreferences = EntryPointAccessors.fromApplication(context, GameRepoEntry::class.java).getSharedPreferences()
+
+
+    override suspend fun createGame(difficulty: Difficulties, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+
+    }
+
     override suspend fun saveGame(
             elapsedTime: Long,
             id:Int,
@@ -26,15 +31,9 @@ class GameRepoImplementation: IGameRepository {
             difficulty: Difficulties,
             onSuccess: (Unit)-> Unit,
             onError: (Exception) -> Unit,
-            context: Context
-
-
-
     ) {
 
         SudokuGameModel(elapsedTime , id , board , difficulty).saveInDB(context)
-
-        val sharedPreferences = EntryPointAccessors.fromApplication(context , GameRepoEntry::class.java).getSharedPreferences()
         val edit: SharedPreferences.Editor = sharedPreferences.edit()
         edit.putInt(
             "id" ,
@@ -45,8 +44,6 @@ class GameRepoImplementation: IGameRepository {
         onSuccess.invoke(
             Unit
         )
-
-
 
     }
 
@@ -63,16 +60,13 @@ class GameRepoImplementation: IGameRepository {
         onError: (Unit) -> Unit
     ) {
 
+
     }
 
     override suspend fun getCurrentGame(
         onSuccess: (Any, Any) -> Job,
         onError: (Exception) -> Unit,
-        context: Context,
-
-
     ) {
-        val sharedPreferences = EntryPointAccessors.fromApplication(context , GameRepoEntry::class.java).getSharedPreferences()
         val id = sharedPreferences.getInt("id" , -1)
 
         if (id == 0 )
@@ -83,10 +77,6 @@ class GameRepoImplementation: IGameRepository {
             onSuccess.invoke(DAO.getLastSavedGame(id) , false)
 
         }
-
-
-
-
 
     }
 

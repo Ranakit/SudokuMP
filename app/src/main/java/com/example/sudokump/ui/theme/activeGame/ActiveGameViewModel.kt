@@ -4,46 +4,44 @@ import com.example.sudokump.domain.Difficulty
 import com.example.sudokump.domain.SudokuPuzzle
 import com.example.sudokump.domain.getHash
 
-
 class ActiveGameViewModel {
     internal var subBoardState: ((HashMap<Int , SudokuTile>)-> Unit)? = null
     internal var subContentState: ((ActiveGameScreenState) -> Unit)? = null
-    internal var subTimerSate : ((Long)-> Unit)?= null //the time needed by the user for complete a given sudoku
+    internal var subTimerState : ((Long)-> Unit)?= null //the time needed by the user for complete a given sudoku
 
 
 
     internal fun updateTimerState(){
         timerState++
-        subTimerSate?.invoke(1L)
+        subTimerState?.invoke(1L)
     }
     internal var subIsCompleteState: ((Boolean) -> Unit)? = null
     internal var timerState: Long = 0L
     internal var difficulty = Difficulty.MEDIUM
     internal var boundary = 9
-    internal var boardState : HashMap<Int, SudokuTile>
-       = HashMap()
+    internal var boardState : HashMap<Int, SudokuTile> = HashMap()
+
     internal var isCompleteState : Boolean = false
     internal var isNewRecordedState: Boolean = false
 
-    fun initializeBoard(
-        puzzle: SudokuPuzzle,
-        isComplete : Boolean
-graph
-    ) {
+    fun initializeBoard(puzzle: SudokuPuzzle, isComplete : Boolean) {
         puzzle.graph.forEach {
             val node = it.value[0]
             boardState[it.key] = SudokuTile(
-                node.x, node.y, node.color, hasFocus = false, node.readOnly,
+                node.x,
+                node.y,
+                node.color,
+                false,
+                node.readOnly
             )
-
         }
-        val contentState: ActivegameScreen
+        val contentState: ActiveGameScreenState
 
         if (isComplete){
             isCompleteState = true
-            contentState = ActiveGameContestState.COMPLETE
+            contentState = ActiveGameScreenState.COMPLETE
         } else{
-            contentState = ActiveGameContestState.ACTIVE
+            contentState = ActiveGameScreenState.ACTIVE
 
         }
         boundary = puzzle.boundary

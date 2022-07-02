@@ -14,11 +14,16 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
+import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
+import com.example.sudokump.ui.theme.activeGame.ActiveGameEvent
+import com.example.sudokump.ui.theme.activeGame.ActiveGameScreen
+import com.example.sudokump.ui.theme.activeGame.ActiveGameViewModel
 
 @Composable
 fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
@@ -91,7 +96,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     )
                 }
                 if (isNewGameClicked) {
-                    Buttons()
+                    Buttons(navController)
                 }
                 if (isSystemInDarkTheme){
                 Button(
@@ -147,9 +152,10 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
 
 
 @Composable
-fun Buttons() {
+fun Buttons(navigator : NavController) {
     Button(
-        onClick = {//TODO
+        onClick = {
+            navigator.navigate("game")
         },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.onError, Black),
@@ -164,7 +170,8 @@ fun Buttons() {
         )
     }
     Button(
-        onClick = {//TODO
+        onClick = {
+            navigator.navigate("game")
              },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.error, Black),
@@ -180,7 +187,7 @@ fun Buttons() {
     }
     Button(
         onClick = {
-            //TODO
+            navigator.navigate("game")
         },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.secondaryVariant, Black),
@@ -198,7 +205,7 @@ fun Buttons() {
 
 
 @Composable
-fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
+fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController, container: ActiveGameContainer) {
     NavHost(navController = navController, startDestination = "init") {
         composable("init") { InitialScreen(sharedPreferences ,sudokuMP, navController)}
         composable("SavedGames"){SavedGamesScreen(
@@ -209,5 +216,6 @@ fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP
             viewModel = hiltViewModel()
             )
         }
+        composable("Game"){ActiveGameScreen(container, ActiveGameViewModel())}
     }
 }

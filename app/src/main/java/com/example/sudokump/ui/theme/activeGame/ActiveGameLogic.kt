@@ -207,7 +207,7 @@ class ActiveGameLogic (
                             input,
                             false,
 
-                        )
+                            )
                     }
 
                     if (isComplete){
@@ -233,9 +233,9 @@ class ActiveGameLogic (
             viewModel.boundary,
             // Success case
             {
-                isRecord ->
-                    viewModel.isNewRecordedState = isRecord
-                    viewModel.updateCompleteState()
+                    isRecord ->
+                viewModel.isNewRecordedState = isRecord
+                viewModel.updateCompleteState()
             },
 
             // Error case
@@ -248,4 +248,4 @@ class ActiveGameLogic (
         )
     }
 
-}
+}}

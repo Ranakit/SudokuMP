@@ -6,7 +6,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import com.example.sudokump.R
 import com.example.sudokump.ui.theme.SudokuMPTheme
-import com.fabrizio.sudoku.common.makeToast
+import com.example.sudokump.common.makeToast
+import com.example.sudokump.ui.theme.activeGame.buildlogic.buildActiveGameLogic
 
 class ActiveGameActivity : AppCompatActivity() , ActiveGameContainer {
 
@@ -15,7 +16,6 @@ class ActiveGameActivity : AppCompatActivity() , ActiveGameContainer {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val viewModel = ActiveGameViewModel()
 
         /*
@@ -24,15 +24,15 @@ class ActiveGameActivity : AppCompatActivity() , ActiveGameContainer {
 
         setContent{
 
-            SudokuMPTheme() {
+            SudokuMPTheme(true) {
                 ActiveGameScreen(
                     /*
                     We have to pass the function that's the handler of the event that will occur
                     in the composable of the our logic model
-
                      */
+
                     onEventHandler = logic:: onEvent,
-                    viewModel
+                    viewModel = viewModel
 
                 )
             }
@@ -49,7 +49,6 @@ class ActiveGameActivity : AppCompatActivity() , ActiveGameContainer {
     override fun onStop(){
         super.onStop()
         logic.onEvent(ActiveGameEvent.OnStop)
-
     }
 
 

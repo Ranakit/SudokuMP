@@ -1,7 +1,5 @@
 package com.example.sudokump.ui.theme.activeGame
 
-import android.provider.BlockedNumberContract
-import android.widget.Space
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
@@ -16,17 +14,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.sudokump.MainActivity
 import com.example.sudokump.R
 import com.example.sudokump.common.toTime
 import com.example.sudokump.model.SudokuBoard
 import com.example.sudokump.ui.theme.*
-import java.lang.reflect.Modifier
+import com.example.sudokump.ui.theme.activeGame.buildlogic.buildActiveGameLogic
+import androidx.compose.ui.Modifier
+import com.example.sudokump.computationlogic.sqrt
+import com.example.sudokump.screens.LoadingScreen
 import java.util.HashMap
 
 enum class ActiveGameScreenState {
@@ -36,12 +37,13 @@ enum class ActiveGameScreenState {
 
 }
 
-
 @Composable
 fun ActiveGameScreen(
-    onEventHandler: (ActiveGameEvent) -> Unit,
+    container: ActiveGameContainer,
     viewModel: ActiveGameViewModel
 ) {
+    val logic =
+        buildActiveGameLogic(container, viewModel, (container as MainActivity).applicationContext)
     val contentTransitionState = remember {
         MutableTransitionState(
             ActiveGameScreenState.LOADING
@@ -58,71 +60,72 @@ fun ActiveGameScreen(
     val loadingAlpha by transition.animateFloat(
         transitionSpec = { tween(durationMillis = 300) }
 
-    ){
+    ) {
         if (it == ActiveGameScreenState.LOADING) 1f else 0f
     }
 
     val activeAlpha by transition.animateFloat(
         transitionSpec = { tween(durationMillis = 300) }
 
-    ){
+    ) {
         if (it == ActiveGameScreenState.ACTIVE) 1f else 0f
     }
 
     val completeAlpha by transition.animateFloat(
         transitionSpec = { tween(durationMillis = 300) }
 
-    ){
+    ) {
         if (it == ActiveGameScreenState.COMPLETE) 1f else 0f
     }
 
     Column(
-        androidx.compose.ui.Modifier
+        Modifier
             .background(MaterialTheme.colors.primary)
             .fillMaxHeight()
 
 
-        ){
-            AppToolbar(
-                modifier = androidx.compose.ui.Modifier.wrapContentHeight(),
-                title = stringResource(id = R.string.app_name))
-            {
-                NewGameIcon(onEventHandler = onEventHandler)
+    ) {
+        AppToolbar(
+            modifier = Modifier.wrapContentHeight(),
+            title = stringResource(id = R.string.app_name)
+        )
+        {
+            NewGameIcon(onEventHandler = logic::onEvent)
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(top = 4.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            when (contentTransitionState.currentState) {
+                ActiveGameScreenState.ACTIVE -> Box(
+                    Modifier.alpha(activeAlpha)
+                ) {
+                    GameContent(
+                        logic::onEvent,
+                        viewModel
+                    )
+                }
+                ActiveGameScreenState.LOADING -> Box(
+                    Modifier.alpha(loadingAlpha)
+                ) {
+                    LoadingScreen()
+
+                }
+                ActiveGameScreenState.COMPLETE -> Box(
+                    Modifier.alpha(completeAlpha)
+                ) {
+                    GameCompleteContent(
+                        viewModel.timerState,
+                        viewModel.isNewRecordedState
+                    )
+                }
             }
-
-            Box(
-                modifier = androidx.compose.ui.Modifier
-                    .fillMaxHeight()
-                    .padding(top = 4.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                when (contentTransitionState.currentState) {
-                    ActiveGameScreenState.ACTIVE ->Box(
-                        androidx.compose.ui.Modifier.alpha(activeAlpha)
-                    ) {
-                        GameContent(
-                            onEventHandler,
-                            viewModel
-                        )
-                }
-                    ActiveGameScreenState.LOADING -> Box (
-                        androidx.compose.ui.Modifier.alpha(loadingAlpha)
-                    ){
-                        LoadingScreen()
-
-                    }
-                    ActiveGameScreenState.COMPLETE -> Box(
-                        androidx.compose.ui.Modifier.alpha(completeAlpha)
-                    ) {
-                        GameCompleteContent(
-                            viewModel.timerState,
-                            viewModel.isNewRecordedState
-                        )
-                    }
-                    else -> {}
-                }
         }
     }
+}
 
 @Composable
 fun NewGameIcon(onEventHandler: (ActiveGameEvent) -> Unit) {
@@ -132,17 +135,10 @@ fun NewGameIcon(onEventHandler: (ActiveGameEvent) -> Unit) {
             textColorDark,
         contentDescription = null,
         modifier = Modifier
-            .clickable() {
-                onEventHandler.invoke(ActiveGameEvent.OnNewGameClicked)
-            }
+            .clickable(onClick = { onEventHandler.invoke(ActiveGameEvent.OnNewGameClicked) })
             .padding(horizontal = 20.dp , vertical = 20.dp)
             .height(40.dp)
     )
-
-}
-
-
-
 
 }
 
@@ -172,9 +168,6 @@ fun GameContent(
 
 
         ConstraintLayout {
-            /*
-            In order to contraint the compasable to each other we need to reference each other
-             */
 
             val (board , timer , diff , inputs) = createRefs()
 
@@ -183,7 +176,7 @@ fun GameContent(
 
              */
             Box(
-                androidx.compose.ui.Modifier
+                Modifier
                     .constrainAs(board) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
@@ -207,7 +200,7 @@ fun GameContent(
             }
             
             Row(
-                androidx.compose.ui.Modifier
+                Modifier
                     .wrapContentSize()
                     .constrainAs(diff) {
                         top.linkTo(board.bottom)
@@ -219,7 +212,7 @@ fun GameContent(
                         contentDescription = stringResource(R.string.difficulty),
                         imageVector = Icons.Filled.Star,
                         tint = MaterialTheme.colors.secondary,
-                        modifier  = androidx.compose.ui.Modifier
+                        modifier  = Modifier
                             .size(32.dp)
                             .padding(top = 4.dp)
 
@@ -227,7 +220,7 @@ fun GameContent(
                 }
         }
         Box(
-            androidx.compose.ui.Modifier
+            Modifier
                 .wrapContentSize()
                 .constrainAs(timer) {
                     top.linkTo(board.bottom)
@@ -246,7 +239,7 @@ fun GameContent(
             */
 
         Column(
-            modifier = androidx.compose.ui.Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .constrainAs(inputs) {
@@ -276,7 +269,7 @@ fun GameContent(
 @Composable
 fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
                 viewModel: ActiveGameViewModel,
-                dp: Dp)
+                size: Dp)
 {
     val boundary = viewModel.boundary
 
@@ -304,69 +297,68 @@ fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
 
 
 }
+}
 
 @Composable
 fun SudokuTextFields(
     onEventHandler: (ActiveGameEvent) -> Unit,
-    tileOffset: Any,
+    tileOffset: Float,
     boardState: HashMap<Int, SudokuTile>
 ) {
 
-        /*
-        Here we are going to implement the real grid , where some icons are mutable
-         */
-        boardState.values.forEach { _ ->
-            var text = tile.value.toString()
+    /*
+    Here we are going to implement the real grid , where some icons are mutable
+     */
+    boardState.values.forEach { tile ->
+        var text = tile.value.toString()
 
-            if (!tile.readOnly) {
-                if (text == "0") text = ""
-                Text(
-                    text = text,
-                    style = mutableSudokuSquare(tileOffset).copy(
-                        color = if (MaterialTheme.colors.isLight) userInputtedNumberLight
-                        else userInputtedDark
-                    ),
-                    modifier = androidx.compose.ui.Modifier
-                        .absoluteOffset(
-                            (tileOffset * (tile.x - 1)).dp,
-                            (tileOffset * (tile.y - 1)).dp,
+        if (!tile.readOnly) {
+            if (text == "0") text = ""
+            Text(
+                text = text,
+                style = mutableSudokuSquare(tileOffset).copy(
+                    color = if (MaterialTheme.colors.isLight) userInputtedNumberLight
+                    else userInputtedDark
+                ),
+                modifier = Modifier
+                    .absoluteOffset(
+                        (tileOffset * (tile.x - 1)).dp,
+                        (tileOffset * (tile.y - 1)).dp,
 
 
-                            )
-                        .size(tileOffset.dp)
-                        .background(
-                            if (tile.hasFocus) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
-                            else MaterialTheme.colors.surface
                         )
-                        .clickable {
-                            onEventHandler.invoke(
-                                ActiveGameEvent.OnTileFocused(tile.x, tile.y)
-                            )
-                        }
+                    .size(tileOffset.dp)
+                    .background(
+                        if (tile.hasFocus) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
+                        else MaterialTheme.colors.surface
+                    )
+                    .clickable {
+                        onEventHandler.invoke(
+                            ActiveGameEvent.OnTileFocused(tile.x, tile.y)
+                        )
+                    }
 
-                )
-            } else {
-                Text(
-                    text = text,
-                    style = readOnlySudokuSquare(
-                        tileOffset
-                    ),
-                    modifier = androidx.compose.ui.Modifier
-                        .absoluteOffset(
+            )
+        } else {
+            Text(
+                text = text,
+                style = readOnlySudokuSquare(
+                    tileOffset
+                ),
+                modifier = Modifier
+                    .absoluteOffset(
 
-                            (tileOffset * (tile.x - 1)).dp,
-                            (tileOffset * (tile.y - 1)).dp,
+                        (tileOffset * (tile.x - 1)).dp,
+                        (tileOffset * (tile.y - 1)).dp,
 
-                            )
-
-
-                )
-
-            }
-
+                        )
+            )
         }
     }
 }
+
+
+
 
 @Composable
 fun InputButtonRow(numbers: List<Int>, onEventHandler: (ActiveGameEvent) -> Unit) {
@@ -380,14 +372,14 @@ fun InputButtonRow(numbers: List<Int>, onEventHandler: (ActiveGameEvent) -> Unit
     }
 
     // Add space in the layout
-    Spacer(androidx.compose.ui.Modifier.size(2.dp))
+    Spacer(Modifier.size(2.dp))
 }
 
 @Composable
 fun SudokuInputButton(onEventHandler: (ActiveGameEvent) -> Unit, number: Int) {
     TextButton(
         onClick = { onEventHandler.invoke(ActiveGameEvent.OnInput(number)) },
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .requiredSize(56.dp)
             .padding(2.dp),
         border = BorderStroke(
@@ -399,42 +391,20 @@ fun SudokuInputButton(onEventHandler: (ActiveGameEvent) -> Unit, number: Int) {
         Text(
             text = number.toString(),
             style = inputButton.copy(color = MaterialTheme.colors.onPrimary),
-            modifier = androidx.compose.ui.Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
     }
-}
-
-@Composable
-fun TimerText(viewModel: ActiveGameViewModel) {
-    var timerState by remember {
-        mutableStateOf("")
-
-    }
-
-    viewModel.timerState ={
-        timerState = it.toTime()
-
-    }
-
-
-    Text(
-        modifier = androidx.compose.ui.Modifier.requiredHeight(36.dp),
-        text = timerState,
-        style = activeGameSubtitle.copy(
-            color = MaterialTheme.colors.secondary
-        )
-    )
 }
 
 @Composable
 fun BoardGrid(boundary: Int, tileOffset: Float) {
-    (1 until boundary).forEach {
+    (1 until boundary).forEach { it ->
         val width = if (it % boundary.sqrt == 0) 3.dp
         else 1.dp
 
         Divider(
             color = MaterialTheme.colors.primaryVariant,
-            modifier = androidx.compose.ui.Modifier
+            modifier = Modifier
                 .absoluteOffset((tileOffset * it).dp, 0.dp)
                 .fillMaxHeight()
                 .width(width)
@@ -446,7 +416,7 @@ fun BoardGrid(boundary: Int, tileOffset: Float) {
 
             Divider(
                 color = MaterialTheme.colors.primaryVariant,
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .absoluteOffset((tileOffset * it).dp, 0.dp)
                     .fillMaxWidth()
                     .height(width)
@@ -456,35 +426,54 @@ fun BoardGrid(boundary: Int, tileOffset: Float) {
     }
 }
 
-@@Composable
+
+@Composable
+fun TimerText(viewModel: ActiveGameViewModel) {
+
+    var timerState by remember {
+        mutableStateOf("")
+    }
+
+    viewModel.subTimerState = {
+        timerState = it.toTime()
+    }
+
+    Text(
+        modifier = Modifier.requiredHeight(36.dp),
+        text = timerState,
+        style = activeGameSubtitle.copy(color = MaterialTheme.colors.secondary)
+    )
+}
+
+@Composable
 fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
     /*
     The composable for the case when the user effectively completes a game
 
      */
     Column (
-        androidx.compose.ui.Modifier
+        Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Box(
-            modifier = androidx.compose.ui.Modifier.wrapContentSize(),
+            modifier = Modifier.wrapContentSize(),
             contentAlignment = Alignment.Center
         ){
             Image(
                 contentDescription = stringResource(R.string.game_complete),
-                imageVector = Icons.Filled.EmojiEvents,
+                imageVector = Icons.Filled.Star,
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
-                modifier = androidx.compose.ui.Modifier.size(128.dp)
+                modifier = Modifier.size(128.dp)
             )
 
             if (isNewRecordState) Image(
                 contentDescription = null,
                 imageVector = Icons.Filled.Star,
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
-                modifier = androidx.compose.ui.Modifier.size(128.dp)
+                modifier = Modifier.size(128.dp)
 
             )
         }

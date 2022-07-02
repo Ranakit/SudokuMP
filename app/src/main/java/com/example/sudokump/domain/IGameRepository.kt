@@ -8,6 +8,12 @@ import kotlinx.coroutines.Job
 
 interface IGameRepository {
 
+    suspend fun createGame(
+        difficulty: Difficulties,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    )
+
     suspend fun saveGame(
         elapsedTime: Long,
         id:Int,
@@ -15,7 +21,6 @@ interface IGameRepository {
         difficulty: Difficulties,
         onSuccess: (Unit)-> Unit,
         onError: (Exception) -> Unit,
-        context: Context
 
     )
 
@@ -44,7 +49,6 @@ interface IGameRepository {
 
         onSuccess: (Any, Any) -> Job,
         onError: (Exception )->Unit,
-        context: Context
 
     )
 
