@@ -1,8 +1,7 @@
 package com.example.sudokump.computationlogic
 
-import com.example.sudokump.domain.getHash
-import com.example.sudokump.domain.Difficulty
-import com.example.sudokump.domain.SudokuNode
+import com.example.sudokump.model.getHash
+import com.example.sudokump.model.SudokuNode
 import com.example.sudokump.domain.SudokuPuzzle
 import com.example.sudokump.model.Difficulties
 import java.util.*
@@ -195,7 +194,7 @@ internal fun SudokuPuzzle.seedColors(): SudokuPuzzle {
 
                 hashList.firstOrNull { this.graph[it]?.first?.color == 0 }.let {
                     if (it != null) {
-                        this.graph[it]!!.first.color = newInt
+                        //this.graph[it]!!.first. = newInt
                         allocations++
                     }
                 }

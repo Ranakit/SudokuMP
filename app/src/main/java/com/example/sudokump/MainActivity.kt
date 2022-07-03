@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity(),ActiveGameContainer {
             sharedPreferences.getInt("id", -1)
             sudokuMP.isDark.value = isDarkInit
             SudokuMPTheme(darkTheme = sudokuMP.isDark.value) {
-                NavigationComponent(sharedPreferences, sudokuMP, navController, this)
+                NavigationComponent(sharedPreferences, sudokuMP, navController)
             }
         }
     }

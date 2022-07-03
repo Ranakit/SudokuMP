@@ -1,4 +1,4 @@
-package com.example.sudokump.domain
+package com.example.sudokump.model
 
 import java.io.Serializable
 
@@ -12,7 +12,7 @@ Our node is represented as follow:
 data class SudokuNode(
     val x : Int,
     val y : Int,
-    var color: Int = 0,
+    var value: Int = 0,
     var readOnly: Boolean = true      // Used as the clues numbers that are already on the board for easing the game
 
     // We have to override the hash function given by the data class

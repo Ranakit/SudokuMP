@@ -2,8 +2,6 @@ package com.example.sudokump.model
 
 import android.content.Context
 import com.example.sudokump.computationlogic.mapToList
-import com.example.sudokump.domain.SudokuNode
-import com.example.sudokump.domain.getHash
 import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
 import com.google.gson.Gson
@@ -26,7 +24,7 @@ class SudokuGameModel {
     val id : Int
     val timePassed  : Duration
     val completionPercent : String
-    val schema : HashMap<Int, SudokuNode>
+    val schema : SudokuSchema
     val difficulty : Difficulties
     val saveDate : LocalDate
 
@@ -40,7 +38,7 @@ class SudokuGameModel {
         saveDate = LocalDate.parse(savedGameDBEntity.savedDate, formatter)
         var json = String(savedGameDBEntity.savedSchema)
         json = json.substring(0, json.length -1)
-        schema = extractBoardFromJson(json)
+        schema = SudokuSchema(extractGridFromJson(json))
     }
 
     constructor(gameDifficulty: Difficulties, json: String)
@@ -49,8 +47,8 @@ class SudokuGameModel {
         timePassed = Duration.ZERO
         difficulty = gameDifficulty
         saveDate = LocalDate.now()
-        schema = extractBoardFromJson(json)
-        completionPercent = evaluateCompletionPercent(schema)
+        schema = SudokuSchema(extractGridFromJson(json))
+        completionPercent = schema.evaluateCompletionPercent()
     }
 
     constructor(
@@ -61,8 +59,8 @@ class SudokuGameModel {
         this.id = id
         this.timePassed = elapsedTime.seconds
         this.difficulty= difficulty
-        this.schema = board
-        completionPercent = evaluateCompletionPercent(this.schema)
+        this.schema = SudokuSchema(SudokuGrid(mutableListOf(mutableListOf())))
+        completionPercent = schema.evaluateCompletionPercent()
         this.saveDate = LocalDate.now()
 
 
@@ -79,10 +77,15 @@ class SudokuGameModel {
         return hashMap
     }
 
+    private fun extractGridFromJson(json : String) : SudokuGrid
+    {
+        return Gson().fromJson(json, SudokuGrid::class.java)
+    }
+
     private fun compressToDBEntity() : SavedGameDBEntity
     {
         val gson = Gson()
-        val dataArray = gson.toJson(SudokuGrid(mapToList(this.schema))).toByteArray()
+        val dataArray = gson.toJson(SudokuGrid(mapToList(this.schema.map))).toByteArray()
         val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,
@@ -96,7 +99,7 @@ class SudokuGameModel {
         {
             for(j in 0..8)
             {
-                if(schema[getHash(i,j)]?.color != 0)
+                if(schema[getHash(i,j)]?.value != 0)
                 {
                     counter++
                 }
@@ -141,6 +144,15 @@ class SudokuGameModel {
 
                 job.join()
             }
+        }
+    }
+
+    companion object {
+        fun getFromDB(appContext: Context, id : Int) : SudokuGameModel
+        {
+            val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
+            val dbEntity = dao.getLastSavedGame(id)
+            return SudokuGameModel(dbEntity)
         }
     }
 }

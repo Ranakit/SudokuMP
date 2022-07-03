@@ -1,5 +1,6 @@
 package com.example.sudokump.ui.theme.activeGame
 
+import android.app.Activity
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
@@ -22,15 +23,18 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.sudokump.MainActivity
 import com.example.sudokump.R
 import com.example.sudokump.common.toTime
-import com.example.sudokump.model.SudokuBoard
 import com.example.sudokump.ui.theme.*
 import com.example.sudokump.ui.theme.activeGame.buildlogic.buildActiveGameLogic
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
 import com.example.sudokump.computationlogic.sqrt
 import com.example.sudokump.model.Difficulties
+import com.example.sudokump.modules.ViewModelFactoryProvider
 import com.example.sudokump.screens.LoadingScreen
+import com.example.sudokump.viewmodel.ActiveGameViewModel
+import dagger.hilt.android.EntryPointAccessors
 import java.util.HashMap
+import javax.inject.Inject
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -40,29 +44,17 @@ enum class ActiveGameScreenState {
 }
 
 @Composable
-fun ActiveGameScreen(
-    container: ActiveGameContainer,
-    difficultyString: String?
-) {
-    val viewModel = ActiveGameViewModel()
-    try
-    {
-        val difficulty = if( difficultyString != null) Difficulties.valueOf(difficultyString) else throw IllegalArgumentException()
-        viewModel.difficulty = difficulty
-    }
-    catch (e :IllegalArgumentException ){
-        println(e)
-    }
+fun ActiveGameScreen(gameId : Int) {
+    val viewModel = EntryPointAccessors.fromActivity(LocalContext.current as Activity, ViewModelFactoryProvider::class.java).
+            getFactory().create(gameId)
 
-    val logic =
-        buildActiveGameLogic(container, viewModel, (container as MainActivity).applicationContext)
     val contentTransitionState = remember {
         MutableTransitionState(
             ActiveGameScreenState.LOADING
         )
     }
 
-    viewModel.subContentState = {
+    /*viewModel.subContentState = {
         contentTransitionState.targetState = it
     }
 
@@ -77,7 +69,7 @@ fun ActiveGameScreen(
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart()
         onDispose { viewModel.onStop() }
-    }
+    }*/
 
     val transition = updateTransition(contentTransitionState)
 
@@ -112,10 +104,7 @@ fun ActiveGameScreen(
         AppToolbar(
             modifier = Modifier.wrapContentHeight(),
             title = stringResource(id = R.string.app_name)
-        )
-        {
-            NewGameIcon(onEventHandler = logic::onEvent)
-        }
+        ){}
 
         Box(
             modifier = Modifier
@@ -128,7 +117,7 @@ fun ActiveGameScreen(
                     Modifier.alpha(activeAlpha)
                 ) {
                     GameContent(
-                        logic::onEvent,
+                        {},
                         viewModel
                     )
                 }
@@ -149,21 +138,6 @@ fun ActiveGameScreen(
             }
         }
     }
-}
-
-@Composable
-fun NewGameIcon(onEventHandler: (ActiveGameEvent) -> Unit) {
-    Icon(
-        imageVector = Icons.Filled.Add,
-        tint = if (MaterialTheme.colors.isLight) textColorLight else
-            textColorDark,
-        contentDescription = null,
-        modifier = Modifier
-            .clickable(onClick = { onEventHandler.invoke(ActiveGameEvent.OnNewGameClicked) })
-            .padding(horizontal = 20.dp , vertical = 20.dp)
-            .height(40.dp)
-    )
-
 }
 
 
@@ -219,7 +193,6 @@ fun GameContent(
                     onEventHandler,
                     viewModel ,
                     screenWidth - margin.dp
-
                 )
             }
             
@@ -271,31 +244,21 @@ fun GameContent(
                 },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (viewModel.boundary == 4){
-                InputButtonRow(
-                    (0..4).toList(),
-                    onEventHandler
-                )
-
-                InputButtonRow(
-                    (5..9).toList(),
-                    onEventHandler
-                )
+            InputButtonRow(
+                (0..9).toList(),
+                onEventHandler
+            )
             }
         }
-
-
     }
-    
 }
-
 
 @Composable
 fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
-                viewModel: ActiveGameViewModel,
-                size: Dp)
+                       viewModel: ActiveGameViewModel,
+                       size: Dp)
 {
-    val boundary = viewModel.boundary
+    val boundary = 9
 
     val tileOffset = size.value /  boundary
 
@@ -304,9 +267,9 @@ fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
 
     }
 
-    viewModel.subBoardState = {
+    /*viewModel.subBoardState = {
         boardState = it
-    }
+    }*/
 
     SudokuTextFields(
         onEventHandler,
@@ -320,7 +283,6 @@ fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
     )
 
 
-}
 }
 
 @Composable
@@ -458,9 +420,9 @@ fun TimerText(viewModel: ActiveGameViewModel) {
         mutableStateOf("")
     }
 
-    viewModel.subTimerState = {
+    /*viewModel.subTimerState = {
         timerState = it.toTime()
-    }
+    }*/
 
     Text(
         modifier = Modifier.requiredHeight(36.dp),

@@ -17,15 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.persistency.GameRepoImplementation
 import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
 import com.example.sudokump.ui.theme.activeGame.ActiveGameScreen
-import com.example.sudokump.ui.theme.activeGame.ActiveGameViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -159,7 +160,7 @@ fun Buttons(navigator : NavController, context: Context) {
     val gameRepo = GameRepoImplementation(context)
     Button(
         onClick = {
-            runBlocking {gameRepo.createGame(Difficulties.EASY, {navigator.navigate("game/EASY")}, {})}
+            runBlocking {gameRepo.createGame(Difficulties.EASY, {navigator.navigate("game/-2")}, {})}
         },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.onError, Black),
@@ -175,7 +176,7 @@ fun Buttons(navigator : NavController, context: Context) {
     }
     Button(
         onClick = {
-            runBlocking {gameRepo.createGame(Difficulties.MEDIUM, {navigator.navigate("game/MEDIUM")}, {})}
+            runBlocking {gameRepo.createGame(Difficulties.MEDIUM, {navigator.navigate("game/-1")}, {})}
              },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.error, Black),
@@ -191,7 +192,7 @@ fun Buttons(navigator : NavController, context: Context) {
     }
     Button(
         onClick = {
-            runBlocking {gameRepo.createGame(Difficulties.HARD, {navigator.navigate("game/HARD")}, {})}
+            runBlocking {gameRepo.createGame(Difficulties.HARD, {navigator.navigate("game/0")}, {})}
         },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.secondaryVariant, Black),
@@ -209,7 +210,7 @@ fun Buttons(navigator : NavController, context: Context) {
 
 
 @Composable
-fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController, container: ActiveGameContainer) {
+fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
     NavHost(navController = navController, startDestination = "init") {
         composable("init") { InitialScreen(sharedPreferences ,sudokuMP, navController)}
         composable("SavedGames"){SavedGamesScreen(
@@ -220,6 +221,16 @@ fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP
             viewModel = hiltViewModel()
             )
         }
-        composable("Game/{Difficulties}"){navBackStackEntry ->  ActiveGameScreen(container, navBackStackEntry.arguments?.getString("Difficulties"))}
+        composable("Game/{gameId}",
+            arguments = listOf(navArgument("gameId") {
+                type = NavType.IntType
+            })){ navBackStackEntry ->
+                val arguments = navBackStackEntry.arguments
+                if(arguments != null)
+                {
+                    val id = arguments.getInt("gameId", -2)
+                    ActiveGameScreen(id)}
+                }
+
     }
 }

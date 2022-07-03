@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.sudokump.domain.IGameRepository
 import com.example.sudokump.domain.Settings
-import com.example.sudokump.domain.SudokuNode
+import com.example.sudokump.model.SudokuNode
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.modules.EasySudokuGame

@@ -1,7 +1,7 @@
 package com.example.sudokump
 
-import com.example.sudokump.model.SudokuBoard
 import com.example.sudokump.model.SudokuGameModel
+import com.example.sudokump.model.SudokuGrid
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
@@ -30,7 +30,7 @@ class EntityToModelTest {
 
         val gson = Gson()
 
-        val board = gson.fromJson(savedSchema, SudokuBoard::class.java)
+        val board = gson.fromJson(savedSchema, SudokuGrid::class.java)
 
         assertEquals(board.board, model.schema)
     }

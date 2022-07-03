@@ -1,13 +1,12 @@
 package com.example.sudokump.ui.theme.activeGame
 
 import androidx.lifecycle.ViewModel
-import com.example.sudokump.domain.SudokuNode
 import com.example.sudokump.domain.SudokuPuzzle
 import com.example.sudokump.domain.getHash
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
 
-class ActiveGameViewModel(): ViewModel() {
+class ActiveGameViewModelOld(): ViewModel() {
     internal var onStartBehavior: (() -> Unit)? = null
     internal var onStopBehavior: (() -> Unit)? = null
     internal var subBoardState: ((HashMap<Int , SudokuTile>)-> Unit)? = null
@@ -77,7 +76,7 @@ class ActiveGameViewModel(): ViewModel() {
             boardState[it.key] = SudokuTile(
                 node.x,
                 node.y,
-                node.color,
+                node.value,
                 false,
                 node.readOnly
             )
