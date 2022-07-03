@@ -1,6 +1,5 @@
 package com.example.sudokump.screens
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -23,11 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
-import com.example.sudokump.model.Difficulties
-import com.example.sudokump.persistency.GameRepoImplementation
-import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
 import com.example.sudokump.ui.theme.activeGame.ActiveGameScreen
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
@@ -100,7 +95,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     )
                 }
                 if (isNewGameClicked) {
-                    Buttons(navController, sudokuMP.applicationContext)
+                    Buttons(navController)
                 }
                 if (true){
                 Button(
@@ -156,8 +151,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
 
 
 @Composable
-fun Buttons(navigator : NavController, context: Context) {
-    val gameRepo = GameRepoImplementation(context)
+fun Buttons(navigator : NavController) {
     Button(
         onClick = {
             navigator.navigate("game/-2")
