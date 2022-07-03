@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudokump.R
 import com.example.sudokump.common.mapToList
 import com.example.sudokump.model.SudokuGameModel
