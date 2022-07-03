@@ -13,21 +13,21 @@ class SudokuSchema(sudokuGrid: SudokuGrid) {
         matrices = arrayListOf()
         map = hashMapOf()
 
-        for(i in (0..9))
+        for(i in (0..8))
         {
-            for(j in (0..9))
+            for(j in (0..8))
             {
                 val sudokuNode = SudokuNode(i,j,sudokuGrid.board[i][j], false)
                 map[getHash(i,j)] = sudokuNode
             }
         }
 
-        for (i in (0..9))
+        for (i in (0..8))
         {
             val rowList = arrayListOf<SudokuNode>()
             val colList = arrayListOf<SudokuNode>()
 
-            for(j in 0..9)
+            for(j in 0..8)
             {
                 rowList.add(map.getOrDefault(getHash(i,j), SudokuNode(0,0,0,false)))
                 colList.add(map.getOrDefault(getHash(j,i), SudokuNode(0,0,0,false)))
@@ -37,17 +37,17 @@ class SudokuSchema(sudokuGrid: SudokuGrid) {
             columns.add(SudokuColumn(i, colList))
         }
 
-        for (i in (0..3))
+        for (i in (0..2))
         {
             val matrixList = arrayListOf<SudokuSquare>()
 
-            for(j in 0..3)
+            for(j in 0..2)
             {
                 val matrix = hashMapOf<Int, SudokuNode>()
 
-                for(l in 0..3) {
+                for(l in 0..2) {
 
-                    for(m in 0..3)
+                    for(m in 0..2)
                     {
                         matrix[getHash(l,m)] = map.getOrDefault(getHash(i+l, j+m), SudokuNode(0,0,0,false))
                     }

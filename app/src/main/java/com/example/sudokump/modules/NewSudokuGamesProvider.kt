@@ -10,6 +10,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -50,6 +53,22 @@ object NewSudokuGamesProvider {
 
         volleyRequestQueue.add(stringRequest)
 
-        return SudokuGameModel(difficulty, requestFuture.get())
+        var string = "{\"board\":[[0,0,4,8,7,0,0,0,0],[0,2,0,0,0,0,7,8,0],[0,0,0,0,0,9,0,4,0],[0,1,0,0,0,0,0,0,0],[0,4,0,1,0,0,0,2,0],[7,8,9,0,6,0,0,1,4],[0,3,0,6,8,0,0,7,0],[0,5,0,9,0,4,0,0,1],[8,0,0,7,1,3,4,0,5]]}"
+        try {
+            string = requestFuture.get(1, TimeUnit.SECONDS)
+        }catch (e: InterruptedException)
+        {
+            println(e.stackTrace)
+        }
+        catch (e: ExecutionException)
+        {
+            println(e.stackTrace)
+        }
+        catch (e: TimeoutException)
+        {
+            println(e.stackTrace)
+        }
+
+        return SudokuGameModel(difficulty, string)
     }
 }

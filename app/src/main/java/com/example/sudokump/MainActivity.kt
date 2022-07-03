@@ -16,8 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
-@Module
-@InstallIn(SingletonComponent::class)
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(),ActiveGameContainer {
 

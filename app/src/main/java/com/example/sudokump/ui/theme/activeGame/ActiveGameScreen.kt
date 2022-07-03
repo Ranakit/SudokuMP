@@ -56,7 +56,7 @@ fun ActiveGameScreen(gameId : Int) {
 
     val contentTransitionState = remember {
         MutableTransitionState(
-            ActiveGameScreenState.LOADING
+            ActiveGameScreenState.ACTIVE
         )
     }
 

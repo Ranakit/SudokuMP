@@ -57,9 +57,9 @@ class ActiveGameViewModel @AssistedInject constructor(
             else -> entryPoint.getNewEasyGame()
         }
 
-        for(i in 0..9)
+        for(i in 0..8)
         {
-            for(j in 0..9)
+            for(j in 0..8)
             {
                 val node = game.schema.map[getHash(i,j)]
                 boardState[getHash(i,j)] = SudokuTile(node!!.x, node.y, node.value, false, false)

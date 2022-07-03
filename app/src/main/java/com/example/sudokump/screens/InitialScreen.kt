@@ -102,7 +102,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                 if (isNewGameClicked) {
                     Buttons(navController, sudokuMP.applicationContext)
                 }
-                if (isSystemInDarkTheme){
+                if (true){
                 Button(
                     onClick = { /*TODO*/ },
                     shape = MaterialTheme.shapes.medium,
@@ -160,7 +160,7 @@ fun Buttons(navigator : NavController, context: Context) {
     val gameRepo = GameRepoImplementation(context)
     Button(
         onClick = {
-            runBlocking {gameRepo.createGame(Difficulties.EASY, {navigator.navigate("game/-2")}, {})}
+            navigator.navigate("game/-2")
         },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.onError, Black),
@@ -176,7 +176,7 @@ fun Buttons(navigator : NavController, context: Context) {
     }
     Button(
         onClick = {
-            runBlocking {gameRepo.createGame(Difficulties.MEDIUM, {navigator.navigate("game/-1")}, {})}
+            navigator.navigate("game/-1")
              },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.error, Black),
@@ -192,7 +192,7 @@ fun Buttons(navigator : NavController, context: Context) {
     }
     Button(
         onClick = {
-            runBlocking {gameRepo.createGame(Difficulties.HARD, {navigator.navigate("game/0")}, {})}
+            navigator.navigate("game/0")
         },
         shape = MaterialTheme.shapes.medium,
         colors = outlinedButtonColors(MaterialTheme.colors.secondaryVariant, Black),
