@@ -28,7 +28,7 @@ object AppModule {
 @InstallIn(SingletonComponent::class)
 object SharedPreferencesModule{
     @Provides
-    fun provideSharedPreferences(sudokuMP: SudokuMP): SharedPreferences{
-        return sudokuMP.getSharedPreferences("sharedPreferences", MODE_PRIVATE)
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences{
+        return context.getSharedPreferences("sharedPreferences", MODE_PRIVATE)
     }
 }

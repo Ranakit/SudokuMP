@@ -24,14 +24,15 @@ import com.example.sudokump.MainActivity
 import com.example.sudokump.R
 import com.example.sudokump.common.toTime
 import com.example.sudokump.ui.theme.*
-import com.example.sudokump.ui.theme.activeGame.buildlogic.buildActiveGameLogic
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.example.sudokump.computationlogic.sqrt
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.sudokump.common.sqrt
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.modules.ViewModelFactoryProvider
 import com.example.sudokump.screens.LoadingScreen
 import com.example.sudokump.viewmodel.ActiveGameViewModel
+import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
 import java.util.HashMap
 import javax.inject.Inject
@@ -45,8 +46,13 @@ enum class ActiveGameScreenState {
 
 @Composable
 fun ActiveGameScreen(gameId : Int) {
-    val viewModel = EntryPointAccessors.fromActivity(LocalContext.current as Activity, ViewModelFactoryProvider::class.java).
-            getFactory().create(gameId)
+
+    val factory = EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity,
+        ViewModelFactoryProvider::class.java
+    ).getFactory()
+
+    val viewModel : ActiveGameViewModel = viewModel(factory = ActiveGameViewModel.provideFactory(factory,gameId))
 
     val contentTransitionState = remember {
         MutableTransitionState(

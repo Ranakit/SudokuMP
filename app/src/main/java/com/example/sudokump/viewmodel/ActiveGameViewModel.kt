@@ -8,13 +8,12 @@ import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.model.getHash
 import com.example.sudokump.modules.ActiveGameViewModelAssistedFactory
 import com.example.sudokump.modules.SudokuGamesEntryPoint
-import com.example.sudokump.ui.theme.activeGame.SudokuTile
 import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 class ActiveGameViewModel @AssistedInject constructor(
     @Assisted id : Int, @ApplicationContext context: Context) : ViewModel() {
@@ -36,12 +35,14 @@ class ActiveGameViewModel @AssistedInject constructor(
         return game.difficulty
     }
 
-    class VMFactory(
-        private val assistedFactory: ActiveGameViewModelAssistedFactory,
-        private val difficulty : Int
-    ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return assistedFactory.create(difficulty) as T
+    companion object{
+        fun provideFactory(
+            assistedFactory: ActiveGameViewModelAssistedFactory,
+            gameId : Int
+        ) : ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(gameId) as T
+            }
         }
     }
 

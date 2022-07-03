@@ -1,7 +1,7 @@
 package com.example.sudokump.model
 
 import android.content.Context
-import com.example.sudokump.computationlogic.mapToList
+import com.example.sudokump.common.mapToList
 import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
 import com.google.gson.Gson

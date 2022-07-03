@@ -10,10 +10,7 @@ import com.example.sudokump.common.makeToast
 import com.example.sudokump.screens.NavigationComponent
 import com.example.sudokump.ui.theme.SudokuMPTheme
 import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
-import com.example.sudokump.ui.theme.activeGame.ActiveGameLogic
-import com.example.sudokump.ui.theme.activeGame.buildlogic.buildActiveGameLogic
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.components.SingletonComponent

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudokump.R
-import com.example.sudokump.computationlogic.mapToList
+import com.example.sudokump.common.mapToList
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.viewmodel.SavedGamesScreenViewModel
 
@@ -51,7 +51,7 @@ fun SavedGameCard(sudokuGameModel: SudokuGameModel, position: Int, mutableFlag: 
 
                 val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
 
-                CompletionGridCanvas(schema = mapToList(sudokuGameModel.schema), modifier = Modifier
+                CompletionGridCanvas(schema = mapToList(sudokuGameModel.schema.map), modifier = Modifier
                     .size(50.dp)
                     .constrainAs(grid) {
                         top.linkTo(parent.top, 5.dp)

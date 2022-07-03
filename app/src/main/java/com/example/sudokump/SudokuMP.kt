@@ -6,7 +6,7 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class SudokuMP @Inject constructor(): Application(){
+class SudokuMP: Application(){
     var isDark = mutableStateOf(true)
     fun themeSwitch() {
         isDark.value = !isDark.value

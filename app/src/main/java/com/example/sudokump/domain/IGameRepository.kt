@@ -3,8 +3,7 @@ package com.example.sudokump.domain
 import android.content.Context
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
-import com.example.sudokump.ui.theme.activeGame.SudokuTile
-import kotlinx.coroutines.Job
+import com.example.sudokump.model.SudokuNode
 
 
 interface IGameRepository {
@@ -22,7 +21,7 @@ interface IGameRepository {
         onSuccess: (Unit)-> Unit,
         onError: (Exception) -> Unit,
 
-    )
+        )
 
     suspend fun updateGame(   // Potrebbe essere cancellata
         game: SudokuGameModel,
