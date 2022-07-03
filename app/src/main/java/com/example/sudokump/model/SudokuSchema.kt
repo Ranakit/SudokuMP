@@ -61,6 +61,44 @@ class SudokuSchema(sudokuGrid: SudokuGrid) {
         }
     }
 
+    fun overallCheck() : Boolean{
+        return(checkAllRows() &&
+        checkAllColumns() &&
+        checkAllSquares())
+    }
+
+    private fun checkAllRows() : Boolean{
+        for (elem in rows)
+        {
+            if(!elem.checkIsCorrect()){
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun checkAllColumns() : Boolean{
+        for (elem in columns)
+        {
+            if(!elem.checkIsCorrect()){
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun checkAllSquares() : Boolean{
+        for (elem in matrices)
+        {
+            for (elem1 in elem)
+            if(!elem1.checkIsCorrect()){
+                return false
+            }
+        }
+        return true
+    }
+
+
     fun evaluateCompletionPercent() : String
     {
         var counter = 0
@@ -144,3 +182,5 @@ class SudokuSquare(val xPos : Int, val yPos : Int, val matrix : HashMap<Int, Sud
 private val comparator = Comparator{node1 : SudokuNode, node2 : SudokuNode ->
     node1.value - node2.value
 }
+
+

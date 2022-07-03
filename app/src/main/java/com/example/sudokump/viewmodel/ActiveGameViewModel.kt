@@ -1,6 +1,8 @@
 package com.example.sudokump.viewmodel
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.sudokump.model.Difficulties
@@ -9,10 +11,8 @@ import com.example.sudokump.model.getHash
 import com.example.sudokump.modules.ActiveGameViewModelAssistedFactory
 import com.example.sudokump.modules.SudokuGamesEntryPoint
 import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 class ActiveGameViewModel @AssistedInject constructor(
@@ -62,9 +62,20 @@ class ActiveGameViewModel @AssistedInject constructor(
             for(j in 0..8)
             {
                 val node = game.schema.map[getHash(i,j)]
-                boardState[getHash(i,j)] = SudokuTile(node!!.x, node.y, node.value, false, false)
+                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value),false)
             }
         }
     }
 
+    fun overallCheck(){
+        game.schema.overallCheck()
+    }
+
+    fun updateNode(tileX : Int, tileY : Int , value : Int){
+        if (tileX < 0){
+            return
+        }
+        game.schema.map[getHash(tileX, tileY)]?.value = value
+        boardState[getHash(tileX, tileY)]?.value?.value = value
+    }
 }

@@ -9,9 +9,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.sudokump.MainActivity
 import com.example.sudokump.R
 import com.example.sudokump.common.toTime
 import com.example.sudokump.ui.theme.*
@@ -28,14 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudokump.common.sqrt
-import com.example.sudokump.model.Difficulties
 import com.example.sudokump.modules.ViewModelFactoryProvider
 import com.example.sudokump.screens.LoadingScreen
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
 import java.util.HashMap
-import javax.inject.Inject
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -77,24 +74,24 @@ fun ActiveGameScreen(gameId : Int) {
         onDispose { viewModel.onStop() }
     }*/
 
-    val transition = updateTransition(contentTransitionState)
+    val transition = updateTransition(contentTransitionState, label = "")
 
     val loadingAlpha by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) }
+        transitionSpec = { tween(durationMillis = 300) }, label = ""
 
     ) {
         if (it == ActiveGameScreenState.LOADING) 1f else 0f
     }
 
     val activeAlpha by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) }
+        transitionSpec = { tween(durationMillis = 300) }, label = ""
 
     ) {
         if (it == ActiveGameScreenState.ACTIVE) 1f else 0f
     }
 
     val completeAlpha by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) }
+        transitionSpec = { tween(durationMillis = 300) }, label = ""
 
     ) {
         if (it == ActiveGameScreenState.COMPLETE) 1f else 0f
@@ -123,7 +120,6 @@ fun ActiveGameScreen(gameId : Int) {
                     Modifier.alpha(activeAlpha)
                 ) {
                     GameContent(
-                        {},
                         viewModel
                     )
                 }
@@ -149,10 +145,10 @@ fun ActiveGameScreen(gameId : Int) {
 
 @Composable
 fun GameContent(
-    onEventHandler: (ActiveGameEvent) -> Unit,
     viewModel: ActiveGameViewModel
 ) {
-    BoxWithConstraints{
+    val coordinatePair = rememberSaveable{mutableStateOf(Pair(-1,-1))}
+        BoxWithConstraints{
         val screenWidth = with(LocalDensity.current){
             constraints.maxWidth.toDp()
         }
@@ -196,9 +192,9 @@ fun GameContent(
                         ),
             ){
                 SudokuBoard(
-                    onEventHandler,
                     viewModel ,
-                    screenWidth - margin.dp
+                    screenWidth - margin.dp,
+                    coordinatePair
                 )
             }
             
@@ -210,7 +206,7 @@ fun GameContent(
                         end.linkTo(parent.end)
                     }
             ){
-                (0..viewModel.difficulty.ordinal).forEach{
+                (0..viewModel.difficulty.ordinal).forEach{ _ ->
                     Icon(
                         contentDescription = stringResource(R.string.difficulty),
                         imageVector = Icons.Filled.Star,
@@ -251,8 +247,24 @@ fun GameContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             InputButtonRow(
-                (0..9).toList(),
-                onEventHandler
+                (1..3).toList(),
+                coordinatePair,
+                viewModel
+            )
+            InputButtonRow(
+                (4..6).toList(),
+                coordinatePair,
+                viewModel
+            )
+            InputButtonRow(
+                (7..9).toList(),
+                coordinatePair,
+                viewModel
+            )
+            InputButtonRow(
+                listOf(0),
+                coordinatePair,
+                viewModel
             )
             }
         }
@@ -260,27 +272,22 @@ fun GameContent(
 }
 
 @Composable
-fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
-                       viewModel: ActiveGameViewModel,
-                       size: Dp)
+fun SudokuBoard(viewModel: ActiveGameViewModel, size: Dp, coordinatesPair: MutableState<Pair<Int, Int>>)
 {
     val boundary = 9
 
     val tileOffset = size.value /  boundary
 
-    var boardState by remember {
-        mutableStateOf(viewModel.boardState , neverEqualPolicy())
-
-    }
+    var boardState = viewModel.boardState
 
     /*viewModel.subBoardState = {
         boardState = it
     }*/
 
     SudokuTextFields(
-        onEventHandler,
         tileOffset,
-        boardState
+        boardState,
+        coordinatesPair
     )
 
     BoardGrid(
@@ -293,16 +300,15 @@ fun SudokuBoard(onEventHandler: (ActiveGameEvent) -> Unit,
 
 @Composable
 fun SudokuTextFields(
-    onEventHandler: (ActiveGameEvent) -> Unit,
     tileOffset: Float,
-    boardState: HashMap<Int, SudokuTile>
+    boardState: HashMap<Int, SudokuTile>,
+    coordinatesPair: MutableState<Pair<Int, Int>>
 ) {
-
     /*
     Here we are going to implement the real grid , where some icons are mutable
      */
     boardState.values.forEach { tile ->
-        var text = tile.value.toString()
+        var text = tile.value.value.toString()
 
         if (!tile.readOnly) {
             if (text == "0") text = ""
@@ -314,22 +320,20 @@ fun SudokuTextFields(
                 ),
                 modifier = Modifier
                     .absoluteOffset(
-                        (tileOffset * (tile.x - 1)).dp,
-                        (tileOffset * (tile.y - 1)).dp,
+                        (tileOffset * (tile.x.value)).dp,
+                        (tileOffset * (tile.y.value)).dp,
 
 
                         )
                     .size(tileOffset.dp)
                     .background(
-                        if (tile.hasFocus) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
+
+                        if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
                         else MaterialTheme.colors.surface
                     )
                     .clickable {
-                        onEventHandler.invoke(
-                            ActiveGameEvent.OnTileFocused(tile.x, tile.y)
-                        )
+                        coordinatesPair.value = Pair(tile.x.value, tile.y.value)
                     }
-
             )
         } else {
             Text(
@@ -340,8 +344,8 @@ fun SudokuTextFields(
                 modifier = Modifier
                     .absoluteOffset(
 
-                        (tileOffset * (tile.x - 1)).dp,
-                        (tileOffset * (tile.y - 1)).dp,
+                        (tileOffset * (tile.x.value)).dp,
+                        (tileOffset * (tile.y.value)).dp,
 
                         )
             )
@@ -353,12 +357,17 @@ fun SudokuTextFields(
 
 
 @Composable
-fun InputButtonRow(numbers: List<Int>, onEventHandler: (ActiveGameEvent) -> Unit) {
+fun InputButtonRow(
+    numbers: List<Int>,
+    coordinatesPair: MutableState<Pair<Int, Int>>,
+    viewModel: ActiveGameViewModel
+) {
     Row{
         numbers.forEach{
             SudokuInputButton(
-                onEventHandler,
-                it
+                coordinatesPair,
+                it,
+                viewModel
             )
         }
     }
@@ -368,9 +377,16 @@ fun InputButtonRow(numbers: List<Int>, onEventHandler: (ActiveGameEvent) -> Unit
 }
 
 @Composable
-fun SudokuInputButton(onEventHandler: (ActiveGameEvent) -> Unit, number: Int) {
+fun SudokuInputButton(
+    coordinatesPair: MutableState<Pair<Int, Int>>,
+    number: Int,
+    viewModel: ActiveGameViewModel
+) {
     TextButton(
-        onClick = { onEventHandler.invoke(ActiveGameEvent.OnInput(number)) },
+        onClick = {
+            viewModel.updateNode(coordinatesPair.value.first, coordinatesPair.value.second, number)
+            viewModel.overallCheck()
+                  },
         modifier = Modifier
             .requiredSize(56.dp)
             .padding(2.dp),
@@ -409,11 +425,10 @@ fun BoardGrid(boundary: Int, tileOffset: Float) {
             Divider(
                 color = MaterialTheme.colors.primaryVariant,
                 modifier = Modifier
-                    .absoluteOffset((tileOffset * it).dp, 0.dp)
+                    .absoluteOffset(0.dp, (tileOffset * it).dp)
                     .fillMaxWidth()
-                    .height(width)
+                    .height(height)
             )
-
         }
     }
 }
@@ -422,7 +437,7 @@ fun BoardGrid(boundary: Int, tileOffset: Float) {
 @Composable
 fun TimerText(viewModel: ActiveGameViewModel) {
 
-    var timerState by remember {
+    val timerState by remember {
         mutableStateOf("")
     }
 
@@ -441,8 +456,8 @@ fun TimerText(viewModel: ActiveGameViewModel) {
 fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
     /*
     The composable for the case when the user effectively completes a game
-
      */
+
     Column (
         Modifier
             .fillMaxSize()

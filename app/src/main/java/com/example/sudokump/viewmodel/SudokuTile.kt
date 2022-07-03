@@ -1,9 +1,11 @@
 package com.example.sudokump.viewmodel
 
+import androidx.compose.runtime.MutableState
+
 class SudokuTile(
-    val x: Int,
-    val y: Int,
-    var value: Int,
-    var hasFocus: Boolean,
+    val x: MutableState<Int>,
+    val y: MutableState<Int>,
+    var value: MutableState<Int>,
+    var isCorrect: MutableState<Boolean>,
     val readOnly: Boolean
 )
