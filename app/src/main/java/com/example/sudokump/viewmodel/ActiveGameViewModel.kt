@@ -62,7 +62,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             for(j in 0..8)
             {
                 val node = game.schema.map[getHash(i,j)]
-                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value),false)
+                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value),mutableStateOf(false), false)
             }
         }
     }

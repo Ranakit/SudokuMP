@@ -36,9 +36,11 @@ class SudokuGameModel {
         //Will be assured to be saved correctly to DB
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         saveDate = LocalDate.parse(savedGameDBEntity.savedDate, formatter)
-        var json = String(savedGameDBEntity.savedSchema)
-        json = json.substring(0, json.length -1)
-        schema = SudokuSchema(extractGridFromJson(json))
+        var gridJson = String(savedGameDBEntity.savedSchema)
+        gridJson = gridJson.substring(0, gridJson.length -1)
+        var readOnlyJson = String(savedGameDBEntity.readOnlyTiles)
+        readOnlyJson = readOnlyJson.substring(0, gridJson.length -1)
+        schema = SudokuSchema(extractGridFromJson(gridJson), extractReadOnlyTilesFromJson(readOnlyJson))
     }
 
     constructor(gameDifficulty: Difficulties, json: String)
@@ -82,14 +84,20 @@ class SudokuGameModel {
         return Gson().fromJson(json, SudokuGrid::class.java)
     }
 
+    private fun extractReadOnlyTilesFromJson(json : String) : SudokuTileSet
+    {
+        return Gson().fromJson(json, SudokuTileSet::class.java)
+    }
+
     private fun compressToDBEntity() : SavedGameDBEntity
     {
         val gson = Gson()
         val dataArray = gson.toJson(SudokuGrid(mapToList(this.schema.map))).toByteArray()
+        val readOnlyTilesArray = gson.toJson(schema.getReadOnlyTiles()).toByteArray()
         val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,
-            dataArray, this.difficulty.toString(), dateString)
+            dataArray, this.difficulty.toString(), dateString, readOnlyTilesArray)
     }
 
     private fun evaluateCompletionPercent(schema: HashMap<Int, SudokuNode>) : String

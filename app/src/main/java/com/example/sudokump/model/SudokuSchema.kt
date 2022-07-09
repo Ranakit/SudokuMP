@@ -1,13 +1,14 @@
 package com.example.sudokump.model
 
 
-class SudokuSchema(sudokuGrid: SudokuGrid) {
+class SudokuSchema{
     val rows : MutableList<SudokuRow>
     val columns : MutableList<SudokuColumn>
     val matrices : MutableList<MutableList<SudokuSquare>>
     val map : HashMap<Int, SudokuNode>
 
-    init {
+    private constructor(lambda : (i : Int, j: Int) -> SudokuNode)
+    {
         rows = arrayListOf()
         columns = arrayListOf()
         matrices = arrayListOf()
@@ -17,7 +18,7 @@ class SudokuSchema(sudokuGrid: SudokuGrid) {
         {
             for(j in (0..8))
             {
-                val sudokuNode = SudokuNode(i,j,sudokuGrid.board[i][j], false)
+                val sudokuNode = lambda(i,j)
                 map[getHash(i,j)] = sudokuNode
             }
         }
@@ -59,6 +60,29 @@ class SudokuSchema(sudokuGrid: SudokuGrid) {
 
             matrices.add(matrixList)
         }
+    }
+
+    constructor(sudokuGrid: SudokuGrid) : this({i,j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuGrid.board[i][j]==0)})
+
+    constructor(sudokuGrid: SudokuGrid, sudokuTileSet: SudokuTileSet) : this({i, j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuTileSet.generateSet().contains(
+        Pair(i,j)
+    ))})
+
+    fun getReadOnlyTiles() : SudokuTileSet
+    {
+        val retval = mutableListOf<MutableList<Int>>()
+        for (i in 0..8)
+        {
+            for (j in 0..8)
+            {
+                if (map[getHash(i,j)]!!.readOnly)
+                {
+                    retval.add(mutableListOf(i,j))
+                }
+            }
+        }
+
+        return SudokuTileSet(retval)
     }
 
     fun overallCheck() : Boolean{
