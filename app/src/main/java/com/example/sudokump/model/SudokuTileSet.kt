@@ -1,6 +1,6 @@
 package com.example.sudokump.model
 
-class SudokuTileSet(private val pairs : List<List<Int>>) {
+data class SudokuTileSet(val pairs : List<List<Int>>) {
 
     fun generateSet() : HashSet<Pair<Int,Int>>
     {

@@ -39,7 +39,7 @@ class SudokuGameModel {
         var gridJson = String(savedGameDBEntity.savedSchema)
         gridJson = gridJson.substring(0, gridJson.length -1)
         var readOnlyJson = String(savedGameDBEntity.readOnlyTiles)
-        readOnlyJson = readOnlyJson.substring(0, gridJson.length -1)
+        readOnlyJson = readOnlyJson.substring(0, readOnlyJson.length -1)
         schema = SudokuSchema(extractGridFromJson(gridJson), extractReadOnlyTilesFromJson(readOnlyJson))
     }
 
