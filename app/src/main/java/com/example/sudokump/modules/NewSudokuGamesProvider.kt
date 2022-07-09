@@ -45,7 +45,7 @@ object NewSudokuGamesProvider {
     {
         val requestFuture : RequestFuture<JSONObject> = RequestFuture.newFuture()
         val jsonObjectRequest = JsonObjectRequest(
-            url + difficulty.toString().lowercase(),
+            this.url + difficulty.toString().lowercase(),
             requestFuture,
             requestFuture
         )
@@ -54,7 +54,7 @@ object NewSudokuGamesProvider {
 
         var baseJSON = JSONObject().put("board", defaultBoard)
         try {
-            baseJSON = requestFuture.get(5, TimeUnit.SECONDS)
+            baseJSON = requestFuture.get(10, TimeUnit.SECONDS)
         }catch (e: InterruptedException)
         {
             println(e.stackTrace)
@@ -65,7 +65,9 @@ object NewSudokuGamesProvider {
         }
         catch (e: TimeoutException)
         {
-            println(e.stackTrace)
+            println(e.message)
+            println(e.localizedMessage)
+            println(e.cause)
         }
 
         return SudokuGameModel(difficulty, "{\"board\" : ${baseJSON.get("board")}}")

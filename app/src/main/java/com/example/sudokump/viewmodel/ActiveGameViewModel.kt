@@ -1,7 +1,6 @@
 package com.example.sudokump.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 class ActiveGameViewModel @AssistedInject constructor(
     @Assisted id : Int, @ApplicationContext context: Context) : ViewModel() {
 
-    val game : SudokuGameModel
+    private val game : SudokuGameModel
     private val entryPoint : SudokuGamesEntryPoint
     val boardState = HashMap<Int, SudokuTile>()
 
@@ -62,7 +61,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             for(j in 0..8)
             {
                 val node = game.schema.map[getHash(i,j)]
-                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value),mutableStateOf(false), false)
+                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value), false)
             }
         }
     }
