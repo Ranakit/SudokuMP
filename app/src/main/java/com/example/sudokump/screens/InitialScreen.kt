@@ -1,6 +1,8 @@
 package com.example.sudokump.screens
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -201,7 +203,6 @@ fun Buttons(navigator : NavController) {
         )
     }
 }
-
 
 @Composable
 fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
