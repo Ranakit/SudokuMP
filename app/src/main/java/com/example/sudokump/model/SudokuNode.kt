@@ -2,13 +2,6 @@ package com.example.sudokump.model
 
 import java.io.Serializable
 
-/*
-We will use this class for represent a single node , that linked consequently will give us a complete sudokuboard.
-For handling the nodes and their connections we will use a graph method , with a LinkedList structure.
-Our node is represented as follow:
-- a value or color , in this case is an integer numer ranging from 1 to 9;
-- a list of relative x and y values that stands for the coordinates on the sudoku board
- */
 data class SudokuNode(
     val x : Int,
     val y : Int,
@@ -20,6 +13,20 @@ data class SudokuNode(
 ) : Serializable {
     override fun hashCode(): Int {
         return getHash(x, y)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SudokuNode
+
+        if (x != other.x) return false
+        if (y != other.y) return false
+        if (value != other.value) return false
+        if (readOnly != other.readOnly) return false
+
+        return true
     }
 }
 

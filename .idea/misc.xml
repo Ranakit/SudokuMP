@@ -3,16 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/molim/AndroidStudioProjects/SudokuMP/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.194" />
-        <entry key="..\:/Users/molim/AndroidStudioProjects/SudokuMP/app/src/main/res/drawable/ic_baseline_grid_on_24.xml" value="0.2315" />
-        <entry key="..\:/Users/molim/AndroidStudioProjects/SudokuMP/app/src/main/res/drawable/ic_launcher_background.xml" value="0.194" />
-        <entry key="..\:/Users/molim/AndroidStudioProjects/SudokuMP/app/src/main/res/drawable/icon.xml" value="0.2305" />
-      </map>
-    </option>
-  </component>
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
         <entry key="../../../../../../layout/compose-model-1653642883883.xml" value="0.33" />
         <entry key="../../../../../../layout/compose-model-1653642941410.xml" value="1.0" />
         <entry key="../../../../../../layout/compose-model-1653825778719.xml" value="1.6137184115523466" />
@@ -22,6 +12,7 @@
         <entry key="../../../../../../layout/compose-model-1654698506097.xml" value="0.36895910780669144" />
         <entry key="../../../../../../layout/compose-model-1654699610560.xml" value="0.6180904522613065" />
         <entry key="../../../../../../layout/compose-model-1654701791474.xml" value="0.6172529313232831" />
+        <entry key="..\:/Users/molim/AndroidStudioProjects/SudokuMP/app/src/main/res/drawable-mdpi/ic_launcher_foreground.xml" value="0.194" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1545" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1545" />
       </map>

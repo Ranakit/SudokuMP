@@ -43,13 +43,13 @@ class SudokuGameModel {
         schema = SudokuSchema(extractGridFromJson(gridJson), extractReadOnlyTilesFromJson(readOnlyJson))
     }
 
-    constructor(gameDifficulty: Difficulties, json: String)
+    constructor(gameDifficulty: Difficulties, sudokuGrid: SudokuGrid)
     {
         id = 0
         timePassed = Duration.ZERO
         difficulty = gameDifficulty
         saveDate = LocalDate.now()
-        schema = SudokuSchema(extractGridFromJson(json))
+        schema = SudokuSchema(sudokuGrid)
         completionPercent = schema.evaluateCompletionPercent()
     }
 
@@ -66,17 +66,6 @@ class SudokuGameModel {
         this.saveDate = LocalDate.now()
 
 
-    }
-
-    private fun extractBoardFromJson(json: String) : HashMap<Int, SudokuNode> {
-        val sudokuGrid = Gson().fromJson(json, SudokuGrid::class.java).board
-        val hashMap: HashMap<Int, SudokuNode> = HashMap()
-        for (i in (0..9)){
-            for (j in (0..9)){
-                hashMap[getHash(i,j)] = SudokuNode(i, j, sudokuGrid[i][j])
-            }
-        }
-        return hashMap
     }
 
     private fun extractGridFromJson(json : String) : SudokuGrid

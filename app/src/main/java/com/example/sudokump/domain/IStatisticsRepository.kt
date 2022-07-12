@@ -12,7 +12,7 @@ interface IStatisticsRepository {
         time: Long,
         diff: Difficulties,
         boundary : Int,
-        onSuccess: (isRecord: Boolean) -> Unit,   // Affects the user interface in case the user set a record in resolving a sudoku board
+        onSuccess: (isRecord: Boolean) -> Unit,
         onError: (Exception) -> Unit
 
     )

@@ -2,7 +2,7 @@ package com.example.sudokump.domain
 
 import com.example.sudokump.model.Difficulties
 
-class LocalStatisticsStorageImpl():IStatisticsRepository{
+class LocalStatisticsStorageImpl :IStatisticsRepository{
     override suspend fun getStatistics(
         onSuccess: (UserStatistics) -> Unit,
         onError: (Exception) -> Unit

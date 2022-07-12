@@ -22,7 +22,7 @@ import com.example.sudokump.ui.theme.mainTitle
 @Preview(device = Devices.PIXEL_3)
 @Composable
 fun LoadingPreview() {
-    SudokuMPTheme(darkTheme = false ) {
+    SudokuMPTheme(darkTheme = true ) {
         LoadingScreen()
     }
 }

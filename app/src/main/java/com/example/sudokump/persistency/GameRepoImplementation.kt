@@ -3,10 +3,9 @@ package com.example.sudokump.persistency
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.sudokump.domain.IGameRepository
-import com.example.sudokump.domain.Settings
-import com.example.sudokump.model.SudokuNode
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
+import com.example.sudokump.model.SudokuNode
 import com.example.sudokump.modules.EasySudokuGame
 import com.example.sudokump.modules.HardSudokuGame
 import com.example.sudokump.modules.MediumSudokuGame
@@ -73,21 +72,12 @@ class GameRepoImplementation(private val context: Context): IGameRepository {
     ) {
         val id = sharedPreferences.getInt("id" , -1)
 
-        if (id == 0 )
-            else if (id < 0 ) onError.invoke(Exception("wrong Id"))
+        if (id < 0 ) onError.invoke(Exception("wrong Id"))
         else {
 
-            val DAO = EntryPointAccessors.fromApplication(context , GameRepoEntry::class.java).getGamesDao()
-            onSuccess.invoke(SudokuGameModel(DAO.getLastSavedGame(id)), false)
+            val dao = EntryPointAccessors.fromApplication(context , GameRepoEntry::class.java).getGamesDao()
+            onSuccess.invoke(SudokuGameModel(dao.getLastSavedGame(id)), false)
         }
-
-    }
-
-    override suspend fun updateSettings(
-        settings: Settings,
-        onSuccess: (Unit) -> Unit,
-        onError: (Exception) -> Unit
-    ) {
 
     }
 

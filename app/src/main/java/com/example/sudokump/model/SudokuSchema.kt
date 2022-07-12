@@ -2,9 +2,9 @@ package com.example.sudokump.model
 
 
 class SudokuSchema{
-    val rows : MutableList<SudokuRow>
-    val columns : MutableList<SudokuColumn>
-    val matrices : MutableList<MutableList<SudokuSquare>>
+    private val rows : MutableList<SudokuRow>
+    private val columns : MutableList<SudokuColumn>
+    private val matrices : MutableList<MutableList<SudokuSquare>>
     val map : HashMap<Int, SudokuNode>
 
     private constructor(lambda : (i : Int, j: Int) -> SudokuNode)
@@ -70,19 +70,19 @@ class SudokuSchema{
 
     fun getReadOnlyTiles() : SudokuTileSet
     {
-        val retval = mutableListOf<MutableList<Int>>()
+        val retVal = mutableListOf<MutableList<Int>>()
         for (i in 0..8)
         {
             for (j in 0..8)
             {
                 if (map[getHash(i,j)]!!.readOnly)
                 {
-                    retval.add(mutableListOf(i,j))
+                    retVal.add(mutableListOf(i,j))
                 }
             }
         }
 
-        return SudokuTileSet(retval)
+        return SudokuTileSet(retVal)
     }
 
     fun overallCheck() : Boolean{
@@ -141,7 +141,7 @@ class SudokuSchema{
     }
 }
 
-abstract class SudokuComposition()
+abstract class SudokuComposition
 {
     protected fun checkList(sorted : List<SudokuNode>) : Boolean{
         var lastNum = 0
@@ -164,7 +164,7 @@ abstract class SudokuComposition()
     }
 }
 
-class SudokuRow(val position : Int, val nodes : List<SudokuNode>) : SudokuComposition()
+class SudokuRow(val position : Int, private val nodes : List<SudokuNode>) : SudokuComposition()
 {
     fun checkIsCorrect() : Boolean
     {
@@ -177,7 +177,7 @@ class SudokuRow(val position : Int, val nodes : List<SudokuNode>) : SudokuCompos
     }
 }
 
-class SudokuColumn(val position : Int, val nodes : List<SudokuNode>) : SudokuComposition()
+class SudokuColumn(val position : Int, private val nodes : List<SudokuNode>) : SudokuComposition()
 {
     fun checkIsCorrect() : Boolean
     {
@@ -190,7 +190,7 @@ class SudokuColumn(val position : Int, val nodes : List<SudokuNode>) : SudokuCom
     }
 }
 
-class SudokuSquare(val xPos : Int, val yPos : Int, val matrix : HashMap<Int, SudokuNode>) : SudokuComposition()
+class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<Int, SudokuNode>) : SudokuComposition()
 {
     fun checkIsCorrect() : Boolean
     {

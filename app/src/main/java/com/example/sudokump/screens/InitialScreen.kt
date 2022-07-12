@@ -1,8 +1,6 @@
 package com.example.sudokump.screens
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -24,7 +22,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
-import com.example.sudokump.ui.theme.activeGame.ActiveGameScreen
 
 @Composable
 fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
@@ -58,7 +55,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
         isFloatingActionButtonDocked = true,
         bottomBar = {
             BottomAppBar(
-                backgroundColor = MaterialTheme.colors.onSecondary,
+                backgroundColor = MaterialTheme.colors.primary,
                 cutoutShape = MaterialTheme.shapes.small.copy(
                     CornerSize(percent = 50)
                 )
@@ -67,7 +64,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
         }
     ) {
         TopAppBar(
-            backgroundColor = MaterialTheme.colors.onSecondary,
+            backgroundColor = MaterialTheme.colors.primary,
             title = {
                 Text(
                     text = "Welcome back!",

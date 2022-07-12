@@ -1,4 +1,4 @@
-package com.example.sudokump.ui.theme.activeGame
+package com.example.sudokump.screens
 
 import android.app.Activity
 import androidx.compose.animation.core.MutableTransitionState
@@ -13,26 +13,24 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.sudokump.R
-import com.example.sudokump.common.toTime
-import com.example.sudokump.ui.theme.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.sudokump.R
 import com.example.sudokump.common.sqrt
+import com.example.sudokump.common.toTime
 import com.example.sudokump.modules.ViewModelFactoryProvider
-import com.example.sudokump.screens.LoadingScreen
+import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
-import java.util.HashMap
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -328,7 +326,7 @@ fun SudokuTextFields(
                     .size(tileOffset.dp)
                     .background(
 
-                        if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.onPrimary.copy(alpha = .25f)
+                        if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.secondary.copy(alpha = .25f)
                         else MaterialTheme.colors.surface
                     )
                     .clickable {
@@ -392,13 +390,13 @@ fun SudokuInputButton(
             .padding(2.dp),
         border = BorderStroke(
             ButtonDefaults.OutlinedBorderSize,
-            MaterialTheme.colors.onPrimary
+            MaterialTheme.colors.secondary
         )
 
     ) {
         Text(
             text = number.toString(),
-            style = inputButton.copy(color = MaterialTheme.colors.onPrimary),
+            style = inputButton.copy(color = MaterialTheme.colors.secondary),
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -472,14 +470,14 @@ fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
             Image(
                 contentDescription = stringResource(R.string.game_complete),
                 imageVector = Icons.Filled.Star,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
                 modifier = Modifier.size(128.dp)
             )
 
             if (isNewRecordState) Image(
                 contentDescription = null,
                 imageVector = Icons.Filled.Star,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
                 modifier = Modifier.size(128.dp)
 
             )

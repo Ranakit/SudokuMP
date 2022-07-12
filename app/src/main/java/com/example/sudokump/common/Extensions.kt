@@ -2,8 +2,6 @@ package com.example.sudokump.common
 
 import android.app.Activity
 import android.widget.Toast
-import com.example.sudokump.R
-import com.example.sudokump.domain.Difficulty
 import com.example.sudokump.model.SudokuNode
 import com.example.sudokump.model.getHash
 import kotlin.math.sqrt
@@ -33,18 +31,6 @@ internal fun Long.toTime():String{
     return String.format("$minutes.$seconds")
 
 }
-
-internal val Difficulty.toLocalizedResource: Int
-
-    get(){
-        return when (this){
-            Difficulty.EASY -> R.string.easy
-            Difficulty.MEDIUM -> R.string.medium
-            Difficulty.HARD -> R.string.hard
-
-
-        }
-    }
 
 internal val Int.sqrt: Int
     get() = sqrt(this.toDouble()).toInt()

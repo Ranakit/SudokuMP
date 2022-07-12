@@ -6,19 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.navigation.compose.rememberNavController
-import com.example.sudokump.common.makeToast
 import com.example.sudokump.screens.NavigationComponent
 import com.example.sudokump.ui.theme.SudokuMPTheme
-import com.example.sudokump.ui.theme.activeGame.ActiveGameContainer
-import dagger.Module
-import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(),ActiveGameContainer {
+class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var sudokuMP : SudokuMP
@@ -35,13 +30,5 @@ class MainActivity : ComponentActivity(),ActiveGameContainer {
                 NavigationComponent(sharedPreferences, sudokuMP, navController)
             }
         }
-    }
-
-    override fun showErr() {
-        makeToast(getString(R.string.generic_error))
-    }
-
-    override fun onNewGameClick() {
-
     }
 }

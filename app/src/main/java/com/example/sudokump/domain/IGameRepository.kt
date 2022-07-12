@@ -1,6 +1,5 @@
 package com.example.sudokump.domain
 
-import android.content.Context
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.model.SudokuNode
@@ -48,12 +47,5 @@ interface IGameRepository {
         onSuccess: (SudokuGameModel, Boolean) -> Unit,
         onError: (Exception ) -> Unit,
 
-    )
-
-
-    suspend fun updateSettings(
-        settings: Settings,
-        onSuccess: (Unit) -> Unit,
-        onError: (Exception) -> Unit
     )
 }
