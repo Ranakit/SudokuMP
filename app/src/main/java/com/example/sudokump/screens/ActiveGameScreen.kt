@@ -1,6 +1,7 @@
 package com.example.sudokump.screens
 
 import android.app.Activity
+import android.graphics.Paint
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
@@ -15,12 +16,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudokump.R
@@ -31,6 +36,7 @@ import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.InternalCoroutinesApi
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -264,8 +270,38 @@ fun GameContent(
                 coordinatePair,
                 viewModel
             )
+            NotesButton(viewModel)
             }
         }
+    }
+}
+
+@Composable
+fun NotesButton(viewModel: ActiveGameViewModel) {
+    TextButton(
+        onClick = {
+            viewModel.noteMode.value = !viewModel.noteMode.value
+        },
+        modifier = Modifier
+            .requiredSize(56.dp)
+            .padding(2.dp)
+            .background(if (viewModel.noteMode.value){Color.White}
+            else{Color.Black}
+            ),
+        border = BorderStroke(
+            ButtonDefaults.OutlinedBorderSize,
+            MaterialTheme.colors.secondary
+        )
+
+    ) {
+        Icon(
+            contentDescription = stringResource(R.string.difficulty),
+            imageVector = Icons.Filled.Star,
+            tint = MaterialTheme.colors.secondary,
+            modifier  = Modifier
+                .size(32.dp)
+                .padding(top = 4.dp)
+        )
     }
 }
 
@@ -276,7 +312,7 @@ fun SudokuBoard(viewModel: ActiveGameViewModel, size: Dp, coordinatesPair: Mutab
 
     val tileOffset = size.value /  boundary
 
-    var boardState = viewModel.boardState
+    val boardState = viewModel.boardState
 
     /*viewModel.subBoardState = {
         boardState = it
@@ -306,53 +342,49 @@ fun SudokuTextFields(
     Here we are going to implement the real grid , where some icons are mutable
      */
     boardState.values.forEach { tile ->
-        var text = tile.value.value.toString()
-
-        if (!tile.readOnly) {
-            if (text == "0") text = ""
+        val text = tile.value.value.toString()
+        if (text == "0") {
+            SubGrid(Modifier.size(tileOffset.dp * 3)
+                .clickable {
+                    coordinatesPair.value = Pair(tile.x.value, tile.y.value)
+                }, tile.notes)
+        } else {
             Text(
                 text = text,
                 style = mutableSudokuSquare(tileOffset).copy(
-                    color = if (MaterialTheme.colors.isLight) userInputtedNumberLight
-                    else userInputtedDark
+                    color = if (MaterialTheme.colors.isLight) {
+                        if (tile.readOnly) {
+                            Color.Black
+                        } else {
+                            userInputtedNumberLight
+                        }
+                    } else {
+                        if (tile.readOnly) {
+                            MaterialTheme.colors.onSecondary
+                        } else {
+                            userInputtedNumberLight
+                        }
+                    }
                 ),
                 modifier = Modifier
                     .absoluteOffset(
                         (tileOffset * (tile.x.value)).dp,
                         (tileOffset * (tile.y.value)).dp,
-
-
-                        )
+                    )
                     .size(tileOffset.dp)
                     .background(
-
-                        if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.secondary.copy(alpha = .25f)
+                        if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.secondary.copy(
+                            alpha = .25f
+                        )
                         else MaterialTheme.colors.surface
                     )
                     .clickable {
                         coordinatesPair.value = Pair(tile.x.value, tile.y.value)
                     }
             )
-        } else {
-            Text(
-                text = text,
-                style = readOnlySudokuSquare(
-                    tileOffset
-                ),
-                modifier = Modifier
-                    .absoluteOffset(
-
-                        (tileOffset * (tile.x.value)).dp,
-                        (tileOffset * (tile.y.value)).dp,
-
-                        )
-            )
         }
     }
 }
-
-
-
 
 @Composable
 fun InputButtonRow(
@@ -382,9 +414,13 @@ fun SudokuInputButton(
 ) {
     TextButton(
         onClick = {
-            viewModel.updateNode(coordinatesPair.value.first, coordinatesPair.value.second, number)
+            viewModel.updateNode(
+            coordinatesPair.value.first,
+            coordinatesPair.value.second,
+            number
+            )
             viewModel.overallCheck()
-                  },
+          },
         modifier = Modifier
             .requiredSize(56.dp)
             .padding(2.dp),
@@ -450,6 +486,7 @@ fun TimerText(viewModel: ActiveGameViewModel) {
     )
 }
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
     /*
@@ -497,7 +534,34 @@ fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
                 color = MaterialTheme.colors.secondary
             )
         )
-
     }
-
 }
+
+@Composable
+fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
+    Canvas(modifier = modifier
+    )
+    {
+        val unitSize = minOf(size.height, size.width)/9
+
+        for(j in 0..8)
+        {
+            drawIntoCanvas {
+                val textPaint = Paint().apply {
+                    textSize = (unitSize/3).sp.toPx()
+                }
+                it.nativeCanvas.drawText(
+                    "${if(array[j].value){
+                        j+1
+                    } else {}
+                    }",
+                    unitSize* j%3  + (unitSize/12).dp.toPx(),
+                    unitSize*(j/3 - 1) - (unitSize/15).dp.toPx(),
+                    textPaint
+                )
+            }
+        }
+    }
+}
+
+

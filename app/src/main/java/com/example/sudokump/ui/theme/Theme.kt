@@ -12,6 +12,7 @@ private val DarkColorPalette = darkColors(
     secondary = Teal100,
     surface = lightGreyAlpha,
     primaryVariant = gridLineColorLight,
+    onSecondary = readOnlyDark,
     onBackground = Teal100,
     secondaryVariant = RedD,
     error = YellowD,

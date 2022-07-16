@@ -11,7 +11,7 @@ val gridLineColorLight = Color.Blue
 val lightGrey = Color (0XFFf3f3f3)
 val lightGreyAlpha = Color (0XDCf3f3f3)
 val userInputtedNumberLight = Color(0XFF629749)
-val userInputtedDark = Color (0XFF629749)
+val readOnlyDark = Color(0xFFE6DE97)
 val GreenD = Color(red = 0, green = 162, blue = 0, alpha = 255)
 val RedD = Color(red = 189, green = 0, blue = 0, alpha = 255)
 val YellowD = Color(red = 228, green = 205, blue = 0, alpha = 255)

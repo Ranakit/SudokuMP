@@ -6,9 +6,8 @@ data class SudokuNode(
     val x : Int,
     val y : Int,
     var value: Int = 0,
-    var readOnly: Boolean = true      // Used as the clues numbers that are already on the board for easing the game
-
-    // We have to override the hash function given by the data class
+    var readOnly: Boolean = true,
+    val notes: MutableSet<Int> = mutableSetOf()
 
 ) : Serializable {
     override fun hashCode(): Int {

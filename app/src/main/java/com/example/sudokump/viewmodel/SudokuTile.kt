@@ -6,5 +6,6 @@ class SudokuTile(
     val x: MutableState<Int>,
     val y: MutableState<Int>,
     var value: MutableState<Int>,
-    val readOnly: Boolean
+    val readOnly: Boolean,
+    val notes: Array<MutableState<Boolean>>
 )

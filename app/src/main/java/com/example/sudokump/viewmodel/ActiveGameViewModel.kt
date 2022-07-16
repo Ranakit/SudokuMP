@@ -1,6 +1,7 @@
 package com.example.sudokump.viewmodel
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ class ActiveGameViewModel @AssistedInject constructor(
     private val game : SudokuGameModel
     private val entryPoint : SudokuGamesEntryPoint
     val boardState = HashMap<Int, SudokuTile>()
+    var noteMode: MutableState<Boolean> = mutableStateOf(false)
 
     val timerState : Long
     get() {
@@ -61,7 +63,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             for(j in 0..8)
             {
                 val node = game.schema.map[getHash(i,j)]
-                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value), false)
+                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value), node.readOnly, notesControl(node.notes))
             }
         }
     }
@@ -71,10 +73,35 @@ class ActiveGameViewModel @AssistedInject constructor(
     }
 
     fun updateNode(tileX : Int, tileY : Int , value : Int){
-        if (tileX < 0){
-            return
+        val tile = game.schema.map[getHash(tileX, tileY)]
+        val board = boardState[getHash(tileX, tileY)]
+        if (tile != null) {
+            if (tileX < 0 || tile.readOnly) {
+                return
+            }
         }
-        game.schema.map[getHash(tileX, tileY)]?.value = value
-        boardState[getHash(tileX, tileY)]?.value?.value = value
+        if (noteMode.value){
+            tile?.notes?.add(value)
+            board?.notes?.get(value)?.value = !(board?.notes?.get(value)?.value)!!
+        }
+        else {
+            tile?.value = value
+            board?.value?.value = value
+        }
+    }
+
+    fun notesControl(set : MutableSet<Int>) : Array<MutableState<Boolean>>{
+        val array: Array<MutableState<Boolean>> = Array(9){
+            if (set.contains(it))
+            {
+                mutableStateOf(true)
+            }
+            else
+            {
+                mutableStateOf(false)
+            }
+        }
+
+        return array
     }
 }

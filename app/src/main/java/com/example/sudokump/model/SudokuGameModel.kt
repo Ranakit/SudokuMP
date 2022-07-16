@@ -19,7 +19,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-
 class SudokuGameModel {
     val id : Int
     val timePassed  : Duration
@@ -32,8 +31,7 @@ class SudokuGameModel {
         id = savedGameDBEntity.id
         timePassed  = savedGameDBEntity.secondsPassed.seconds
         completionPercent = savedGameDBEntity.completionPercent
-        difficulty = Difficulties.valueOf(savedGameDBEntity.difficulty) //Will be assured to be saved correctly to DB
-        //Will be assured to be saved correctly to DB
+        difficulty = Difficulties.valueOf(savedGameDBEntity.difficulty)
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         saveDate = LocalDate.parse(savedGameDBEntity.savedDate, formatter)
         var gridJson = String(savedGameDBEntity.savedSchema)
