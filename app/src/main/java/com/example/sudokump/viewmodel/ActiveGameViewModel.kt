@@ -82,7 +82,7 @@ class ActiveGameViewModel @AssistedInject constructor(
         }
         if (noteMode.value){
             tile?.notes?.add(value)
-            board?.notes?.get(value)?.value = !(board?.notes?.get(value)?.value)!!
+            board?.notes?.get(value-1)?.value = !(board?.notes?.get(value-1)?.value)!!
         }
         else {
             tile?.value = value

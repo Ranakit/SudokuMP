@@ -344,7 +344,10 @@ fun SudokuTextFields(
     boardState.values.forEach { tile ->
         val text = tile.value.value.toString()
         if (text == "0") {
-            SubGrid(Modifier.size(tileOffset.dp * 3)
+            SubGrid(Modifier.absoluteOffset(
+                (tileOffset * (tile.x.value)).dp,
+                (tileOffset * (tile.y.value)).dp,
+            ).size(tileOffset.dp)
                 .clickable {
                     coordinatesPair.value = Pair(tile.x.value, tile.y.value)
                 }, tile.notes)
@@ -542,7 +545,7 @@ fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
     Canvas(modifier = modifier
     )
     {
-        val unitSize = minOf(size.height, size.width)/9
+        val unitSize = minOf(size.height, size.width)/3
 
         for(j in 0..8)
         {
@@ -553,10 +556,10 @@ fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
                 it.nativeCanvas.drawText(
                     "${if(array[j].value){
                         j+1
-                    } else {}
+                    } else {""}
                     }",
                     unitSize* j%3  + (unitSize/12).dp.toPx(),
-                    unitSize*(j/3 - 1) - (unitSize/15).dp.toPx(),
+                    unitSize*(j/3) - (unitSize/15).dp.toPx(),
                     textPaint
                 )
             }
