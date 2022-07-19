@@ -36,7 +36,6 @@ import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.InternalCoroutinesApi
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -489,7 +488,6 @@ fun TimerText(viewModel: ActiveGameViewModel) {
     )
 }
 
-@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
     /*
@@ -558,8 +556,8 @@ fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
                         j+1
                     } else {""}
                     }",
-                    unitSize* j%3  + (unitSize/12).dp.toPx(),
-                    unitSize*(j/3) - (unitSize/15).dp.toPx(),
+                    unitSize* (j%3)  + (unitSize/12).dp.toPx(),
+                    unitSize* (j/3) + (unitSize/3).dp.toPx(),
                     textPaint
                 )
             }
