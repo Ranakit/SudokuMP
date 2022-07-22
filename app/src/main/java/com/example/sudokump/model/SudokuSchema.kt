@@ -5,6 +5,7 @@ class SudokuSchema{
     private val rows : MutableList<SudokuRow>
     private val columns : MutableList<SudokuColumn>
     private val matrices : MutableList<MutableList<SudokuSquare>>
+    private lateinit var grid : SudokuGrid
     val map : HashMap<Int, SudokuNode>
 
     private constructor(lambda : (i : Int, j: Int) -> SudokuNode)
@@ -50,7 +51,7 @@ class SudokuSchema{
 
                     for(m in 0..2)
                     {
-                        matrix[getHash(l,m)] = map.getOrDefault(getHash(i+l, j+m), SudokuNode(0,0,0,false))
+                        matrix[getHash(l,m)] = map.getOrDefault(getHash(3*i+l, 3*j+m), SudokuNode(0,0,0,false))
                     }
                 }
 
@@ -62,11 +63,15 @@ class SudokuSchema{
         }
     }
 
-    constructor(sudokuGrid: SudokuGrid) : this({i,j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuGrid.board[i][j]!=0)})
+    constructor(sudokuGrid: SudokuGrid) : this({i,j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuGrid.board[i][j]!=0)}) {
+        grid = sudokuGrid
+    }
 
     constructor(sudokuGrid: SudokuGrid, sudokuTileSet: SudokuTileSet) : this({i, j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuTileSet.generateSet().contains(
         Pair(i,j)
-    ))})
+    ))}) {
+        grid = sudokuGrid
+    }
 
     fun getReadOnlyTiles() : SudokuTileSet
     {
@@ -123,6 +128,45 @@ class SudokuSchema{
     }
 
 
+    fun overallCompletenessCheck() : Boolean
+    {
+        return checkAllRowsCompleteness() &&
+                checkAllColumnsCompleteness() &&
+                checkAllSquaresCompleteness()
+    }
+
+    private fun checkAllRowsCompleteness() : Boolean{
+        for (elem in rows)
+        {
+            if(!elem.checkIsComplete()){
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun checkAllColumnsCompleteness() : Boolean{
+        for (elem in columns)
+        {
+            if(!elem.checkIsComplete()){
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun checkAllSquaresCompleteness() : Boolean{
+        for (elem in matrices)
+        {
+            for (elem1 in elem)
+                if(!elem1.checkIsComplete()){
+                    return false
+                }
+        }
+        return true
+    }
+
+
     fun evaluateCompletionPercent() : String
     {
         var counter = 0
@@ -139,72 +183,24 @@ class SudokuSchema{
 
         return String.format("%.2f%%", counter/81.0f*100)
     }
-}
 
-abstract class SudokuComposition
-{
-    protected fun checkList(sorted : List<SudokuNode>) : Boolean{
-        var lastNum = 0
-
-        for(elem in sorted)
-        {
-            if(elem.value != 0)
-            {
-                if(elem.value != lastNum)
-                {
-                    lastNum = elem.value
-                }
-                else {
-                    return false
-                }
-            }
-        }
-
-        return true
-    }
-}
-
-class SudokuRow(val position : Int, private val nodes : List<SudokuNode>) : SudokuComposition()
-{
-    fun checkIsCorrect() : Boolean
+    fun getRowHints(position : Int) : Set<Pair<Int,SudokuNode>>
     {
-        val toSort = mutableListOf<SudokuNode>()
-        toSort.addAll(nodes)
-
-        toSort.sortWith(comparator)
-
-        return checkList(toSort)
+        return rows[position].getHints()
     }
-}
 
-class SudokuColumn(val position : Int, private val nodes : List<SudokuNode>) : SudokuComposition()
-{
-    fun checkIsCorrect() : Boolean
+    fun getColumnHints(position : Int) : Set<Pair<Int,SudokuNode>>
     {
-        val toSort = mutableListOf<SudokuNode>()
-        toSort.addAll(nodes)
-
-        toSort.sortWith(comparator)
-
-        return checkList(toSort)
+        return columns[position].getHints()
     }
-}
 
-class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<Int, SudokuNode>) : SudokuComposition()
-{
-    fun checkIsCorrect() : Boolean
+    fun getSquareHints(xPos : Int, yPos : Int) : Set<Pair<Int,SudokuNode>>
     {
-        val toSort = mutableListOf<SudokuNode>()
-        toSort.addAll(matrix.values)
+        return matrices[xPos][yPos].getHints()
+    }
 
-        toSort.sortWith(comparator)
-
-        return checkList(toSort)
+    fun copy() : SudokuSchema
+    {
+        return SudokuSchema(grid)
     }
 }
-
-private val comparator = Comparator{node1 : SudokuNode, node2 : SudokuNode ->
-    node1.value - node2.value
-}
-
-
