@@ -18,7 +18,7 @@ class EntityToModelTest {
         {
             savedSchemaByteArray[i] = savedSchema[i].code.toByte()
         }
-        val entity = SavedGameDBEntity(1, 40, "4%", savedSchemaByteArray, "EASY", "27/05/2022")
+        val entity = SavedGameDBEntity(1, 40, "4%", savedSchemaByteArray, "EASY", "27/05/2022", ByteArray(3))
         val model = SudokuGameModel(entity)
 
         println(model.id)

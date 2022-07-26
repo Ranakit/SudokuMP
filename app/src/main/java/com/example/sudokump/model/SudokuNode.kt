@@ -2,14 +2,33 @@ package com.example.sudokump.model
 
 import java.io.Serializable
 
-data class SudokuNode(
+class SudokuNode(
     val x : Int,
     val y : Int,
     var value: Int = 0,
     var readOnly: Boolean = true,
     val notes: MutableSet<Int> = mutableSetOf()
-
 ) : Serializable {
+
+    lateinit var row: SudokuRow
+    lateinit var column: SudokuColumn
+    lateinit var square: SudokuSquare
+
+
+    fun getCrossAvailableSet() : Set<Int> {
+        return if(value == 0) {row.availableValues.intersect(column.availableValues).intersect(square.availableValues)} else { setOf()}
+    }
+
+    fun setValueWithNotification(value : Int)
+    {
+        if (value in row.availableValues.intersect(column.availableValues).intersect(square.availableValues)) {
+            this.value = value
+            row.availableValues.remove(value)
+            column.availableValues.remove(value)
+            square.availableValues.remove(value)
+        }
+    }
+
     override fun hashCode(): Int {
         return getHash(x, y)
     }
