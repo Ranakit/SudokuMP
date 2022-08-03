@@ -159,8 +159,8 @@ fun Buttons(navigator : NavController) {
         colors = outlinedButtonColors(MaterialTheme.colors.onError, Black),
         modifier = Modifier
             .height(50.dp)
-            .width(250.dp)
-            .padding(vertical = 5.dp, horizontal = 30.dp)
+            .width(350.dp)
+            .padding(vertical = 5.dp, horizontal = 80.dp)
     )
     {
         Text(
@@ -175,8 +175,8 @@ fun Buttons(navigator : NavController) {
         colors = outlinedButtonColors(MaterialTheme.colors.error, Black),
         modifier = Modifier
             .height(50.dp)
-            .width(250.dp)
-            .padding(vertical = 5.dp, horizontal = 30.dp)
+            .width(350.dp)
+            .padding(vertical = 5.dp, horizontal = 80.dp)
     )
     {
         Text(
@@ -191,8 +191,8 @@ fun Buttons(navigator : NavController) {
         colors = outlinedButtonColors(MaterialTheme.colors.secondaryVariant, Black),
         modifier = Modifier
             .height(50.dp)
-            .width(250.dp)
-            .padding(vertical = 5.dp, horizontal = 30.dp)
+            .width(350.dp)
+            .padding(vertical = 5.dp, horizontal = 80.dp)
     )
     {
         Text(

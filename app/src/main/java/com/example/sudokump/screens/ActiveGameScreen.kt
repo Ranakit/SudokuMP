@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -285,7 +286,7 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
             .requiredSize(56.dp)
             .padding(2.dp)
             .background(if (viewModel.noteMode.value){Color.White}
-            else{Color.Black}
+            else{Color.Transparent}
             ),
         border = BorderStroke(
             ButtonDefaults.OutlinedBorderSize,
@@ -293,13 +294,8 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
         )
 
     ) {
-        Icon(
-            contentDescription = stringResource(R.string.difficulty),
-            imageVector = Icons.Filled.Star,
-            tint = MaterialTheme.colors.secondary,
-            modifier  = Modifier
-                .size(32.dp)
-                .padding(top = 4.dp)
+        Image(
+            painterResource(R.drawable.ic_notes_foreground), "content description"
         )
     }
 }
@@ -347,9 +343,14 @@ fun SudokuTextFields(
                 (tileOffset * (tile.x.value)).dp,
                 (tileOffset * (tile.y.value)).dp,
             ).size(tileOffset.dp)
+                .background(if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.secondary.copy(
+                    alpha = .25f
+                )
+                else MaterialTheme.colors.surface)
                 .clickable {
                     coordinatesPair.value = Pair(tile.x.value, tile.y.value)
                 }, tile.notes)
+
         } else {
             Text(
                 text = text,
