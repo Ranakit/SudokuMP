@@ -5,7 +5,6 @@ class SudokuSchema{
     private val rows : MutableList<SudokuRow>
     private val columns : MutableList<SudokuColumn>
     private val matrices : MutableList<MutableList<SudokuSquare>>
-    private lateinit var grid : SudokuGrid
     val map : HashMap<Int, SudokuNode>
 
     private constructor(lambda : (i : Int, j: Int) -> SudokuNode)
@@ -63,15 +62,11 @@ class SudokuSchema{
         }
     }
 
-    constructor(sudokuGrid: SudokuGrid) : this({i,j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuGrid.board[i][j]!=0)}) {
-        grid = sudokuGrid
-    }
+    constructor(sudokuGrid: SudokuGrid) : this({i,j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuGrid.board[i][j]!=0)})
 
     constructor(sudokuGrid: SudokuGrid, sudokuTileSet: SudokuTileSet) : this({i, j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuTileSet.generateSet().contains(
         Pair(i,j)
-    ))}) {
-        grid = sudokuGrid
-    }
+    ))})
 
     fun getReadOnlyTiles() : SudokuTileSet
     {
@@ -201,6 +196,22 @@ class SudokuSchema{
 
     fun copy() : SudokuSchema
     {
-        return SudokuSchema(grid)
+        return SudokuSchema(generateGrid())
+    }
+
+    private fun generateGrid() : SudokuGrid {
+        val retVal = mutableListOf<MutableList<Int>>().apply {
+            for (i in 0..8)
+            {
+                add(mutableListOf<Int>().apply { repeat(9) {add(0)} })
+            }
+        }
+
+        for (elem in map.values)
+        {
+            retVal[elem.x][elem.y] = elem.value
+        }
+
+        return SudokuGrid(retVal)
     }
 }
