@@ -10,7 +10,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -270,7 +272,11 @@ fun GameContent(
                 coordinatePair,
                 viewModel
             )
-            NotesButton(viewModel)
+            Row {
+                NotesButton(viewModel)
+                HintButton(viewModel)
+            }
+
             }
         }
     }
@@ -285,8 +291,12 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
         modifier = Modifier
             .requiredSize(56.dp)
             .padding(2.dp)
-            .background(if (viewModel.noteMode.value){Color.White}
-            else{Color.Transparent}
+            .background(
+                if (viewModel.noteMode.value) {
+                    Color.White
+                } else {
+                    Color.Transparent
+                }
             ),
         border = BorderStroke(
             ButtonDefaults.OutlinedBorderSize,
@@ -297,6 +307,13 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
         Image(
             painterResource(R.drawable.ic_notes_foreground), "content description"
         )
+    }
+}
+
+@Composable
+fun HintButton(viewModel: ActiveGameViewModel) {
+    Button(onClick = { viewModel.findHint()}) {
+        Icon(Icons.Filled.Info, "Get a Hint")
     }
 }
 
@@ -339,17 +356,22 @@ fun SudokuTextFields(
     boardState.values.forEach { tile ->
         val text = tile.value.value.toString()
         if (text == "0") {
-            SubGrid(Modifier.absoluteOffset(
-                (tileOffset * (tile.x.value)).dp,
-                (tileOffset * (tile.y.value)).dp,
-            ).size(tileOffset.dp)
-                .background(if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.secondary.copy(
-                    alpha = .25f
-                )
-                else MaterialTheme.colors.surface)
-                .clickable {
-                    coordinatesPair.value = Pair(tile.x.value, tile.y.value)
-                }, tile.notes)
+            SubGrid(
+                Modifier
+                    .absoluteOffset(
+                        (tileOffset * (tile.x.value)).dp,
+                        (tileOffset * (tile.y.value)).dp,
+                    )
+                    .size(tileOffset.dp)
+                    .background(
+                        if (tile.x.value == coordinatesPair.value.first && tile.y.value == coordinatesPair.value.second) MaterialTheme.colors.secondary.copy(
+                            alpha = .25f
+                        )
+                        else MaterialTheme.colors.surface
+                    )
+                    .clickable {
+                        coordinatesPair.value = Pair(tile.x.value, tile.y.value)
+                    }, tile.notes)
 
         } else {
             Text(

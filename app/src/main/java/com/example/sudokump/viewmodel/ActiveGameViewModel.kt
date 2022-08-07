@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
+import com.example.sudokump.model.SudokuHintFinder
 import com.example.sudokump.model.getHash
 import com.example.sudokump.modules.ActiveGameViewModelAssistedFactory
 import com.example.sudokump.modules.SudokuGamesEntryPoint
@@ -103,5 +104,18 @@ class ActiveGameViewModel @AssistedInject constructor(
         }
 
         return array
+    }
+
+    fun findHint() {
+        val hintFinder = SudokuHintFinder(game.schema.copy())
+        hintFinder.executeAsyncReturnTask()
+        val hint = hintFinder.joinTask()
+        if(hint.first != null)
+        {
+            val nodeToUpdate = game.schema.map[getHash(hint.second!!.x, hint.second!!.y)]
+            nodeToUpdate?.value = hint.first!!
+            val tileToUpdate = boardState[getHash(hint.second!!.x, hint.second!!.y)]
+            tileToUpdate?.value?.value = hint.first!!
+        }
     }
 }
