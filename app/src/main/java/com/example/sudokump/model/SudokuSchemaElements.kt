@@ -218,7 +218,7 @@ class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<
         val retVal = mutableSetOf<Pair<Int, SudokuNode>>()
         for (i in (0 until occurrenciesList.size)) {
             if (occurrenciesList[i].first == 1) {
-                retVal.add(Pair(i, occurrenciesList[i].second!!))
+                retVal.add(Pair(i+1, occurrenciesList[i].second!!))
             }
         }
 

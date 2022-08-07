@@ -39,13 +39,17 @@ class SudokuHintFinder(private val schema: SudokuSchema) : AsyncReturnTask<Pair<
                     val solver = SudokuSolver(copy)
                     solver.executeAsyncReturnTask()
                     taskList.add(Pair(num, solver))
+
+                    solver.joinTask().forEach { solvedSchema ->
+                        if(solvedSchema.overallCheck() && solvedSchema.overallCompletenessCheck()) {
+                            return Pair(num, node)
                 }
 
-                taskList.forEach {
+                /*taskList.forEach {
                     it.second.joinTask().forEach { solvedSchema ->
                         if(solvedSchema.overallCheck() && solvedSchema.overallCompletenessCheck()) {
                             return Pair(it.first, node)
-                        }
+                        }*/
                     }
 
                 }
