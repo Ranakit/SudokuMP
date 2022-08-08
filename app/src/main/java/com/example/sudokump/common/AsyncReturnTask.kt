@@ -25,6 +25,12 @@ abstract class AsyncReturnTask<T> {
             }
         }
 
+        if (retVal == null) {
+            throw NoReturnException()
+        }
+
         return retVal!!
     }
 }
+
+class NoReturnException : Exception()

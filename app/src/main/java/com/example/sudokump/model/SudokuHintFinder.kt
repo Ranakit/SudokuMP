@@ -1,6 +1,8 @@
 package com.example.sudokump.model
 
+import android.util.Log
 import com.example.sudokump.common.AsyncReturnTask
+import com.example.sudokump.common.NoReturnException
 
 class SudokuHintFinder(private val schema: SudokuSchema) : AsyncReturnTask<Pair<Int?, SudokuNode?>>() {
 
@@ -31,18 +33,24 @@ class SudokuHintFinder(private val schema: SudokuSchema) : AsyncReturnTask<Pair<
 
         for (node in schema.map.values) {
             if (node.value == 0) {
-                val taskList = mutableListOf<Pair<Int,SudokuSolver>>()
 
                 for (num in node.getCrossAvailableSet()) {
                     val copy = schema.copy()
                     copy.map[getHash(node.x, node.y)]?.setValueWithNotification(num)
-                    val solver = SudokuSolver(copy)
-                    solver.executeAsyncReturnTask()
-                    taskList.add(Pair(num, solver))
+                    val finder = SudokuSingleSolutionFinder(copy)
+                    finder.executeAsyncReturnTask()
+                    var solution : SudokuSchema? = null
 
-                    solver.joinTask().forEach { solvedSchema ->
-                        if(solvedSchema.overallCheck() && solvedSchema.overallCompletenessCheck()) {
-                            return Pair(num, node)
+                    try {
+                        solution = finder.joinTask()
+                    }catch (e : NoReturnException) {
+                        Log.i("SudokuMP", "No solution found")
+                        println("No solution found")
+                    }
+
+                    if(solution != null && solution.overallCompletenessCheck() && solution.overallCheck()) {
+                        return Pair(num, node)
+                    }
                 }
 
                 /*taskList.forEach {
@@ -50,9 +58,6 @@ class SudokuHintFinder(private val schema: SudokuSchema) : AsyncReturnTask<Pair<
                         if(solvedSchema.overallCheck() && solvedSchema.overallCompletenessCheck()) {
                             return Pair(it.first, node)
                         }*/
-                    }
-
-                }
             }
         }
 
