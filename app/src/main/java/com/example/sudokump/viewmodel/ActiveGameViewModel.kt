@@ -69,8 +69,8 @@ class ActiveGameViewModel @AssistedInject constructor(
         }
     }
 
-    fun overallCheck(){
-        game.schema.overallCheck()
+    fun overallCheck() : Boolean{
+        return game.schema.overallCheck() && game.schema.overallCompletenessCheck()
     }
 
     fun updateNode(tileX : Int, tileY : Int , value : Int){

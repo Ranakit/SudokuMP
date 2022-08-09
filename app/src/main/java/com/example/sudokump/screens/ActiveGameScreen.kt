@@ -126,7 +126,8 @@ fun ActiveGameScreen(gameId : Int) {
                     Modifier.alpha(activeAlpha)
                 ) {
                     GameContent(
-                        viewModel
+                        viewModel,
+                        contentTransitionState
                     )
                 }
                 ActiveGameScreenState.LOADING -> Box(
@@ -151,7 +152,8 @@ fun ActiveGameScreen(gameId : Int) {
 
 @Composable
 fun GameContent(
-    viewModel: ActiveGameViewModel
+    viewModel: ActiveGameViewModel,
+    contentTransitionState : MutableTransitionState<ActiveGameScreenState>
 ) {
     val coordinatePair = rememberSaveable{mutableStateOf(Pair(-1,-1))}
         BoxWithConstraints{
@@ -255,26 +257,30 @@ fun GameContent(
             InputButtonRow(
                 (1..3).toList(),
                 coordinatePair,
-                viewModel
+                viewModel,
+                contentTransitionState
             )
             InputButtonRow(
                 (4..6).toList(),
                 coordinatePair,
-                viewModel
+                viewModel,
+                contentTransitionState
             )
             InputButtonRow(
                 (7..9).toList(),
                 coordinatePair,
-                viewModel
+                viewModel,
+                contentTransitionState
             )
             InputButtonRow(
                 listOf(0),
                 coordinatePair,
-                viewModel
+                viewModel,
+                contentTransitionState
             )
             Row {
                 NotesButton(viewModel)
-                HintButton(viewModel)
+                HintButton(viewModel,contentTransitionState)
             }
 
             }
@@ -311,8 +317,10 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
 }
 
 @Composable
-fun HintButton(viewModel: ActiveGameViewModel) {
-    Button(onClick = { viewModel.findHint()}) {
+fun HintButton(viewModel: ActiveGameViewModel, contentTransitionState: MutableTransitionState<ActiveGameScreenState>) {
+    Button(onClick = {
+        viewModel.findHint()
+        if(viewModel.overallCheck()) contentTransitionState.targetState = ActiveGameScreenState.COMPLETE}) {
         Icon(Icons.Filled.Info, "Get a Hint")
     }
 }
@@ -415,14 +423,16 @@ fun SudokuTextFields(
 fun InputButtonRow(
     numbers: List<Int>,
     coordinatesPair: MutableState<Pair<Int, Int>>,
-    viewModel: ActiveGameViewModel
+    viewModel: ActiveGameViewModel,
+    contentTransitionState : MutableTransitionState<ActiveGameScreenState>
 ) {
     Row{
         numbers.forEach{
             SudokuInputButton(
                 coordinatesPair,
                 it,
-                viewModel
+                viewModel,
+                contentTransitionState
             )
         }
     }
@@ -435,7 +445,8 @@ fun InputButtonRow(
 fun SudokuInputButton(
     coordinatesPair: MutableState<Pair<Int, Int>>,
     number: Int,
-    viewModel: ActiveGameViewModel
+    viewModel: ActiveGameViewModel,
+    contentTransitionState : MutableTransitionState<ActiveGameScreenState>
 ) {
     TextButton(
         onClick = {
@@ -444,7 +455,10 @@ fun SudokuInputButton(
             coordinatesPair.value.second,
             number
             )
-            viewModel.overallCheck()
+            if(viewModel.overallCheck())
+            {
+                contentTransitionState.targetState = ActiveGameScreenState.COMPLETE
+            }
           },
         modifier = Modifier
             .requiredSize(56.dp)
