@@ -12,7 +12,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -33,12 +32,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudokump.R
 import com.example.sudokump.common.sqrt
-import com.example.sudokump.common.toTime
 import com.example.sudokump.modules.ViewModelFactoryProvider
 import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
+import kotlin.time.Duration
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -140,7 +139,7 @@ fun ActiveGameScreen(gameId : Int) {
                     Modifier.alpha(completeAlpha)
                 ) {
                     GameCompleteContent(
-                        viewModel.timerState,
+                        viewModel.timer,
                         viewModel.isNewRecordedState
                     )
                 }
@@ -152,8 +151,7 @@ fun ActiveGameScreen(gameId : Int) {
 
 @Composable
 fun GameContent(
-    viewModel: ActiveGameViewModel,
-    contentTransitionState : MutableTransitionState<ActiveGameScreenState>
+    viewModel: ActiveGameViewModel, contentTransitionState : MutableTransitionState<ActiveGameScreenState>
 ) {
     val coordinatePair = rememberSaveable{mutableStateOf(Pair(-1,-1))}
         BoxWithConstraints{
@@ -236,15 +234,18 @@ fun GameContent(
                 .padding(start = 16.dp)
 
         ){
-            TimerText(viewModel)
+            Text(
+                text = viewModel.timer.value.toComponents { hours, minutes, seconds, ->
+                        "$hours:$minutes:$seconds"
+                                                          },
+                style = newGameSubtitle.copy(
+                color = MaterialTheme.colors.secondary
+            )
+            )
 
 
 
         }
-            /*
-            Layout container for the input buttons
-            */
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -272,13 +273,8 @@ fun GameContent(
                 viewModel,
                 contentTransitionState
             )
-            InputButtonRow(
-                listOf(0),
-                coordinatePair,
-                viewModel,
-                contentTransitionState
-            )
             Row {
+                ClearButton(viewModel, coordinatePair)
                 NotesButton(viewModel)
                 HintButton(viewModel,contentTransitionState)
             }
@@ -317,6 +313,30 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
 }
 
 @Composable
+fun ClearButton(viewModel: ActiveGameViewModel, coordinatePair: MutableState<Pair<Int, Int>>) {
+    TextButton(
+        onClick = {
+            viewModel.clearTile(coordinatePair)
+        },
+        modifier = Modifier
+            .requiredSize(56.dp)
+            .padding(2.dp)
+            .background(
+                Color.Transparent
+            ),
+        border = BorderStroke(
+            ButtonDefaults.OutlinedBorderSize,
+            MaterialTheme.colors.secondary
+        )
+
+    ) {
+        Image(
+            painterResource(R.drawable.ic_baseline_cleaning_services_24), "content description"
+        )
+    }
+}
+
+@Composable
 fun HintButton(viewModel: ActiveGameViewModel, contentTransitionState: MutableTransitionState<ActiveGameScreenState>) {
     Button(onClick = {
         viewModel.findHint()
@@ -343,13 +363,10 @@ fun SudokuBoard(viewModel: ActiveGameViewModel, size: Dp, coordinatesPair: Mutab
         boardState,
         coordinatesPair
     )
-
     BoardGrid(
         boundary,
         tileOffset
     )
-
-
 }
 
 @Composable
@@ -526,7 +543,7 @@ fun TimerText(viewModel: ActiveGameViewModel) {
 }
 
 @Composable
-fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
+fun GameCompleteContent(timerState: MutableState<Duration>, isNewRecordState: Boolean) {
     /*
     The composable for the case when the user effectively completes a game
      */
@@ -567,7 +584,9 @@ fun GameCompleteContent(timerState: Long , isNewRecordState: Boolean) {
         )
 
         Text(
-            text = timerState.toTime(),
+            text = timerState.value.toComponents { hours, minutes, seconds, ->
+             "$hours:$minutes:$seconds"
+            },
             style = newGameSubtitle.copy(
                 color = MaterialTheme.colors.secondary
             )

@@ -15,6 +15,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.*
+import kotlin.time.Duration
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 class ActiveGameViewModel @AssistedInject constructor(
     @Assisted id : Int, @ApplicationContext context: Context) : ViewModel() {
@@ -23,13 +28,9 @@ class ActiveGameViewModel @AssistedInject constructor(
     private val entryPoint : SudokuGamesEntryPoint
     val boardState = HashMap<Int, SudokuTile>()
     var noteMode: MutableState<Boolean> = mutableStateOf(false)
-
-    val timerState : Long
-    get() {
-        return game.timePassed.inWholeSeconds
-    }
-
     val isNewRecordedState = true
+    val timerJob : Job
+    val timer : MutableState<Duration>
 
     val difficulty : Difficulties
     get()
@@ -65,6 +66,14 @@ class ActiveGameViewModel @AssistedInject constructor(
             {
                 val node = game.schema.map[getHash(i,j)]
                 boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value), node.readOnly, notesControl(node.notes))
+            }
+        }
+        timer = mutableStateOf(game.timePassed)
+        timerJob = CoroutineScope(Dispatchers.IO).launch {
+            val start = LocalDateTime.now()
+            while (true) {
+                val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
+                timer.value = newTimer.milliseconds
             }
         }
     }
@@ -104,6 +113,20 @@ class ActiveGameViewModel @AssistedInject constructor(
         }
 
         return array
+    }
+
+    fun clearTile(coordinatePair: MutableState<Pair<Int,Int>>){
+        val tile = game.schema.map[getHash(coordinatePair.value.first, coordinatePair.value.second)]
+        if (tile!!.readOnly){
+            return
+        }
+        val board = boardState[getHash(coordinatePair.value.first, coordinatePair.value.second)]
+        tile.value = 0
+        board?.value?.value = 0
+        for (i in 0..8){
+            tile.notes.clear()
+            board?.notes?.get(i)?.value = false
+        }
     }
 
     fun findHint() {
