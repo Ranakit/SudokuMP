@@ -20,10 +20,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.ampl.AMPL
-import com.ampl.DataFrame
-import com.ampl.Environment
-import com.ampl.Variable
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
 

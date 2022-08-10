@@ -20,6 +20,7 @@ import kotlin.time.Duration
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class ActiveGameViewModel @AssistedInject constructor(
     @Assisted id : Int, @ApplicationContext context: Context) : ViewModel() {
@@ -69,11 +70,11 @@ class ActiveGameViewModel @AssistedInject constructor(
             }
         }
         timer = mutableStateOf(game.timePassed)
-        timerJob = CoroutineScope(Dispatchers.IO).launch {
+        timerJob = CoroutineScope(Dispatchers.IO).launch(start = CoroutineStart.LAZY) {
             val start = LocalDateTime.now()
             while (true) {
                 val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
-                timer.value = newTimer.milliseconds
+                timer.value = newTimer.seconds
             }
         }
     }
@@ -140,5 +141,13 @@ class ActiveGameViewModel @AssistedInject constructor(
             val tileToUpdate = boardState[getHash(hint.second!!.x, hint.second!!.y)]
             tileToUpdate?.value?.value = hint.first!!
         }
+    }
+
+    fun onStart() {
+        timerJob.start()
+    }
+
+    fun onStop() {
+        timerJob.cancel()
     }
 }

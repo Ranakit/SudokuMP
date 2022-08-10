@@ -56,6 +56,11 @@ fun ActiveGameScreen(gameId : Int) {
 
     val viewModel : ActiveGameViewModel = viewModel(factory = ActiveGameViewModel.provideFactory(factory,gameId))
 
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
+    }
+
     val contentTransitionState = remember {
         MutableTransitionState(
             ActiveGameScreenState.ACTIVE
@@ -235,7 +240,7 @@ fun GameContent(
 
         ){
             Text(
-                text = viewModel.timer.value.toComponents { hours, minutes, seconds, ->
+                text = viewModel.timer.value.toComponents {hours, minutes, seconds, _ ->
                         "$hours:$minutes:$seconds"
                                                           },
                 style = newGameSubtitle.copy(
