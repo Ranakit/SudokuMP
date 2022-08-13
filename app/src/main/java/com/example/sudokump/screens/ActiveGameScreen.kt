@@ -2,6 +2,7 @@ package com.example.sudokump.screens
 
 import android.app.Activity
 import android.graphics.Paint
+import android.widget.Toast
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -35,8 +37,10 @@ import com.example.sudokump.common.sqrt
 import com.example.sudokump.modules.ViewModelFactoryProvider
 import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
+import com.example.sudokump.viewmodel.HintNotFoundException
 import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
+import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 
 enum class ActiveGameScreenState {
@@ -144,8 +148,7 @@ fun ActiveGameScreen(gameId : Int) {
                     Modifier.alpha(completeAlpha)
                 ) {
                     GameCompleteContent(
-                        viewModel.timer,
-                        viewModel.isNewRecordedState
+                        viewModel
                     )
                 }
             }
@@ -180,7 +183,7 @@ fun GameContent(
 
         ConstraintLayout {
 
-            val (board , timer , diff , inputs) = createRefs()
+            val (board , timer , diff , inputs, completionPercent) = createRefs()
 
             /*
             Now we have to create a container for the puzzle board
@@ -228,62 +231,77 @@ fun GameContent(
 
                     )
                 }
-        }
-        Box(
-            Modifier
-                .wrapContentSize()
-                .constrainAs(timer) {
-                    top.linkTo(board.bottom)
-                    start.linkTo(parent.start)
-                }
-                .padding(start = 16.dp)
+            }
+            Box(
+                Modifier
+                    .wrapContentSize()
+                    .constrainAs(timer) {
+                        top.linkTo(board.bottom)
+                        start.linkTo(parent.start)
+                    }
+                    .padding(start = 16.dp)
 
-        ){
-            Text(
-                text = viewModel.timer.value.toComponents {hours, minutes, seconds, _ ->
-                        "$hours:$minutes:$seconds"
-                                                          },
-                style = newGameSubtitle.copy(
-                color = MaterialTheme.colors.secondary
-            )
-            )
-
-
-
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .constrainAs(inputs) {
-                    top.linkTo(timer.bottom)
-                },
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            InputButtonRow(
-                (1..3).toList(),
-                coordinatePair,
-                viewModel,
-                contentTransitionState
-            )
-            InputButtonRow(
-                (4..6).toList(),
-                coordinatePair,
-                viewModel,
-                contentTransitionState
-            )
-            InputButtonRow(
-                (7..9).toList(),
-                coordinatePair,
-                viewModel,
-                contentTransitionState
-            )
-            Row {
-                ClearButton(viewModel, coordinatePair)
-                NotesButton(viewModel)
-                HintButton(viewModel,contentTransitionState)
+            ){
+                Text(
+                    text = viewModel.timer.value.toComponents {hours, minutes, seconds, _ ->
+                            "$hours:$minutes:$seconds"
+                    },
+                    style = newGameSubtitle.copy(
+                        color = MaterialTheme.colors.secondary
+                    )
+                )
             }
 
+            Box(
+                Modifier
+                .wrapContentSize()
+                .constrainAs(completionPercent) {
+                    top.linkTo(board.bottom)
+                    start.linkTo(timer.end)
+                    end.linkTo(diff.start)
+                }
+                .padding(start = 16.dp)) {
+
+                Text(
+                    text = viewModel.completionPercent.value ,
+                    style = newGameSubtitle.copy(
+                        color = MaterialTheme.colors.secondary
+                    )
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .constrainAs(inputs) {
+                        top.linkTo(timer.bottom)
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                InputButtonRow(
+                    (1..3).toList(),
+                    coordinatePair,
+                    viewModel,
+                    contentTransitionState
+                )
+                InputButtonRow(
+                    (4..6).toList(),
+                    coordinatePair,
+                    viewModel,
+                    contentTransitionState
+                )
+                InputButtonRow(
+                    (7..9).toList(),
+                    coordinatePair,
+                    viewModel,
+                    contentTransitionState
+                )
+                Row {
+                    ClearButton(viewModel, coordinatePair)
+                    NotesButton(viewModel)
+                    HintButton(viewModel,contentTransitionState)
+                }
             }
         }
     }
@@ -343,10 +361,29 @@ fun ClearButton(viewModel: ActiveGameViewModel, coordinatePair: MutableState<Pai
 
 @Composable
 fun HintButton(viewModel: ActiveGameViewModel, contentTransitionState: MutableTransitionState<ActiveGameScreenState>) {
-    Button(onClick = {
-        viewModel.findHint()
-        if(viewModel.overallCheck()) contentTransitionState.targetState = ActiveGameScreenState.COMPLETE}) {
-        Icon(Icons.Filled.Info, "Get a Hint")
+    val context = LocalContext.current
+    TextButton(onClick = {
+        try {
+            viewModel.findHint()
+            if(viewModel.overallCheck()) {
+                contentTransitionState.targetState = ActiveGameScreenState.COMPLETE
+            }
+        }catch (e : HintNotFoundException) {
+            Toast.makeText(context, "Hint not found, please look after errors", Toast.LENGTH_LONG).show()
+        }},
+        modifier = Modifier
+            .requiredSize(56.dp)
+            .padding(2.dp)
+            .background(
+                Color.Transparent
+            ),
+        border = BorderStroke(
+            ButtonDefaults.OutlinedBorderSize,
+            MaterialTheme.colors.secondary
+        )) {
+        Image(
+            painterResource(R.drawable.ic_hint_24), "Get a hint"
+        )
     }
 }
 
@@ -365,7 +402,7 @@ fun SudokuBoard(viewModel: ActiveGameViewModel, size: Dp, coordinatesPair: Mutab
 
     SudokuTextFields(
         tileOffset,
-        boardState,
+        viewModel,
         coordinatesPair
     )
     BoardGrid(
@@ -377,13 +414,13 @@ fun SudokuBoard(viewModel: ActiveGameViewModel, size: Dp, coordinatesPair: Mutab
 @Composable
 fun SudokuTextFields(
     tileOffset: Float,
-    boardState: HashMap<Int, SudokuTile>,
+    viewModel: ActiveGameViewModel,
     coordinatesPair: MutableState<Pair<Int, Int>>
 ) {
     /*
     Here we are going to implement the real grid , where some icons are mutable
      */
-    boardState.values.forEach { tile ->
+    viewModel.boardState.values.forEach { tile ->
         val text = tile.value.value.toString()
         if (text == "0") {
             SubGrid(
@@ -410,12 +447,16 @@ fun SudokuTextFields(
                     color = if (MaterialTheme.colors.isLight) {
                         if (tile.readOnly) {
                             Color.Black
+                        } else if(!viewModel.checkTileIsCorrect(tile.x.value, tile.y.value)) {
+                            userInputtedNumberWrong
                         } else {
                             userInputtedNumberLight
                         }
                     } else {
                         if (tile.readOnly) {
                             MaterialTheme.colors.onSecondary
+                        } else if(!viewModel.checkTileIsCorrect(tile.x.value, tile.y.value)) {
+                            userInputtedNumberWrong
                         } else {
                             userInputtedNumberLight
                         }
@@ -548,10 +589,11 @@ fun TimerText(viewModel: ActiveGameViewModel) {
 }
 
 @Composable
-fun GameCompleteContent(timerState: MutableState<Duration>, isNewRecordState: Boolean) {
+fun GameCompleteContent(viewModel: ActiveGameViewModel) {
     /*
     The composable for the case when the user effectively completes a game
      */
+    viewModel.stopTimer()
 
     Column (
         Modifier
@@ -571,7 +613,7 @@ fun GameCompleteContent(timerState: MutableState<Duration>, isNewRecordState: Bo
                 modifier = Modifier.size(128.dp)
             )
 
-            if (isNewRecordState) Image(
+            if (viewModel.isNewRecordedState) Image(
                 contentDescription = null,
                 imageVector = Icons.Filled.Star,
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
@@ -589,7 +631,7 @@ fun GameCompleteContent(timerState: MutableState<Duration>, isNewRecordState: Bo
         )
 
         Text(
-            text = timerState.value.toComponents { hours, minutes, seconds, ->
+            text = viewModel.timer.value.toComponents { hours, minutes, seconds, ->
              "$hours:$minutes:$seconds"
             },
             style = newGameSubtitle.copy(

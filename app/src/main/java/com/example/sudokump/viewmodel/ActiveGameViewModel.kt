@@ -1,6 +1,7 @@
 package com.example.sudokump.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,7 @@ class ActiveGameViewModel @AssistedInject constructor(
     val isNewRecordedState = true
     val timerJob : Job
     val timer : MutableState<Duration>
+    val completionPercent : MutableState<String>
 
     val difficulty : Difficulties
     get()
@@ -72,11 +74,12 @@ class ActiveGameViewModel @AssistedInject constructor(
         timer = mutableStateOf(game.timePassed)
         timerJob = CoroutineScope(Dispatchers.IO).launch(start = CoroutineStart.LAZY) {
             val start = LocalDateTime.now()
-            while (true) {
+            while (isActive) {
                 val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
                 timer.value = newTimer.seconds
             }
         }
+        completionPercent = mutableStateOf(game.evaluateCompletionPercent())
     }
 
     fun overallCheck() : Boolean{
@@ -96,8 +99,9 @@ class ActiveGameViewModel @AssistedInject constructor(
             board?.notes?.get(value-1)?.value = !(board?.notes?.get(value-1)?.value)!!
         }
         else {
-            tile?.value = value
+            tile?.setValueWithNotification(value)
             board?.value?.value = value
+            completionPercent.value = game.evaluateCompletionPercent()
         }
     }
 
@@ -122,8 +126,9 @@ class ActiveGameViewModel @AssistedInject constructor(
             return
         }
         val board = boardState[getHash(coordinatePair.value.first, coordinatePair.value.second)]
-        tile.value = 0
+        tile.setValueWithNotification(0)
         board?.value?.value = 0
+        completionPercent.value = game.evaluateCompletionPercent()
         for (i in 0..8){
             tile.notes.clear()
             board?.notes?.get(i)?.value = false
@@ -140,7 +145,17 @@ class ActiveGameViewModel @AssistedInject constructor(
             nodeToUpdate?.value = hint.first!!
             val tileToUpdate = boardState[getHash(hint.second!!.x, hint.second!!.y)]
             tileToUpdate?.value?.value = hint.first!!
-        }
+            completionPercent.value = game.evaluateCompletionPercent()
+        } else throw HintNotFoundException()
+    }
+
+    fun checkTileIsCorrect(tileX : Int, tileY : Int) : Boolean {
+        val node = game.schema.map[getHash(tileX, tileY)]
+        return node!!.isCorrect
+    }
+
+    fun stopTimer() {
+        timerJob.cancel()
     }
 
     fun onStart() {
@@ -148,6 +163,8 @@ class ActiveGameViewModel @AssistedInject constructor(
     }
 
     fun onStop() {
-        timerJob.cancel()
+        stopTimer()
     }
 }
+
+class HintNotFoundException : Exception()

@@ -169,7 +169,7 @@ class SudokuSchema{
         {
             for(j in 0..8)
             {
-                if(map[getHash(i,j)]?.value != 0)
+                if(map[getHash(i,j)]?.value != 0 && map[getHash(i,j)]!!.isCorrect)
                 {
                     counter++
                 }

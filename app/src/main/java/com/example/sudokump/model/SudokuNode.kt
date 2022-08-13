@@ -7,7 +7,8 @@ class SudokuNode(
     val y : Int,
     var value: Int = 0,
     var readOnly: Boolean = true,
-    val notes: MutableSet<Int> = mutableSetOf()
+    val notes: MutableSet<Int> = mutableSetOf(),
+    var isCorrect : Boolean = true
 ) : Serializable {
 
     lateinit var row: SudokuRow
@@ -19,13 +20,35 @@ class SudokuNode(
         return if(value == 0) {row.availableValues.intersect(column.availableValues).intersect(square.availableValues)} else { setOf()}
     }
 
+    private fun getCrossAvailableSetInternal() : Set<Int> {
+        return row.availableValues.intersect(column.availableValues).intersect(square.availableValues)
+    }
+
     fun setValueWithNotification(value : Int)
     {
-        if (value in row.availableValues.intersect(column.availableValues).intersect(square.availableValues)) {
+        freeValue()
+        if(value > 0) {
+            if (getCrossAvailableSetInternal().contains(value)) {
+                row.availableValues.remove(value)
+                column.availableValues.remove(value)
+                square.availableValues.remove(value)
+            } else {
+                this.isCorrect = false
+            }
+
             this.value = value
-            row.availableValues.remove(value)
-            column.availableValues.remove(value)
-            square.availableValues.remove(value)
+        }
+    }
+
+    private fun freeValue() {
+        if(this.value != 0) {
+            if(this.isCorrect) {
+                row.availableValues.add(this.value)
+                column.availableValues.remove(this.value)
+                square.availableValues.remove(this.value)
+            }
+            this.value = 0
+            this.isCorrect = true
         }
     }
 

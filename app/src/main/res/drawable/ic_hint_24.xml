@@ -1,0 +1,70 @@
+<vector android:height="24dp" android:tint="#000000"
+    android:viewportHeight="24" android:viewportWidth="24"
+    android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M9,18 L 10,20 14,20 15,18 z"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M10,20 L 11,22 13,22 14,20 "/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M9,18 C -1.5,3.5 25.5,3.5, 15,18"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M7,17 l -3,2"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M17,17 l 3,2"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M5.5,14 l -3.6,0.8"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M18.5,14 l 3.6,0.8"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M5.5,11 l -3.7,-0.5"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M18.5,11 l 3.7,-0.5"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M7,8 l -3.4,-2.2"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M17,8 l 3.4,-2.2"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M14.5,6.5 l 2.2,-3.2"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M9.5,6.5 l -2.2,-3.2"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M12,6 l 0,-4"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M12,15 C 6,5.5, 18,5.5, 12,15 z"/>
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="@color/black"
+        android:pathData="M12,17 C 11,16 13,16 12,17 z"/>
+
+</vector>

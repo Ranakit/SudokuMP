@@ -22,7 +22,7 @@ import kotlin.time.DurationUnit
 class SudokuGameModel {
     val id : Int
     val timePassed  : Duration
-    val completionPercent : String
+    var completionPercent : String
     val schema : SudokuSchema
     val difficulty : Difficulties
     val saveDate : LocalDate
@@ -87,21 +87,10 @@ class SudokuGameModel {
             dataArray, this.difficulty.toString(), dateString, readOnlyTilesArray)
     }
 
-    private fun evaluateCompletionPercent(schema: HashMap<Int, SudokuNode>) : String
+    fun evaluateCompletionPercent() : String
     {
-        var counter = 0
-        for(i in 0..8)
-        {
-            for(j in 0..8)
-            {
-                if(schema[getHash(i,j)]?.value != 0)
-                {
-                    counter++
-                }
-            }
-        }
-
-        return String.format("%.2f%%", counter/81.0f*100)
+        this.completionPercent = this.schema.evaluateCompletionPercent()
+        return this.completionPercent
     }
 
     @EntryPoint
