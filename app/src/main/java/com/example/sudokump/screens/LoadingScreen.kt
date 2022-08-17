@@ -41,7 +41,7 @@ fun LoadingScreen() {
         ) {
 
             Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
+                painter = painterResource(R.drawable.ic_launcher),
                 modifier = Modifier.size(128.dp),
                 contentDescription = stringResource(R.string.logo_description)
             )

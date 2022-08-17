@@ -11,7 +11,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -38,16 +36,12 @@ import com.example.sudokump.modules.ViewModelFactoryProvider
 import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.HintNotFoundException
-import com.example.sudokump.viewmodel.SudokuTile
 import dagger.hilt.android.EntryPointAccessors
-import kotlin.coroutines.coroutineContext
-import kotlin.time.Duration
 
 enum class ActiveGameScreenState {
     LOADING,
     ACTIVE,
     COMPLETE
-
 }
 
 @Composable
@@ -330,7 +324,7 @@ fun NotesButton(viewModel: ActiveGameViewModel) {
 
     ) {
         Image(
-            painterResource(R.drawable.ic_notes_foreground), "content description"
+            painterResource(R.drawable.ic_notes), "content description"
         )
     }
 }
@@ -354,7 +348,7 @@ fun ClearButton(viewModel: ActiveGameViewModel, coordinatePair: MutableState<Pai
 
     ) {
         Image(
-            painterResource(R.drawable.ic_baseline_cleaning_services_24), "content description"
+            painterResource(R.drawable.ic_gomma), "content description"
         )
     }
 }
@@ -393,12 +387,6 @@ fun SudokuBoard(viewModel: ActiveGameViewModel, size: Dp, coordinatesPair: Mutab
     val boundary = 9
 
     val tileOffset = size.value /  boundary
-
-    val boardState = viewModel.boardState
-
-    /*viewModel.subBoardState = {
-        boardState = it
-    }*/
 
     SudokuTextFields(
         tileOffset,
@@ -569,30 +557,8 @@ fun BoardGrid(boundary: Int, tileOffset: Float) {
     }
 }
 
-
-@Composable
-fun TimerText(viewModel: ActiveGameViewModel) {
-
-    val timerState by remember {
-        mutableStateOf("")
-    }
-
-    /*viewModel.subTimerState = {
-        timerState = it.toTime()
-    }*/
-
-    Text(
-        modifier = Modifier.requiredHeight(36.dp),
-        text = timerState,
-        style = activeGameSubtitle.copy(color = MaterialTheme.colors.secondary)
-    )
-}
-
 @Composable
 fun GameCompleteContent(viewModel: ActiveGameViewModel) {
-    /*
-    The composable for the case when the user effectively completes a game
-     */
     viewModel.stopTimer()
 
     Column (
@@ -631,7 +597,7 @@ fun GameCompleteContent(viewModel: ActiveGameViewModel) {
         )
 
         Text(
-            text = viewModel.timer.value.toComponents { hours, minutes, seconds, ->
+            text = viewModel.timer.value.toComponents { hours, minutes, seconds, _ ->
              "$hours:$minutes:$seconds"
             },
             style = newGameSubtitle.copy(

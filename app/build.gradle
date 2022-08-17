@@ -68,10 +68,10 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0'
     implementation 'androidx.activity:activity-compose:1.5.0'
-    implementation 'androidx.room:room-runtime:2.4.2'
-    kapt "androidx.room:room-compiler:2.4.2"
-    implementation "androidx.room:room-ktx:2.4.2"
-    annotationProcessor "androidx.room:room-compiler:2.4.2"
+    implementation 'androidx.room:room-runtime:2.4.3'
+    kapt "androidx.room:room-compiler:2.4.3"
+    implementation "androidx.room:room-ktx:2.4.3"
+    annotationProcessor "androidx.room:room-compiler:2.4.3"
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation "com.google.dagger:hilt-android:2.42"
     kapt "com.google.dagger:hilt-compiler:2.42"
@@ -90,8 +90,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:1.1.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
-    implementation "com.squareup.retrofit2:converter-gson:" +
-            "2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:" + "2.9.0"
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 }
 

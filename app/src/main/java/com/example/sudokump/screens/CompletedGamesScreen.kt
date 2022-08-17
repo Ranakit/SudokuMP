@@ -56,33 +56,24 @@ fun CompletedGameCard(sudokuGameModel: SudokuGameModel)
 
             Text("${stringResource(id = R.string.id)}: ${sudokuGameModel.id}", modifier = Modifier.constrainAs(id){
                 top.linkTo(grid.bottom, 5.dp)
-                start.linkTo(parent.start)
+                start.linkTo(parent.start, 4.dp)
                 end.linkTo(completionPercent.start)
             })
 
             Text("${stringResource(id = R.string.timePassed)}: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
                 top.linkTo(id.bottom, margin = 5.dp)
-                start.linkTo(parent.start)
-                end.linkTo(difficulty.start)
-            })
-
-            Text("${stringResource(id = R.string.completionPercent)}: ${sudokuGameModel.completionPercent}", modifier = Modifier.constrainAs(completionPercent){
-                top.linkTo(id.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
+                start.linkTo(parent.start, 4.dp)
+                })
 
             Text("${stringResource(id = R.string.difficulty)}: ${sudokuGameModel.difficulty}", modifier = Modifier.constrainAs(difficulty){
-                top.linkTo(completionPercent.bottom, margin = 5.dp)
-                start.linkTo(timePassed.end)
-                end.linkTo(parent.end)
+                top.linkTo(id.top)
+                start.linkTo(id.end, 20.dp)
             })
 
             Text("${stringResource(id = R.string.savedWhen)}: ${sudokuGameModel.saveDate.dayOfMonth}/${sudokuGameModel.saveDate.monthValue}/${sudokuGameModel.saveDate.year}",
                 modifier = Modifier.constrainAs(saveDate){
-                    top.linkTo(id.top)
-                    start.linkTo(completionPercent.end)
-                    end.linkTo(parent.end)
+                    top.linkTo(timePassed.top)
+                    start.linkTo(timePassed.end, 20.dp)
                 })
         }
     }
