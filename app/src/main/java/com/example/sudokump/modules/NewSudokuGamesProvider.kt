@@ -1,8 +1,6 @@
 package com.example.sudokump.modules
 
 import android.content.Context
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
 import android.widget.Toast
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
@@ -13,6 +11,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
@@ -47,20 +49,21 @@ object NewSudokuGamesProvider {
     private fun getSudokuGame(difficulty: Difficulties, context: Context) : SudokuGameModel
     {
         try {
-            val policy = ThreadPolicy.Builder().permitAll().build()
-            StrictMode.setThreadPolicy(policy)
+            var sudokuGrid : SudokuGrid? = null
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
 
-            val retrofit = Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-            val sudokuAPI = retrofit.create(SudokuAPI::class.java)
-            val jsonCALL = sudokuAPI.sudokuGrid(difficulty.toString())
-            val sudokuGrid = jsonCALL.execute().body()!!
-
-
-            return SudokuGameModel(difficulty, sudokuGrid)
+                val sudokuAPI = retrofit.create(SudokuAPI::class.java)
+                val jsonCALL = sudokuAPI.sudokuGrid(difficulty.toString())
+                sudokuGrid = jsonCALL.execute().body()!!
+            }
+            runBlocking {
+                job.join()
+            }
+            return SudokuGameModel(difficulty, sudokuGrid!!)
         }
         catch (e : IOException) {
             Toast.makeText(context, "internet connection failed, running a demo", Toast.LENGTH_SHORT).show()

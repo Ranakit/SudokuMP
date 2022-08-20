@@ -37,6 +37,7 @@ import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.HintNotFoundException
 import dagger.hilt.android.EntryPointAccessors
+import kotlin.concurrent.thread
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -47,6 +48,12 @@ enum class ActiveGameScreenState {
 @Composable
 fun ActiveGameScreen(gameId : Int) {
 
+    val contentTransitionState = remember {
+        MutableTransitionState(
+            ActiveGameScreenState.LOADING
+        )
+    }
+
     val factory = EntryPointAccessors.fromActivity(
         LocalContext.current as Activity,
         ViewModelFactoryProvider::class.java
@@ -56,31 +63,9 @@ fun ActiveGameScreen(gameId : Int) {
 
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart()
+        contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
         onDispose { viewModel.onStop() }
     }
-
-    val contentTransitionState = remember {
-        MutableTransitionState(
-            ActiveGameScreenState.ACTIVE
-        )
-    }
-
-    /*viewModel.subContentState = {
-        contentTransitionState.targetState = it
-    }
-
-    viewModel.onStartBehavior = {
-        logic.onEvent(ActiveGameEvent.OnStart)
-    }
-
-    viewModel.onStopBehavior = {
-        logic.onEvent(ActiveGameEvent.OnStop)
-    }
-
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
-    }*/
 
     val transition = updateTransition(contentTransitionState, label = "")
 
@@ -132,12 +117,13 @@ fun ActiveGameScreen(gameId : Int) {
                         contentTransitionState
                     )
                 }
+
                 ActiveGameScreenState.LOADING -> Box(
                     Modifier.alpha(loadingAlpha)
                 ) {
                     LoadingScreen()
-
                 }
+
                 ActiveGameScreenState.COMPLETE -> Box(
                     Modifier.alpha(completeAlpha)
                 ) {
@@ -518,7 +504,6 @@ fun SudokuInputButton(
             ButtonDefaults.OutlinedBorderSize,
             MaterialTheme.colors.secondary
         )
-
     ) {
         Text(
             text = number.toString(),
