@@ -37,7 +37,6 @@ import com.example.sudokump.ui.theme.*
 import com.example.sudokump.viewmodel.ActiveGameViewModel
 import com.example.sudokump.viewmodel.HintNotFoundException
 import dagger.hilt.android.EntryPointAccessors
-import kotlin.concurrent.thread
 
 enum class ActiveGameScreenState {
     LOADING,
@@ -70,7 +69,7 @@ fun ActiveGameScreen(gameId : Int) {
     val transition = updateTransition(contentTransitionState, label = "")
 
     val loadingAlpha by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) }, label = ""
+        transitionSpec = { tween(durationMillis = 2000) }, label = ""
 
     ) {
         if (it == ActiveGameScreenState.LOADING) 1f else 0f

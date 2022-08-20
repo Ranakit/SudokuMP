@@ -55,7 +55,6 @@ object NewSudokuGamesProvider {
                     .baseUrl(url)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-
                 val sudokuAPI = retrofit.create(SudokuAPI::class.java)
                 val jsonCALL = sudokuAPI.sudokuGrid(difficulty.toString())
                 sudokuGrid = jsonCALL.execute().body()!!
