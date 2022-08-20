@@ -3,10 +3,7 @@ package com.example.sudokump.screens
 import android.app.Activity
 import android.graphics.Paint
 import android.widget.Toast
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -69,10 +66,12 @@ fun ActiveGameScreen(gameId : Int) {
     val transition = updateTransition(contentTransitionState, label = "")
 
     val loadingAlpha by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 2000) }, label = ""
+        transitionSpec = {
+            tween(durationMillis = 1500)
+        }, label = ""
 
     ) {
-        if (it == ActiveGameScreenState.LOADING) 1f else 0f
+        if (it == ActiveGameScreenState.LOADING) 1000f else 0f
     }
 
     val activeAlpha by transition.animateFloat(
