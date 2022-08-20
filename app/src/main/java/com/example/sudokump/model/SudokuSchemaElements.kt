@@ -9,11 +9,11 @@ abstract class SudokuComposition
 
         for(elem in sorted)
         {
-            if(elem.value != 0)
+            if(elem.getValue() != 0)
             {
-                if(elem.value != lastNum)
+                if(elem.getValue() != lastNum)
                 {
-                    lastNum = elem.value
+                    lastNum = elem.getValue()
                 }
                 else {
                     return false
@@ -29,7 +29,7 @@ abstract class SudokuComposition
 
         for ((lastChecked, elem) in sorted.withIndex())
         {
-            if (elem.value != lastChecked +1)
+            if (elem.getValue() != lastChecked +1)
             {
                 return false
             }
@@ -127,7 +127,7 @@ class SudokuRow(val position : Int, private val nodes : List<SudokuNode>) : Line
         for (node in nodes)
         {
             node.row = this
-            availableValues.remove(node.value)
+            availableValues.remove(node.getValue())
         }
     }
 }
@@ -140,7 +140,7 @@ class SudokuColumn(val position : Int, private val nodes : List<SudokuNode>) : L
         for (node in nodes)
         {
             node.column = this
-            availableValues.remove(node.value)
+            availableValues.remove(node.getValue())
         }
     }
 }
@@ -153,7 +153,7 @@ class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<
         for (node in matrix.values)
         {
             node.square = this
-            availableValues.remove(node.value)
+            availableValues.remove(node.getValue())
         }
     }
 
@@ -227,5 +227,5 @@ class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<
 }
 
 private val comparator = Comparator{node1 : SudokuNode, node2 : SudokuNode ->
-    node1.value - node2.value
+    node1.getValue() - node2.getValue()
 }

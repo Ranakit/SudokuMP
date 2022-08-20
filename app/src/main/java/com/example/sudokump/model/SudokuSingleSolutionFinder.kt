@@ -15,7 +15,7 @@ class SudokuSingleSolutionFinder(private val schema: SudokuSchema) : AsyncReturn
                 val hints = retVal.getRowHints(i)
                 if (hints.isNotEmpty()) {
                     for (hint in hints) {
-                        hint.second.setValueWithNotification(hint.first)
+                        hint.second.setValue(hint.first)
                     }
                     continue@schemaLoop
                 }
@@ -25,7 +25,7 @@ class SudokuSingleSolutionFinder(private val schema: SudokuSchema) : AsyncReturn
                 val hints = retVal.getColumnHints(i)
                 if (hints.isNotEmpty()) {
                     for (hint in hints) {
-                        hint.second.setValueWithNotification(hint.first)
+                        hint.second.setValue(hint.first)
                     }
                     continue@schemaLoop
                 }
@@ -36,7 +36,7 @@ class SudokuSingleSolutionFinder(private val schema: SudokuSchema) : AsyncReturn
                     val hints = retVal.getSquareHints(i, j)
                     if (hints.isNotEmpty()) {
                         for (hint in hints) {
-                            hint.second.setValueWithNotification(hint.first)
+                            hint.second.setValue(hint.first)
                         }
                         continue@schemaLoop
                     }
@@ -44,11 +44,11 @@ class SudokuSingleSolutionFinder(private val schema: SudokuSchema) : AsyncReturn
             }
 
             for (node in retVal!!.map.values) {
-                if (node.value == 0) {
+                if (node.getValue() == 0) {
 
                     for (num in node.getCrossAvailableSet()) {
                         val copy = retVal!!.copy()
-                        copy.map[getHash(node.x, node.y)]?.setValueWithNotification(num)
+                        copy.map[getHash(node.x, node.y)]?.setValue(num)
 
                         val finder = SudokuSingleSolutionFinder(copy)
                         finder.executeAsyncReturnTask()

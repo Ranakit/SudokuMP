@@ -32,11 +32,11 @@ class SudokuHintFinder(private val schema: SudokuSchema) : AsyncReturnTask<Pair<
         }
 
         for (node in schema.map.values) {
-            if (node.value == 0) {
+            if (node.getValue() == 0) {
 
                 for (num in node.getCrossAvailableSet()) {
                     val copy = schema.copy()
-                    copy.map[getHash(node.x, node.y)]?.setValueWithNotification(num)
+                    copy.map[getHash(node.x, node.y)]?.setValue(num)
                     val finder = SudokuSingleSolutionFinder(copy)
                     finder.executeAsyncReturnTask()
                     var solution : SudokuSchema? = null

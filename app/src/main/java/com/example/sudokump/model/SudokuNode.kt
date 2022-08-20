@@ -5,7 +5,7 @@ import java.io.Serializable
 class SudokuNode(
     val x : Int,
     val y : Int,
-    var value: Int = 0,
+    private var value: Int = 0,
     var readOnly: Boolean = true,
     val notes: MutableSet<Int> = mutableSetOf(),
     var isCorrect : Boolean = true
@@ -15,17 +15,7 @@ class SudokuNode(
     lateinit var column: SudokuColumn
     lateinit var square: SudokuSquare
 
-
-    fun getCrossAvailableSet() : Set<Int> {
-        return if(value == 0) {row.availableValues.intersect(column.availableValues).intersect(square.availableValues)} else { setOf()}
-    }
-
-    private fun getCrossAvailableSetInternal() : Set<Int> {
-        return row.availableValues.intersect(column.availableValues).intersect(square.availableValues)
-    }
-
-    fun setValueWithNotification(value : Int)
-    {
+    fun setValue(value : Int) {
         freeValue()
         if(value > 0) {
             if (getCrossAvailableSetInternal().contains(value)) {
@@ -38,6 +28,18 @@ class SudokuNode(
 
             this.value = value
         }
+    }
+
+    fun getValue() : Int {
+        return this.value
+    }
+
+    fun getCrossAvailableSet() : Set<Int> {
+        return if(value == 0) {row.availableValues.intersect(column.availableValues).intersect(square.availableValues)} else { setOf()}
+    }
+
+    private fun getCrossAvailableSetInternal() : Set<Int> {
+        return row.availableValues.intersect(column.availableValues).intersect(square.availableValues)
     }
 
     private fun freeValue() {

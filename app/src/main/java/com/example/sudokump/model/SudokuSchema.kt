@@ -169,7 +169,7 @@ class SudokuSchema{
         {
             for(j in 0..8)
             {
-                if(map[getHash(i,j)]?.value != 0 && map[getHash(i,j)]!!.isCorrect)
+                if(map[getHash(i,j)]?.getValue() != 0 && map[getHash(i,j)]!!.isCorrect)
                 {
                     counter++
                 }
@@ -209,7 +209,7 @@ class SudokuSchema{
 
         for (elem in map.values)
         {
-            retVal[elem.x][elem.y] = elem.value
+            retVal[elem.x][elem.y] = elem.getValue()
         }
 
         return SudokuGrid(retVal)

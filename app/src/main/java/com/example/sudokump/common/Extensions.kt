@@ -43,7 +43,7 @@ fun mapToList (board: Map<Int, SudokuNode>) : List<List<Int>>{
         val list1 = mutableListOf<Int>()
         for (j in(0..9)){
 
-            val value = if ( board[getHash(i,j)] != null) board[getHash(i,j)]?.value else 0
+            val value = if ( board[getHash(i,j)] != null) board[getHash(i,j)]?.getValue() else 0
             if (value != null) {
                 list1.add(value)
             }

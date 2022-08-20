@@ -16,7 +16,7 @@ data class SudokuSolver(private val schema: SudokuSchema) : AsyncReturnTask<List
                     val hints = schema.getRowHints(i)
                     if (hints.isNotEmpty()) {
                         for (hint in hints) {
-                            hint.second.setValueWithNotification(hint.first)
+                            hint.second.setValue(hint.first)
                         }
                         continue@schemaLoop
                     }
@@ -26,7 +26,7 @@ data class SudokuSolver(private val schema: SudokuSchema) : AsyncReturnTask<List
                     val hints = schema.getColumnHints(i)
                     if (hints.isNotEmpty()) {
                         for (hint in hints) {
-                            hint.second.setValueWithNotification(hint.first)
+                            hint.second.setValue(hint.first)
                         }
                         continue@schemaLoop
                     }
@@ -37,7 +37,7 @@ data class SudokuSolver(private val schema: SudokuSchema) : AsyncReturnTask<List
                         val hints = schema.getSquareHints(i, j)
                         if (hints.isNotEmpty()) {
                             for (hint in hints) {
-                                hint.second.setValueWithNotification(hint.first)
+                                hint.second.setValue(hint.first)
                             }
                             continue@schemaLoop
                         }
@@ -45,12 +45,12 @@ data class SudokuSolver(private val schema: SudokuSchema) : AsyncReturnTask<List
                 }
 
                 for (node in schema.map.values) {
-                    if (node.value == 0) {
+                    if (node.getValue() == 0) {
                         val taskList = mutableListOf<SudokuSolver>()
 
                         for (num in node.getCrossAvailableSet()) {
                             val copy = schema.copy()
-                            copy.map[getHash(node.x, node.y)]?.setValueWithNotification(num)
+                            copy.map[getHash(node.x, node.y)]?.setValue(num)
                             val solver = SudokuSolver(copy)
                             solver.executeAsyncReturnTask()
                             taskList.add(solver)

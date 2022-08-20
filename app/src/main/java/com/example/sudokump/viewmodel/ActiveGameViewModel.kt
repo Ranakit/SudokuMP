@@ -68,7 +68,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             for(j in 0..8)
             {
                 val node = game.schema.map[getHash(i,j)]
-                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.value), node.readOnly, notesControl(node.notes))
+                boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.getValue()), node.readOnly, notesControl(node.notes))
             }
         }
         timer = mutableStateOf(game.timePassed)
@@ -99,7 +99,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             board?.notes?.get(value-1)?.value = !(board?.notes?.get(value-1)?.value)!!
         }
         else {
-            tile?.setValueWithNotification(value)
+            tile?.setValue(value)
             board?.value?.value = value
             completionPercent.value = game.evaluateCompletionPercent()
         }
@@ -126,7 +126,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             return
         }
         val board = boardState[getHash(coordinatePair.value.first, coordinatePair.value.second)]
-        tile.setValueWithNotification(0)
+        tile.setValue(0)
         board?.value?.value = 0
         completionPercent.value = game.evaluateCompletionPercent()
         for (i in 0..8){
@@ -142,7 +142,7 @@ class ActiveGameViewModel @AssistedInject constructor(
         if(hint.first != null)
         {
             val nodeToUpdate = game.schema.map[getHash(hint.second!!.x, hint.second!!.y)]
-            nodeToUpdate?.value = hint.first!!
+            nodeToUpdate?.setValue(hint.first!!)
             val tileToUpdate = boardState[getHash(hint.second!!.x, hint.second!!.y)]
             tileToUpdate?.value?.value = hint.first!!
             completionPercent.value = game.evaluateCompletionPercent()
