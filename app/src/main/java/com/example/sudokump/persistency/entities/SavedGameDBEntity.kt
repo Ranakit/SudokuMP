@@ -11,7 +11,6 @@ data class SavedGameDBEntity(@PrimaryKey(autoGenerate = true) val id: Int,
                              @ColumnInfo(name = "saved_schema") var savedSchema : ByteArray,
                              @ColumnInfo(name = "difficulty") var difficulty : String,
                              @ColumnInfo(name = "save_date") var savedDate : String,
-                             @ColumnInfo(name = "read_only_tiles") var readOnlyTiles : ByteArray
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -25,7 +24,6 @@ data class SavedGameDBEntity(@PrimaryKey(autoGenerate = true) val id: Int,
         if (!savedSchema.contentEquals(other.savedSchema)) return false
         if (difficulty != other.difficulty) return false
         if (savedDate != other.savedDate) return false
-        if (!readOnlyTiles.contentEquals(other.readOnlyTiles)) return false
 
         return true
     }
@@ -37,7 +35,6 @@ data class SavedGameDBEntity(@PrimaryKey(autoGenerate = true) val id: Int,
         result = 31 * result + savedSchema.contentHashCode()
         result = 31 * result + difficulty.hashCode()
         result = 31 * result + savedDate.hashCode()
-        result = 31 * result + readOnlyTiles.contentHashCode()
         return result
     }
 

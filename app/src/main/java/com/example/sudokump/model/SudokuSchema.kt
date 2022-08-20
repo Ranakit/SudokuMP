@@ -1,5 +1,7 @@
 package com.example.sudokump.model
 
+import com.example.sudokump.common.MutablePair
+
 
 class SudokuSchema{
     private val rows : MutableList<SudokuRow>
@@ -64,26 +66,16 @@ class SudokuSchema{
 
     constructor(sudokuGrid: SudokuGrid) : this({i,j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuGrid.board[i][j]!=0)})
 
-    constructor(sudokuGrid: SudokuGrid, sudokuTileSet: SudokuTileSet) : this({i, j -> SudokuNode(i,j,sudokuGrid.board[i][j], sudokuTileSet.generateSet().contains(
-        Pair(i,j)
-    ))})
-
-    fun getReadOnlyTiles() : SudokuTileSet
-    {
-        val retVal = mutableListOf<MutableList<Int>>()
-        for (i in 0..8)
-        {
-            for (j in 0..8)
-            {
-                if (map[getHash(i,j)]!!.readOnly)
-                {
-                    retVal.add(mutableListOf(i,j))
-                }
-            }
-        }
-
-        return SudokuTileSet(retVal)
-    }
+    constructor(schema: SudokuSavedSchema) : this({i, j -> SudokuNode(i,j,schema.Schema[i][j].first, readOnly = when (schema.Schema[i][j].second) {
+        0 -> true
+        else -> false
+    },
+        isCorrect = when(schema.Schema[i][j].second){
+            2 -> false
+            else -> true
+        },
+        notes = schema.Notes[i][j].toMutableSet()
+    )})
 
     fun overallCheck() : Boolean{
         return(checkAllRows() &&
@@ -214,4 +206,28 @@ class SudokuSchema{
 
         return SudokuGrid(retVal)
     }
+
+    fun generateSchema() : SudokuSavedSchema {
+        val schema = mutableListOf<List<MutablePair<Int, Int>>>()
+        val notes= mutableListOf<List<List<Int>>>()
+        for(i in 0..8) {
+            val schemaList = mutableListOf<MutablePair<Int, Int>>()
+            val notesList = mutableListOf<List<Int>>()
+            for (j in 0..8) {
+                val node = map[getHash(i,j)]
+                schemaList.add(
+                    MutablePair(node!!.getValue(), when{
+                        node.readOnly -> 0
+                        node.isCorrect -> 1
+                        else -> 2
+                    })
+                )
+                notesList.add(node.notes.toList())
+            }
+            notes.add(notesList)
+            schema.add(schemaList)
+        }
+        return SudokuSavedSchema(schema, notes)
+    }
+
 }

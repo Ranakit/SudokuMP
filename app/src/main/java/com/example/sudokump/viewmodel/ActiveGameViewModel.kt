@@ -166,6 +166,7 @@ class ActiveGameViewModel @AssistedInject constructor(
 
     fun onStop() {
         stopTimer()
+        game.saveInDB(context)
     }
 }
 

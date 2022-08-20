@@ -1,7 +1,6 @@
 package com.example.sudokump.model
 
 import android.content.Context
-import com.example.sudokump.common.mapToList
 import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
 import com.google.gson.Gson
@@ -36,9 +35,7 @@ class SudokuGameModel {
         saveDate = LocalDate.parse(savedGameDBEntity.savedDate, formatter)
         var gridJson = String(savedGameDBEntity.savedSchema)
         gridJson = gridJson.substring(0, gridJson.length -1)
-        var readOnlyJson = String(savedGameDBEntity.readOnlyTiles)
-        readOnlyJson = readOnlyJson.substring(0, readOnlyJson.length -1)
-        schema = SudokuSchema(extractGridFromJson(gridJson), extractReadOnlyTilesFromJson(readOnlyJson))
+        schema = SudokuSchema(extractSavedSchemaFromJson(gridJson))
     }
 
     constructor(gameDifficulty: Difficulties, sudokuGrid: SudokuGrid)
@@ -62,29 +59,21 @@ class SudokuGameModel {
         this.schema = SudokuSchema(SudokuGrid(mutableListOf(mutableListOf())))
         completionPercent = schema.evaluateCompletionPercent()
         this.saveDate = LocalDate.now()
-
-
     }
 
-    private fun extractGridFromJson(json : String) : SudokuGrid
+    private fun extractSavedSchemaFromJson(json : String) : SudokuSavedSchema
     {
-        return Gson().fromJson(json, SudokuGrid::class.java)
-    }
-
-    private fun extractReadOnlyTilesFromJson(json : String) : SudokuTileSet
-    {
-        return Gson().fromJson(json, SudokuTileSet::class.java)
+        return Gson().fromJson(json, SudokuSavedSchema::class.java)
     }
 
     private fun compressToDBEntity() : SavedGameDBEntity
     {
         val gson = Gson()
-        val dataArray = gson.toJson(SudokuGrid(mapToList(this.schema.map))).toByteArray()
-        val readOnlyTilesArray = gson.toJson(schema.getReadOnlyTiles()).toByteArray()
+        val schemaArray = gson.toJson(this.schema.generateSchema()).toByteArray()
         val myFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = this.saveDate.format(myFormatter)
         return SavedGameDBEntity(this.id, this.timePassed.toInt(DurationUnit.SECONDS), this.completionPercent,
-            dataArray, this.difficulty.toString(), dateString, readOnlyTilesArray)
+            schemaArray, this.difficulty.toString(), dateString)
     }
 
     fun evaluateCompletionPercent() : String
