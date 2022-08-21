@@ -158,6 +158,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             while (isActive) {
                 val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
                 timer.value = newTimer.seconds
+                game.timePassed = timer.value
             }
         }
         completionPercent = mutableStateOf(game.evaluateCompletionPercent())

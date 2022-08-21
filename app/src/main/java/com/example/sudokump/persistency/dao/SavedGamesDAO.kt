@@ -15,10 +15,10 @@ interface SavedGamesDAO {
     @Delete
     fun deleteGame(savedGame: SavedGameDBEntity)
 
-    @Query("SELECT * FROM saved_games WHERE completion_percent != '100'")
+    @Query("SELECT * FROM saved_games WHERE completion_percent != '100.00%'")
     fun getSavedGames() : List<SavedGameDBEntity>
 
-    @Query("SELECT * FROM saved_games WHERE completion_percent == '100'")
+    @Query("SELECT * FROM saved_games WHERE completion_percent == '100.00%'")
     fun getCompletedGames() : List<SavedGameDBEntity>
 
     @Query("SELECT * FROM saved_games WHERE id == :id")
@@ -26,5 +26,4 @@ interface SavedGamesDAO {
 
     @Query("SELECT MAX(id) FROM saved_games")
     fun getNewGameId() : Int
-
 }

@@ -15,12 +15,13 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
 class SudokuGameModel {
     val id : Int
-    val timePassed  : Duration
+    var timePassed  : Duration
     var completionPercent : String
     val schema : SudokuSchema
     val difficulty : Difficulties
