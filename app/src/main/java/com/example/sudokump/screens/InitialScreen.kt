@@ -207,7 +207,7 @@ fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP
     NavHost(navController = navController, startDestination = "init") {
         composable("init") { InitialScreen(sharedPreferences ,sudokuMP, navController)}
         composable("SavedGames"){SavedGamesScreen(
-            viewModel = hiltViewModel()
+            viewModel = hiltViewModel(), navController
             )}
         composable("CompletedGames"){
             CompletedGamesScreen(
@@ -222,7 +222,7 @@ fun NavigationComponent(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP
                 if(arguments != null)
                 {
                     val id = arguments.getInt("gameId", -2)
-                    ActiveGameScreen(id)}
+                    ActiveGameScreen(id, navController)}
                 }
 
     }

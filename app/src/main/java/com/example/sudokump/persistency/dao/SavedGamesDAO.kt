@@ -1,9 +1,6 @@
 package com.example.sudokump.persistency.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.sudokump.persistency.entities.SavedGameDBEntity
 
 @Dao
@@ -14,6 +11,9 @@ interface SavedGamesDAO {
 
     @Delete
     fun deleteGame(savedGame: SavedGameDBEntity)
+
+    @Update
+    fun updateGame(savedGame: SavedGameDBEntity)
 
     @Query("SELECT * FROM saved_games WHERE completion_percent != '100.00%'")
     fun getSavedGames() : List<SavedGameDBEntity>

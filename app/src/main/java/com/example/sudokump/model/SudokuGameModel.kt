@@ -15,7 +15,6 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
@@ -96,9 +95,9 @@ class SudokuGameModel {
 
         runBlocking {
             val job = CoroutineScope(Dispatchers.IO).launch {
-                dao.saveGame(dbEntity)
+                if (id == 0){dao.saveGame(dbEntity)}
+                else{dao.updateGame(dbEntity)}
             }
-
             job.join()
         }
     }
@@ -124,9 +123,15 @@ class SudokuGameModel {
     companion object {
         fun getFromDB(appContext: Context, id : Int) : SudokuGameModel
         {
+            var dbEntity: SavedGameDBEntity? = null
             val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
-            val dbEntity = dao.getLastSavedGame(id)
-            return SudokuGameModel(dbEntity)
+            val job = CoroutineScope(Dispatchers.IO).launch {
+            dbEntity = dao.getLastSavedGame(id)
+            }
+            runBlocking {
+                job.join()
+            }
+            return SudokuGameModel(dbEntity!!)
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import com.example.sudokump.model.Difficulties
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.model.SudokuHintFinder
@@ -157,17 +158,19 @@ class ActiveGameViewModel @AssistedInject constructor(
             val start = LocalDateTime.now()
             while (isActive) {
                 val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
-                timer.value = newTimer.seconds
-                game.timePassed = timer.value
+                timer.value = game.timePassed.plus(newTimer.seconds)
             }
+            game.timePassed = timer.value
         }
         completionPercent = mutableStateOf(game.evaluateCompletionPercent())
         timerJob.start()
     }
 
-    fun onStop() {
+    fun onStop(navController: NavController) {
         stopTimer()
         game.saveInDB(context)
+        navController.backQueue.clear()
+        navController.navigate("Init")
     }
 }
 

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.sudokump.R
 import com.example.sudokump.common.sqrt
 import com.example.sudokump.modules.ViewModelFactoryProvider
@@ -42,7 +43,7 @@ enum class ActiveGameScreenState {
 }
 
 @Composable
-fun ActiveGameScreen(gameId : Int) {
+fun ActiveGameScreen(gameId : Int, navController: NavController) {
 
     val contentTransitionState = remember {
         MutableTransitionState(
@@ -60,7 +61,7 @@ fun ActiveGameScreen(gameId : Int) {
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart()
         contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
-        onDispose { viewModel.onStop() }
+        onDispose { viewModel.onStop(navController) }
     }
 
     val transition = updateTransition(contentTransitionState, label = "")

@@ -10,8 +10,8 @@ data class SavedGameDBEntity(@PrimaryKey(autoGenerate = true) val id: Int,
                              @ColumnInfo(name = "completion_percent") var completionPercent : String,
                              @ColumnInfo(name = "saved_schema") var savedSchema : ByteArray,
                              @ColumnInfo(name = "difficulty") var difficulty : String,
-                             @ColumnInfo(name = "save_date") var savedDate : String,
-) {
+                             @ColumnInfo(name = "save_date") var savedDate : String
+                             ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

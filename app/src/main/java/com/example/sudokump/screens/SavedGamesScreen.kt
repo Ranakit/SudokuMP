@@ -18,32 +18,37 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.example.sudokump.R
 import com.example.sudokump.common.mapToList
 import com.example.sudokump.model.SudokuGameModel
 import com.example.sudokump.viewmodel.SavedGamesScreenViewModel
 
 @Composable
-fun SavedGamesScreen(viewModel: SavedGamesScreenViewModel) {
+fun SavedGamesScreen(viewModel: SavedGamesScreenViewModel, navController: NavController) {
 
     val savedGames = viewModel.savedGames
 
-    LazyColumn(modifier = Modifier.fillMaxSize().clickable {
-        viewModel.selectedGame.value = -1
-    }) {
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .clickable {
+            viewModel.selectedGame.value = -1
+        }) {
         items(savedGames.size)
         {
-            SavedGameCard(savedGames[it], it, viewModel.selectedGame)
+            SavedGameCard(viewModel, savedGames[it], it, viewModel.selectedGame, navController)
         }
     }
 }
 
 @Composable
-fun SavedGameCard(sudokuGameModel: SudokuGameModel, position: Int, mutableFlag: MutableState<Int>)
+fun SavedGameCard(viewModel: SavedGamesScreenViewModel, sudokuGameModel: SudokuGameModel, position: Int, mutableFlag: MutableState<Int>, navController: NavController)
 {
-    Card(modifier = Modifier.fillMaxWidth().clickable {
-        mutableFlag.value = position
-    }) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            mutableFlag.value = position
+        }) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -93,21 +98,25 @@ fun SavedGameCard(sudokuGameModel: SudokuGameModel, position: Int, mutableFlag: 
             {
                 Divider(thickness = 1.dp, color = Color.LightGray)
 
-                OptionButtons()
+                OptionButtons(viewModel, navController, sudokuGameModel)
             }
         }
     }
 }
 
 @Composable
-fun OptionButtons()
+fun OptionButtons(viewModel: SavedGamesScreenViewModel, navController: NavController, sudokuGameModel: SudokuGameModel)
 {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = {sudokuGameModel.deleteFromDB(viewModel.context)
+            navController.backQueue.clear()
+            navController.navigate("Init")
+            navController.navigate("SavedGames")
+        }) {
             Text(text = stringResource(id = R.string.delete_game))
         }
 
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { navController.navigate("game/${sudokuGameModel.id}") }) {
             Text(text = stringResource(id = R.string.continue_game))
         }
     }
