@@ -17,9 +17,9 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
-import kotlin.time.Duration
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class ActiveGameViewModel @AssistedInject constructor(
@@ -63,10 +63,13 @@ class ActiveGameViewModel @AssistedInject constructor(
     }
 
     fun updateNode(tileX : Int, tileY : Int , value : Int){
+        if (tileX < 0) {
+            return
+        }
         val tile = game.schema.map[getHash(tileX, tileY)]
         val board = boardState[getHash(tileX, tileY)]
         if (tile != null) {
-            if (tileX < 0 || tile.readOnly) {
+            if (tile.readOnly){
                 return
             }
         }
@@ -83,7 +86,7 @@ class ActiveGameViewModel @AssistedInject constructor(
 
     private fun notesControl(set : MutableSet<Int>) : Array<MutableState<Boolean>>{
         val array: Array<MutableState<Boolean>> = Array(9){
-            if (set.contains(it))
+            if (set.contains(it+1))
             {
                 mutableStateOf(true)
             }
@@ -97,6 +100,9 @@ class ActiveGameViewModel @AssistedInject constructor(
     }
 
     fun clearTile(coordinatePair: MutableState<Pair<Int,Int>>){
+        if (coordinatePair.value.first < 0) {
+            return
+        }
         val tile = game.schema.map[getHash(coordinatePair.value.first, coordinatePair.value.second)]
         if (tile!!.readOnly){
             return
@@ -142,6 +148,7 @@ class ActiveGameViewModel @AssistedInject constructor(
             id == -1 -> entryPoint.getNewMediumGame()
             id == 0 -> entryPoint.getNewHardGame()
             id > 0 -> SudokuGameModel.getFromDB(context, id)
+            id == -3 -> SudokuGameModel.getFromDB(context, id)
             else -> entryPoint.getNewEasyGame()
         }
 

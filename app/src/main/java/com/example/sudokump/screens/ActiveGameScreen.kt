@@ -3,7 +3,10 @@ package com.example.sudokump.screens
 import android.app.Activity
 import android.graphics.Paint
 import android.widget.Toast
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -610,7 +613,7 @@ fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
                     } else {""}
                     }",
                     unitSize* (j%3)  + (unitSize/12).dp.toPx(),
-                    unitSize* (j/3) + (unitSize/3).dp.toPx(),
+                    unitSize* (j/3) + (unitSize/3.7).dp.toPx(),
                     textPaint
                 )
             }

@@ -126,7 +126,12 @@ class SudokuGameModel {
             var dbEntity: SavedGameDBEntity? = null
             val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
             val job = CoroutineScope(Dispatchers.IO).launch {
-            dbEntity = dao.getLastSavedGame(id)
+                dbEntity = if (id > 0){
+                    dao.getSavedGameById(id)
+                } else{
+                    val list : List<SavedGameDBEntity> = dao.getSavedGames()
+                    list.last()
+                }
             }
             runBlocking {
                 job.join()

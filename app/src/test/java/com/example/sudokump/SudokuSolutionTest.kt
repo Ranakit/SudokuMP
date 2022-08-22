@@ -1,6 +1,9 @@
 package com.example.sudokump
 
-import com.example.sudokump.model.*
+import com.example.sudokump.model.SudokuGrid
+import com.example.sudokump.model.SudokuSchema
+import com.example.sudokump.model.SudokuSolver
+import com.example.sudokump.model.getHash
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
 import org.junit.Test
