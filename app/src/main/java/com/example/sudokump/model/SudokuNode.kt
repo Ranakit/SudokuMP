@@ -46,8 +46,8 @@ class SudokuNode(
         if(this.value != 0) {
             if(this.isCorrect) {
                 row.availableValues.add(this.value)
-                column.availableValues.remove(this.value)
-                square.availableValues.remove(this.value)
+                column.availableValues.add(this.value)
+                square.availableValues.add(this.value)
             }
             this.value = 0
             this.isCorrect = true

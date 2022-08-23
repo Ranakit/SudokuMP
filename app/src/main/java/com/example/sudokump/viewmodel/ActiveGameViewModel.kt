@@ -35,6 +35,8 @@ class ActiveGameViewModel @AssistedInject constructor(
     private lateinit var timerJob : Job
     lateinit var timer : MutableState<Duration>
     lateinit var completionPercent : MutableState<String>
+    val isHintPopupVisible : MutableState<Boolean> = mutableStateOf(false)
+    private var hintFinder : SudokuHintFinder? = null
 
     val difficulty : Difficulties
     get()
@@ -120,7 +122,13 @@ class ActiveGameViewModel @AssistedInject constructor(
     fun findHint() {
         val hintFinder = SudokuHintFinder(game.schema.copy())
         hintFinder.executeAsyncReturnTask()
-        val hint = hintFinder.joinTask()
+
+        this.hintFinder = hintFinder
+    }
+
+    fun putHint() {
+        if (this.hintFinder == null) throw HintNotFoundException()
+        val hint = this.hintFinder!!.joinTask()
         if(hint.first != null)
         {
             val nodeToUpdate = game.schema.map[getHash(hint.second!!.x, hint.second!!.y)]
@@ -128,12 +136,26 @@ class ActiveGameViewModel @AssistedInject constructor(
             val tileToUpdate = boardState[getHash(hint.second!!.x, hint.second!!.y)]
             tileToUpdate?.value?.value = hint.first!!
             completionPercent.value = game.evaluateCompletionPercent()
+            timer.value = game.timePassed.plus(10.seconds)
+            game.timePassed = timer.value
         } else throw HintNotFoundException()
     }
 
     fun checkTileIsCorrect(tileX : Int, tileY : Int) : Boolean {
         val node = game.schema.map[getHash(tileX, tileY)]
         return node!!.isCorrect
+    }
+
+    fun startTimer() {
+        timerJob = CoroutineScope(Dispatchers.IO).launch(start = CoroutineStart.LAZY) {
+            val start = LocalDateTime.now()
+            while (isActive) {
+                val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
+                timer.value = game.timePassed.plus(newTimer.seconds)
+            }
+            game.timePassed = timer.value
+        }
+        timerJob.start()
     }
 
     fun stopTimer() {
@@ -160,17 +182,9 @@ class ActiveGameViewModel @AssistedInject constructor(
                 boardState[getHash(i,j)] = SudokuTile(mutableStateOf(node!!.x), mutableStateOf(node.y), mutableStateOf(node.getValue()), node.readOnly, notesControl(node.notes))
             }
         }
-        timer = mutableStateOf(game.timePassed)
-        timerJob = CoroutineScope(Dispatchers.IO).launch(start = CoroutineStart.LAZY) {
-            val start = LocalDateTime.now()
-            while (isActive) {
-                val newTimer = start.until(LocalDateTime.now(), ChronoUnit.SECONDS)
-                timer.value = game.timePassed.plus(newTimer.seconds)
-            }
-            game.timePassed = timer.value
-        }
         completionPercent = mutableStateOf(game.evaluateCompletionPercent())
-        timerJob.start()
+        timer = mutableStateOf(game.timePassed)
+        startTimer()
     }
 
     fun onStop(navController: NavController) {

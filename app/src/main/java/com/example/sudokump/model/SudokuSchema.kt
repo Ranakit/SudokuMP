@@ -201,7 +201,7 @@ class SudokuSchema{
 
         for (elem in map.values)
         {
-            retVal[elem.x][elem.y] = elem.getValue()
+            if(elem.isCorrect) retVal[elem.x][elem.y] = elem.getValue()
         }
 
         return SudokuGrid(retVal)

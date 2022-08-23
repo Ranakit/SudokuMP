@@ -23,12 +23,17 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sudokump.R
@@ -67,6 +72,22 @@ fun ActiveGameScreen(gameId : Int, navController: NavController) {
         onDispose { viewModel.onStop(navController) }
     }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(key1 = lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                viewModel.onStop(navController)
+            }
+        }
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     val transition = updateTransition(contentTransitionState, label = "")
 
     val loadingAlpha by transition.animateFloat(
@@ -91,6 +112,8 @@ fun ActiveGameScreen(gameId : Int, navController: NavController) {
     ) {
         if (it == ActiveGameScreenState.COMPLETE) 1f else 0f
     }
+
+    HintDialog(viewModel = viewModel, contentTransitionState)
 
     Column(
         Modifier
@@ -236,13 +259,13 @@ fun GameContent(
 
             Box(
                 Modifier
-                .wrapContentSize()
-                .constrainAs(completionPercent) {
-                    top.linkTo(board.bottom)
-                    start.linkTo(timer.end)
-                    end.linkTo(diff.start)
-                }
-                .padding(start = 16.dp)) {
+                    .wrapContentSize()
+                    .constrainAs(completionPercent) {
+                        top.linkTo(board.bottom)
+                        start.linkTo(timer.end)
+                        end.linkTo(diff.start)
+                    }
+                    .padding(start = 16.dp)) {
 
                 Text(
                     text = viewModel.completionPercent.value ,
@@ -282,7 +305,7 @@ fun GameContent(
                 Row {
                     ClearButton(viewModel, coordinatePair)
                     NotesButton(viewModel)
-                    HintButton(viewModel,contentTransitionState)
+                    HintButton(viewModel)
                 }
             }
         }
@@ -342,17 +365,12 @@ fun ClearButton(viewModel: ActiveGameViewModel, coordinatePair: MutableState<Pai
 }
 
 @Composable
-fun HintButton(viewModel: ActiveGameViewModel, contentTransitionState: MutableTransitionState<ActiveGameScreenState>) {
-    val context = LocalContext.current
+fun HintButton(viewModel: ActiveGameViewModel) {
     TextButton(onClick = {
-        try {
-            viewModel.findHint()
-            if(viewModel.overallCheck()) {
-                contentTransitionState.targetState = ActiveGameScreenState.COMPLETE
-            }
-        }catch (e : HintNotFoundException) {
-            Toast.makeText(context, "Hint not found, please look after errors", Toast.LENGTH_LONG).show()
-        }},
+        viewModel.findHint()
+        viewModel.stopTimer()
+        viewModel.isHintPopupVisible.value = true
+    },
         modifier = Modifier
             .requiredSize(56.dp)
             .padding(2.dp)
@@ -366,6 +384,48 @@ fun HintButton(viewModel: ActiveGameViewModel, contentTransitionState: MutableTr
         Image(
             painterResource(R.drawable.ic_hint_24), "Get a hint"
         )
+    }
+}
+
+@Composable
+fun HintDialog(viewModel: ActiveGameViewModel, contentTransitionState: MutableTransitionState<ActiveGameScreenState>) {
+    if (viewModel.isHintPopupVisible.value) {
+        val context = LocalContext.current
+        Dialog(onDismissRequest = {},
+            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false)) {
+
+            Box(modifier = Modifier.background(Color.White)) {
+                Column(modifier = Modifier.padding(5.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly) {
+                    Text(text = "Do you really want to get an hint? You will get a 30 seconds penalty if you do so")
+
+                    Row(modifier = Modifier.padding(5.dp), horizontalArrangement = Arrangement.SpaceAround) {
+                        Button(onClick = {
+                            try {
+                                viewModel.putHint()
+                                if(viewModel.overallCheck()) {
+                                    contentTransitionState.targetState = ActiveGameScreenState.COMPLETE
+                                }
+                            } catch (e : HintNotFoundException) {
+                                Toast.makeText(context, "No hint has been found, please check the board for errors", Toast.LENGTH_SHORT).show()
+                            }
+                            viewModel.startTimer()
+                            viewModel.isHintPopupVisible.value = false
+
+                        }, modifier = Modifier.padding(10.dp)) {
+                            Text(text = "Get a hint")
+                        }
+
+                        Button(onClick = {
+                            viewModel.startTimer()
+                            viewModel.isHintPopupVisible.value = false },
+                            modifier = Modifier.padding(10.dp)) {
+                            Text(text = "Refuse")
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -620,5 +680,3 @@ fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
         }
     }
 }
-
-
