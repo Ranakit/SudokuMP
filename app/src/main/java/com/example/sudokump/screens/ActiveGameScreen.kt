@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -31,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sudokump.R
@@ -63,10 +66,23 @@ fun ActiveGameScreen(gameId : Int, navController: NavController) {
 
     val viewModel : ActiveGameViewModel = viewModel(factory = ActiveGameViewModel.provideFactory(factory,gameId))
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
-        onDispose { viewModel.onStop(navController) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(key1 = lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                viewModel.onStop(navController)
+            } else if(event == Lifecycle.Event.ON_RESUME) {
+                viewModel.onStart()
+                contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
+            }
+        }
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     val transition = updateTransition(contentTransitionState, label = "")
