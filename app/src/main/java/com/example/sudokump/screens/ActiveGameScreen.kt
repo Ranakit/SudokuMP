@@ -75,14 +75,9 @@ fun ActiveGameScreen(gameId : Int, navController: NavController) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(key1 = lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP) {
-                viewModel.onStop(navController)
-            }
         }
-        // Add the observer to the lifecycle
         lifecycleOwner.lifecycle.addObserver(observer)
 
-        // When the effect leaves the Composition, remove the observer
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
@@ -536,7 +531,6 @@ fun InputButtonRow(
         }
     }
 
-    // Add space in the layout
     Spacer(Modifier.size(2.dp))
 }
 

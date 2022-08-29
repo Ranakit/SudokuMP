@@ -36,8 +36,8 @@ class SudokuSchema{
                 colList.add(map.getOrDefault(getHash(j,i), SudokuNode(0,0,0,false)))
             }
 
-            rows.add(SudokuRow(i, rowList))
-            columns.add(SudokuColumn(i, colList))
+            rows.add(SudokuRow(rowList))
+            columns.add(SudokuColumn(colList))
         }
 
         for (i in (0..2))
@@ -56,7 +56,7 @@ class SudokuSchema{
                     }
                 }
 
-                matrixList.add(SudokuSquare(i,j, matrix))
+                matrixList.add(SudokuSquare(matrix))
 
             }
 

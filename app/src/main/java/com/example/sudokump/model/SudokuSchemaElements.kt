@@ -89,7 +89,7 @@ abstract class LinearSudokuComposition(private val nodes : List<SudokuNode>) : S
     }
 
     override fun isTheOnlyPossibleValue() : MutableSet<Pair<Int, SudokuNode>> {
-        val occurrenciesList = mutableListOf<MutablePair<Int, SudokuNode?>>().apply {
+        val ocList = mutableListOf<MutablePair<Int, SudokuNode?>>().apply {
             repeat(9) {
                 add(MutablePair(0, null))
             }
@@ -97,7 +97,7 @@ abstract class LinearSudokuComposition(private val nodes : List<SudokuNode>) : S
 
         for (node in nodes) {
             for (num in node.getCrossAvailableSet()) {
-                val pair = occurrenciesList[num - 1]
+                val pair = ocList[num - 1]
                 if (pair.first == 0) {
                     pair.first = 1
                     pair.second = node
@@ -109,9 +109,9 @@ abstract class LinearSudokuComposition(private val nodes : List<SudokuNode>) : S
         }
 
         val retVal = mutableSetOf<Pair<Int, SudokuNode>>()
-        for (i in (0 until occurrenciesList.size)) {
-            if (occurrenciesList[i].first == 1) {
-                retVal.add(Pair(i+1, occurrenciesList[i].second!!))
+        for (i in (0 until ocList.size)) {
+            if (ocList[i].first == 1) {
+                retVal.add(Pair(i+1, ocList[i].second!!))
             }
         }
 
@@ -119,7 +119,7 @@ abstract class LinearSudokuComposition(private val nodes : List<SudokuNode>) : S
     }
 }
 
-class SudokuRow(val position : Int, private val nodes : List<SudokuNode>) : LinearSudokuComposition(nodes)
+class SudokuRow(nodes: List<SudokuNode>) : LinearSudokuComposition(nodes)
 {
     val availableValues = mutableSetOf(1,2,3,4,5,6,7,8,9)
 
@@ -132,7 +132,7 @@ class SudokuRow(val position : Int, private val nodes : List<SudokuNode>) : Line
     }
 }
 
-class SudokuColumn(val position : Int, private val nodes : List<SudokuNode>) : LinearSudokuComposition(nodes)
+class SudokuColumn(nodes: List<SudokuNode>) : LinearSudokuComposition(nodes)
 {
     val availableValues = mutableSetOf(1,2,3,4,5,6,7,8,9)
 
@@ -145,7 +145,7 @@ class SudokuColumn(val position : Int, private val nodes : List<SudokuNode>) : L
     }
 }
 
-class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<Int, SudokuNode>) : SudokuComposition()
+class SudokuSquare(private val matrix: HashMap<Int, SudokuNode>) : SudokuComposition()
 {
     val availableValues = mutableSetOf(1,2,3,4,5,6,7,8,9)
 
@@ -196,7 +196,7 @@ class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<
     }
 
     override fun isTheOnlyPossibleValue(): MutableSet<Pair<Int, SudokuNode>> {
-        val occurrenciesList = mutableListOf<MutablePair<Int, SudokuNode?>>().apply {
+        val ocList = mutableListOf<MutablePair<Int, SudokuNode?>>().apply {
             repeat(9) {
                 add(MutablePair(0, null))
             }
@@ -204,7 +204,7 @@ class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<
 
         for (node in matrix.values) {
             for (num in node.getCrossAvailableSet()) {
-                val pair = occurrenciesList[num - 1]
+                val pair = ocList[num - 1]
                 if (pair.first == 0) {
                     pair.first = 1
                     pair.second = node
@@ -216,9 +216,9 @@ class SudokuSquare(val xPos : Int, val yPos : Int, private val matrix : HashMap<
         }
 
         val retVal = mutableSetOf<Pair<Int, SudokuNode>>()
-        for (i in (0 until occurrenciesList.size)) {
-            if (occurrenciesList[i].first == 1) {
-                retVal.add(Pair(i+1, occurrenciesList[i].second!!))
+        for (i in (0 until ocList.size)) {
+            if (ocList[i].first == 1) {
+                retVal.add(Pair(i+1, ocList[i].second!!))
             }
         }
 

@@ -143,22 +143,22 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                         )
                     }
                 }
-                if (isCompletedGames){
-                Button(
-                    onClick = { navController.navigate("CompletedGames") },
-                    shape = MaterialTheme.shapes.medium,
-                    colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
-                    modifier = Modifier
-                        .height(70.dp)
-                        .width(350.dp)
-                        .padding(vertical = 10.dp)
-                )
-                {
-                    Text(
-                        text = "View List of Completed Games",
-                        style = MaterialTheme.typography.button
+                    if (isCompletedGames){
+                    Button(
+                        onClick = { navController.navigate("CompletedGames") },
+                        shape = MaterialTheme.shapes.medium,
+                        colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
+                        modifier = Modifier
+                            .height(70.dp)
+                            .width(350.dp)
+                            .padding(vertical = 10.dp)
                     )
-                }
+                    {
+                        Text(
+                            text = "View List of Completed Games",
+                            style = MaterialTheme.typography.button
+                        )
+                    }
                 }
             }
         }

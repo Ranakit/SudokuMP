@@ -4,12 +4,11 @@ import androidx.compose.ui.graphics.Color
 
 val Purple200 = Color(0xFFBB86FC)
 val Purple500 = Color(0xFF673AB7)
-val green = Color(0xFFBAE0A2)
 val Teal200 = Color(0xFF03DAC5)
 val Teal100 = Color(0xFF7ABCBE)
 val gridLineColorLight = Color.Blue
 val lightGrey = Color (0XFFf3f3f3)
-val lightGreyAlpha = Color (0XDCf3f3f3)
+val lightGreyAlpha = Color(0xDC222222)
 val userInputtedNumberLight = Color(0XFF629749)
 val userInputtedNumberWrong = Color(0xFFD53030)
 val readOnlyDark = Color(0xFFE6DE97)

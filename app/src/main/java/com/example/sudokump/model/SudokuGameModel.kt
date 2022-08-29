@@ -48,19 +48,6 @@ class SudokuGameModel {
         completionPercent = schema.evaluateCompletionPercent()
     }
 
-    constructor(
-        elapsedTime: Long,
-        id:Int,
-        board: HashMap<Int, SudokuNode>,
-        difficulty: Difficulties){
-        this.id = id
-        this.timePassed = elapsedTime.seconds
-        this.difficulty= difficulty
-        this.schema = SudokuSchema(SudokuGrid(mutableListOf(mutableListOf())))
-        completionPercent = schema.evaluateCompletionPercent()
-        this.saveDate = LocalDate.now()
-    }
-
     private fun extractSavedSchemaFromJson(json : String) : SudokuSavedSchema
     {
         return Gson().fromJson(json, SudokuSavedSchema::class.java)
@@ -92,12 +79,11 @@ class SudokuGameModel {
     {
         val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
         val dbEntity = compressToDBEntity()
-
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            if (id == 0){dao.saveGame(dbEntity)}
+            else{dao.updateGame(dbEntity)}
+        }
         runBlocking {
-            val job = CoroutineScope(Dispatchers.IO).launch {
-                if (id == 0){dao.saveGame(dbEntity)}
-                else{dao.updateGame(dbEntity)}
-            }
             job.join()
         }
     }
@@ -114,7 +100,6 @@ class SudokuGameModel {
 
                     dao.deleteGame(dbEntity)
                 }
-
                 job.join()
             }
         }
@@ -128,9 +113,9 @@ class SudokuGameModel {
             val job = CoroutineScope(Dispatchers.IO).launch {
                 dbEntity = if (id > 0){
                     dao.getSavedGameById(id)
-                } else{
+                } else {
                     val list : List<SavedGameDBEntity> = dao.getSavedGames()
-                    list.last()
+                    dao.getSavedGameById(list.last().id)
                 }
             }
             runBlocking {

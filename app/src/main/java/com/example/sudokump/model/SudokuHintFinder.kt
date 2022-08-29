@@ -52,12 +52,6 @@ class SudokuHintFinder(private val schema: SudokuSchema) : AsyncReturnTask<Pair<
                         return Pair(num, node)
                     }
                 }
-
-                /*taskList.forEach {
-                    it.second.joinTask().forEach { solvedSchema ->
-                        if(solvedSchema.overallCheck() && solvedSchema.overallCompletenessCheck()) {
-                            return Pair(it.first, node)
-                        }*/
             }
         }
 

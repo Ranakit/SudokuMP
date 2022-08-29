@@ -7,6 +7,4 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class CompletedGamesScreenViewModel @Inject constructor(@CompletedSudokuGames val completedGames : List<SudokuGameModel>) : ViewModel() {
-
-}
+class CompletedGamesScreenViewModel @Inject constructor(@CompletedSudokuGames val completedGames : List<SudokuGameModel>) : ViewModel()

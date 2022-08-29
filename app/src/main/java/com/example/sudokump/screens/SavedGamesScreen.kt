@@ -68,8 +68,7 @@ fun SavedGameCard(viewModel: SavedGamesScreenViewModel, sudokuGameModel: SudokuG
                     modifier = Modifier.constrainAs(id){
                     top.linkTo(grid.top, 0.dp)
                     start.linkTo(grid.end, 5.dp)
-                    },
-                    //style =
+                    }
                 )
 
                 Text("${stringResource(id = R.string.timePassed)}: ${sudokuGameModel.timePassed}", modifier = Modifier.constrainAs(timePassed){
