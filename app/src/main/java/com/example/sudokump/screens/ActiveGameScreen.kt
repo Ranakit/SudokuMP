@@ -71,15 +71,14 @@ fun ActiveGameScreen(gameId : Int, navController: NavController) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
                 viewModel.onStop(navController)
+
             } else if(event == Lifecycle.Event.ON_RESUME) {
                 viewModel.onStart()
                 contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
             }
         }
-        // Add the observer to the lifecycle
         lifecycleOwner.lifecycle.addObserver(observer)
 
-        // When the effect leaves the Composition, remove the observer
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
@@ -169,9 +168,6 @@ fun GameContent(
             constraints.maxWidth.toDp()
         }
 
-        /*
-        Borders margin change based on the screen's density
-         */
         val margin = with(LocalDensity.current){
             when{
                 constraints.maxHeight.toDp().value < 500 -> 20
@@ -187,10 +183,6 @@ fun GameContent(
 
             val (board , timer , diff , inputs, completionPercent) = createRefs()
 
-            /*
-            Now we have to create a container for the puzzle board
-
-             */
             Box(
                 Modifier
                     .constrainAs(board) {
@@ -450,9 +442,6 @@ fun SudokuTextFields(
     viewModel: ActiveGameViewModel,
     coordinatesPair: MutableState<Pair<Int, Int>>
 ) {
-    /*
-    Here we are going to implement the real grid , where some icons are mutable
-     */
     viewModel.boardState.values.forEach { tile ->
         val text = tile.value.value.toString()
         if (text == "0") {

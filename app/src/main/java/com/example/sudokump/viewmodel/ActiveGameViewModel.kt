@@ -190,8 +190,9 @@ class ActiveGameViewModel @AssistedInject constructor(
     fun onStop(navController: NavController) {
         stopTimer()
         game.saveInDB(context)
-        navController.backQueue.clear()
-        navController.navigate("Init")
+        val entry = navController.currentDestination
+        navController.popBackStack()
+        navController.navigate(entry!!.route!!)
     }
 }
 

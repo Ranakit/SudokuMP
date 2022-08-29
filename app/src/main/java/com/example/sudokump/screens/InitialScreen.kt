@@ -21,22 +21,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.sudokump.MainActivity
 import com.example.sudokump.R
 import com.example.sudokump.SudokuMP
-import com.example.sudokump.persistency.dao.SavedGamesDAO
-import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.example.sudokump.viewmodel.InitialScreenViewModel
 
 @Composable
 fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navController: NavHostController) {
     val isSystemInDarkTheme = isSystemInDarkTheme()
-    val dao = EntryPointAccessors.fromApplication(LocalContext.current, MainActivity.MainActivityEntryPoint::class.java).getSavedGamesDAO()
-    val isSavedGames = isSavedGames(dao)
-    val isCompletedGames = isCompletedGames(dao)
+    val viewModel = InitialScreenViewModel(LocalContext.current)
     var isNewGameClicked by remember {
         mutableStateOf(false)
     }
@@ -78,7 +70,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
             backgroundColor = MaterialTheme.colors.primary,
             title = {
                 Text(
-                    text = if(isCompletedGames && isSavedGames){"Welcome back!"}
+                    text = if(viewModel.isCompletedGames && viewModel.isSavedGames){"Welcome back!"}
                     else{"Welcome to SudokuMP!"},
                     color = MaterialTheme.colors.onBackground
                 )
@@ -109,7 +101,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     Buttons(navController)
                 }
 
-                if (isSavedGames) {
+                if (viewModel.isSavedGames) {
                     Button(
                         onClick = {
                             navController.navigate("game/-3")
@@ -143,7 +135,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                         )
                     }
                 }
-                    if (isCompletedGames){
+                    if (viewModel.isCompletedGames){
                     Button(
                         onClick = { navController.navigate("CompletedGames") },
                         shape = MaterialTheme.shapes.medium,
@@ -163,28 +155,6 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
             }
         }
     }
-}
-
-fun isSavedGames(dao: SavedGamesDAO): Boolean {
-    var isSavedGames = false
-    val job = CoroutineScope(Dispatchers.IO).launch {
-        isSavedGames = dao.getSavedGames().isNotEmpty()
-    }
-    runBlocking {
-        job.join()
-    }
-    return isSavedGames
-}
-
-fun isCompletedGames(dao: SavedGamesDAO): Boolean {
-    var isCompletedGames = false
-    val job = CoroutineScope(Dispatchers.IO).launch {
-        isCompletedGames = dao.getCompletedGames().isNotEmpty()
-    }
-    runBlocking {
-        job.join()
-    }
-    return isCompletedGames
 }
 
 

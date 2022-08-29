@@ -6,13 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.navigation.compose.rememberNavController
-import com.example.sudokump.persistency.dao.SavedGamesDAO
 import com.example.sudokump.screens.NavigationComponent
 import com.example.sudokump.ui.theme.SudokuMPTheme
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
 
@@ -21,12 +17,6 @@ class MainActivity: ComponentActivity() {
 
     @Inject
     lateinit var sudokuMP : SudokuMP
-
-    @EntryPoint
-    @InstallIn(SingletonComponent::class)
-    interface MainActivityEntryPoint {
-        fun getSavedGamesDAO() : SavedGamesDAO
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
