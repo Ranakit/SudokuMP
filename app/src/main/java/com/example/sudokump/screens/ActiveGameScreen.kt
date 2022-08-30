@@ -386,7 +386,7 @@ fun HintDialog(viewModel: ActiveGameViewModel, contentTransitionState: MutableTr
             Box(modifier = Modifier.background(Color.White)) {
                 Column(modifier = Modifier.padding(5.dp), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly) {
-                    Text(text = "Do you really want to get an hint? You will get a 30 seconds penalty if you do so")
+                    Text(text = "Do you really want to get an hint? You will get a 10 seconds penalty if you do so")
 
                     Row(modifier = Modifier.padding(5.dp), horizontalArrangement = Arrangement.SpaceAround) {
                         Button(onClick = {
