@@ -26,4 +26,5 @@ interface SavedGamesDAO {
 
     @Query("SELECT MAX(id) FROM saved_games")
     fun getNewGameId() : Int
+
 }

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class InitialScreenViewModel@AssistedInject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) {
     val context: Context
 

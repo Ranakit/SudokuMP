@@ -69,12 +69,24 @@ fun ActiveGameScreen(gameId : Int, navController: NavController) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(key1 = lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP) {
-                viewModel.onStop(navController)
-
-            } else if(event == Lifecycle.Event.ON_RESUME) {
-                viewModel.onStart()
-                contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
+            when (event) {
+                Lifecycle.Event.ON_DESTROY -> {
+                    viewModel.onDestroy(navController)
+                }
+                Lifecycle.Event.ON_START -> {
+                    viewModel.onStart()
+                    contentTransitionState.targetState = ActiveGameScreenState.ACTIVE
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.startTimer()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    viewModel.stopTimer()
+                }
+                Lifecycle.Event.ON_STOP -> {
+                    viewModel.onStop()
+                }
+                else -> {}
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

@@ -18,11 +18,13 @@ class MainActivity: ComponentActivity() {
     @Inject
     lateinit var sudokuMP : SudokuMP
 
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            val sharedPreferences: SharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE)
             val isDarkInit = sharedPreferences.getBoolean("isDark", isSystemInDarkTheme())
             sharedPreferences.getInt("id", -1)
             sudokuMP.isDark.value = isDarkInit

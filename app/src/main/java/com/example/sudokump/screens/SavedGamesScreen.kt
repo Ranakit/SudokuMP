@@ -108,6 +108,7 @@ fun OptionButtons(viewModel: SavedGamesScreenViewModel, navController: NavContro
 {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
         Button(onClick = {sudokuGameModel.deleteFromDB(viewModel.context)
+            viewModel.onDeleteClick(sudokuGameModel.id)
             navController.backQueue.clear()
             navController.navigate("Init")
             navController.navigate("SavedGames")

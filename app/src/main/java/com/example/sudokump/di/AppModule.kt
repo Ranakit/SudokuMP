@@ -11,6 +11,7 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ActivityComponent::class)
@@ -26,7 +27,9 @@ object AppModule {
 @Module
 @InstallIn(SingletonComponent::class)
 object SharedPreferencesModule{
+
     @Provides
+    @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences{
         return context.getSharedPreferences("sharedPreferences", MODE_PRIVATE)
     }

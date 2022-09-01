@@ -75,17 +75,25 @@ class SudokuGameModel {
         fun getSavedGamesDAO() : SavedGamesDAO
     }
 
-    fun saveInDB(appContext: Context)
+    fun saveInDB(appContext: Context) : Int
     {
         val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
         val dbEntity = compressToDBEntity()
+        var retVal = this.id
         val job = CoroutineScope(Dispatchers.IO).launch {
-            if (id == 0){dao.saveGame(dbEntity)}
-            else{dao.updateGame(dbEntity)}
+            if (id == 0){
+                dao.saveGame(dbEntity)
+                retVal = dao.getNewGameId()
+            }
+            else{
+                dao.updateGame(dbEntity)
+            }
         }
         runBlocking {
             job.join()
         }
+
+        return retVal
     }
 
     fun deleteFromDB(appContext: Context)
@@ -111,12 +119,8 @@ class SudokuGameModel {
             var dbEntity: SavedGameDBEntity? = null
             val dao = EntryPointAccessors.fromApplication(appContext, SudokuGameModelEntryPoint::class.java).getSavedGamesDAO()
             val job = CoroutineScope(Dispatchers.IO).launch {
-                dbEntity = if (id > 0){
-                    dao.getSavedGameById(id)
-                } else {
-                    val list : List<SavedGameDBEntity> = dao.getSavedGames()
-                    dao.getSavedGameById(list.last().id)
-                }
+                dbEntity = dao.getSavedGameById(id)
+
             }
             runBlocking {
                 job.join()

@@ -101,10 +101,10 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     Buttons(navController)
                 }
 
-                if (viewModel.isSavedGames) {
+                if (sharedPreferences.getInt("id",-1) != -1) {
                     Button(
                         onClick = {
-                            navController.navigate("game/-3")
+                            navController.navigate("game/${sharedPreferences.getInt("id", -3)}")
                         },
                         shape = MaterialTheme.shapes.medium,
                         colors = outlinedButtonColors(MaterialTheme.colors.secondary, Black),
@@ -119,6 +119,9 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                             style = MaterialTheme.typography.button,
                         )
                     }
+                }
+
+                if(viewModel.isSavedGames) {
                     Button(
                         onClick = { navController.navigate("SavedGames") },
                         shape = MaterialTheme.shapes.medium,

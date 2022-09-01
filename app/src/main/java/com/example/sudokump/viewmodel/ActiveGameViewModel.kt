@@ -1,6 +1,7 @@
 package com.example.sudokump.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -23,15 +24,16 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class ActiveGameViewModel @AssistedInject constructor(
-    @Assisted id : Int, @ApplicationContext context: Context) : ViewModel() {
+    @Assisted id : Int, @ApplicationContext context: Context, sharedPreferences: SharedPreferences) : ViewModel() {
 
     private lateinit var game : SudokuGameModel
     private lateinit var entryPoint : SudokuGamesEntryPoint
     val boardState = HashMap<Int, SudokuTile>()
     var noteMode: MutableState<Boolean> = mutableStateOf(false)
     val isNewRecordedState = true
-    val id: Int
+    var id: Int
     val context: Context
+    private val sharedPreferences : SharedPreferences
     private lateinit var timerJob : Job
     lateinit var timer : MutableState<Duration>
     lateinit var completionPercent : MutableState<String>
@@ -58,6 +60,7 @@ class ActiveGameViewModel @AssistedInject constructor(
     init {
         this.id = id
         this.context = context
+        this.sharedPreferences = sharedPreferences
     }
 
     fun overallCheck() : Boolean{
@@ -170,7 +173,6 @@ class ActiveGameViewModel @AssistedInject constructor(
             id == -1 -> entryPoint.getNewMediumGame()
             id == 0 -> entryPoint.getNewHardGame()
             id > 0 -> SudokuGameModel.getFromDB(context, id)
-            id == -3 -> SudokuGameModel.getFromDB(context, id)
             else -> entryPoint.getNewEasyGame()
         }
 
@@ -184,12 +186,16 @@ class ActiveGameViewModel @AssistedInject constructor(
         }
         completionPercent = mutableStateOf(game.evaluateCompletionPercent())
         timer = mutableStateOf(game.timePassed)
-        startTimer()
     }
 
-    fun onStop(navController: NavController) {
-        stopTimer()
-        game.saveInDB(context)
+    fun onStop() {
+        this.id = game.saveInDB(context)
+        val editor = sharedPreferences.edit()
+        editor.putInt("id", this.id)
+        editor.apply()
+    }
+
+    fun onDestroy(navController: NavController) {
         val entry = navController.currentDestination
         navController.popBackStack()
         navController.navigate(entry!!.route!!)
