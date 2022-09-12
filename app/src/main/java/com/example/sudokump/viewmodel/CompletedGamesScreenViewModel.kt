@@ -20,7 +20,10 @@ class CompletedGamesScreenViewModel @Inject constructor(@CompletedSudokuGames va
     }
 
     fun secondTime(bestTime: Int): Int {
-        var bestIndex = 0
+        var bestIndex = when{
+            bestTime == 0 -> 1
+            else -> 0
+        }
         for(item in completedGames){
             if (completedGames.indexOf(item) == bestTime){
                 continue
@@ -35,7 +38,12 @@ class CompletedGamesScreenViewModel @Inject constructor(@CompletedSudokuGames va
     }
 
     fun thirdTime(bestTime: Int, secondTime: Int): Int {
-        var bestIndex = 0
+    var bestIndex = when{
+            bestTime + secondTime == 1 -> 2
+            bestTime == 0 -> 1
+            secondTime == 0 -> 1
+            else -> 0
+        }
         for(item in completedGames){
             if (completedGames.indexOf(item) == bestTime || completedGames.indexOf(item) == secondTime){
                 continue

@@ -36,13 +36,14 @@ import com.example.sudokump.viewmodel.CompletedGamesScreenViewModel
 fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
     val savedGames = viewModel.completedGames
+    val sortedList = savedGames.sortedBy { it.timePassed }
     var i = 0
     Column{
         Text(text = "List of completed games ordered by completion time:")
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(savedGames.size)
+            items(sortedList.size)
             {
-                CompletedGameCard(savedGames[it], i ,viewModel)
+                CompletedGameCard(sortedList[it], i)
                 i++
             }
         }
@@ -51,15 +52,12 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
 
 @Composable
-fun CompletedGameCard(sudokuGameModel: SudokuGameModel,int: Int, viewModel: CompletedGamesScreenViewModel)
+fun CompletedGameCard(sudokuGameModel: SudokuGameModel,int: Int)
 {
-    val bestTime = viewModel.bestTime()
-    val secondTime = viewModel.secondTime(bestTime)
-    val thirdTime = viewModel.thirdTime(bestTime, secondTime)
     val painter : Painter = when (int) {
-        bestTime -> painterResource(R.drawable.ic_cup_first)
-        secondTime ->  painterResource(R.drawable.ic_cup_second)
-        thirdTime -> painterResource(R.drawable.ic_cup_third)
+        0 -> painterResource(R.drawable.ic_cup_first)
+        1 ->  painterResource(R.drawable.ic_cup_second)
+        2 -> painterResource(R.drawable.ic_cup_third)
         else -> ColorPainter(MaterialTheme.colors.primary)
     }
     Card(
