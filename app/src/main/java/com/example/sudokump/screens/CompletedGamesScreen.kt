@@ -2,6 +2,7 @@ package com.example.sudokump.screens
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,7 +34,7 @@ import com.example.sudokump.viewmodel.CompletedGamesScreenViewModel
 fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
     val savedGames = viewModel.completedGames
-    val sortedList = savedGames.sortedBy { it.saveDate }
+    val sortedList = savedGames.sortedBy { it.timePassed }
     var i = 0
     Column{
         Text(text = "List of saved games ordered by completion time:")
@@ -49,17 +52,22 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 @Composable
 fun CompletedGameCard(sudokuGameModel: SudokuGameModel, int: Int)
 {
-    val color = when (int) {
-        0 -> Color(red = 172, green = 158, blue = 39, alpha = 255)
-        1 ->  Color(red = 184, green = 180, blue = 154, alpha = 255)
-        2 -> Color(red = 87, green = 63, blue = 55, alpha = 255)
-        else -> MaterialTheme.colors.primary
+    val painter : Painter = when (int) {
+        0 -> painterResource(R.drawable.ic_moon)
+        1 ->  painterResource(R.drawable.ic_action_name)
+        2 -> painterResource(R.drawable.ic_gomma)
+        else -> painterResource(id = int)
     }
-    Card( backgroundColor =  color ,
+    Card(
         modifier = Modifier.fillMaxWidth()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
             val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
+
+            Image(painter = painter  , contentDescription = "", modifier = Modifier.constrainAs(id){
+                start.linkTo(parent.start, 4.dp)
+                end.linkTo(grid.start)
+            })
 
             CompleteGridCanvas(schema = mapToList(sudokuGameModel.schema.map), modifier = Modifier
                 .size(150.dp)
