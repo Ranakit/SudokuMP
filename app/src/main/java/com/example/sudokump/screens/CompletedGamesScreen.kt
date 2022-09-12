@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudokump.R
 import com.example.sudokump.common.mapToList
 import com.example.sudokump.model.SudokuGameModel
@@ -35,14 +36,13 @@ import com.example.sudokump.viewmodel.CompletedGamesScreenViewModel
 fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
     val savedGames = viewModel.completedGames
-    val sortedList = savedGames.sortedBy { it.timePassed }
     var i = 0
     Column{
-        Text(text = "List of saved games ordered by completion time:")
+        Text(text = "List of completed games ordered by completion time:")
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(sortedList.size)
+            items(savedGames.size)
             {
-                CompletedGameCard(savedGames[it], i)
+                CompletedGameCard(savedGames[it], i ,viewModel)
                 i++
             }
         }
@@ -51,12 +51,15 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
 
 @Composable
-fun CompletedGameCard(sudokuGameModel: SudokuGameModel, int: Int)
+fun CompletedGameCard(sudokuGameModel: SudokuGameModel,int: Int, viewModel: CompletedGamesScreenViewModel)
 {
+    val bestTime = viewModel.bestTime()
+    val secondTime = viewModel.secondTime(bestTime)
+    val thirdTime = viewModel.thirdTime(bestTime, secondTime)
     val painter : Painter = when (int) {
-        0 -> painterResource(R.drawable.ic_cup_first)
-        1 ->  painterResource(R.drawable.ic_cup_second)
-        2 -> painterResource(R.drawable.ic_cup_third)
+        bestTime -> painterResource(R.drawable.ic_cup_first)
+        secondTime ->  painterResource(R.drawable.ic_cup_second)
+        thirdTime -> painterResource(R.drawable.ic_cup_third)
         else -> ColorPainter(MaterialTheme.colors.primary)
     }
     Card(
