@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,25 +31,32 @@ import com.example.sudokump.viewmodel.CompletedGamesScreenViewModel
 fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
     val savedGames = viewModel.completedGames
-    savedGames.sortedBy { it.saveDate }
+    val sortedList = savedGames.sortedBy { it.saveDate }
+    var i = 0
     Column{
-        Text(text = "List of saved games ordered by completion time")
+        Text(text = "List of saved games ordered by completion time:")
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(savedGames.size)
+            items(sortedList.size)
             {
-                CompletedGameCard(savedGames[it])
+                CompletedGameCard(savedGames[it], 0)
+                i++
             }
         }
     }
-
-
 }
 
 
 @Composable
-fun CompletedGameCard(sudokuGameModel: SudokuGameModel)
+fun CompletedGameCard(sudokuGameModel: SudokuGameModel, int: Int)
 {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    val color = when (int) {
+        0 -> MaterialTheme.colors.onPrimary
+        1 -> MaterialTheme.colors.onSurface
+        2 -> MaterialTheme.colors.background
+        else -> MaterialTheme.colors.primary
+    }
+    Card( backgroundColor =  color ,
+        modifier = Modifier.fillMaxWidth()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
             val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
