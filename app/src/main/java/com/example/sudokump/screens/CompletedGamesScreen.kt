@@ -38,7 +38,7 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(sortedList.size)
             {
-                CompletedGameCard(savedGames[it], 0)
+                CompletedGameCard(savedGames[it], i)
                 i++
             }
         }
