@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,10 +54,10 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 fun CompletedGameCard(sudokuGameModel: SudokuGameModel, int: Int)
 {
     val painter : Painter = when (int) {
-        0 -> painterResource(R.drawable.ic_moon)
-        1 ->  painterResource(R.drawable.ic_action_name)
-        2 -> painterResource(R.drawable.ic_gomma)
-        else -> painterResource(id = int)
+        0 -> painterResource(R.drawable.ic_cup_first)
+        1 ->  painterResource(R.drawable.ic_cup_second)
+        2 -> painterResource(R.drawable.ic_cup_third)
+        else -> ColorPainter(MaterialTheme.colors.primary)
     }
     Card(
         modifier = Modifier.fillMaxWidth()) {
