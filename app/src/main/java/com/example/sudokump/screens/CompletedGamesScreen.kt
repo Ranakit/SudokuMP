@@ -2,6 +2,7 @@ package com.example.sudokump.screens
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -29,14 +30,20 @@ import com.example.sudokump.viewmodel.CompletedGamesScreenViewModel
 fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 
     val savedGames = viewModel.completedGames
-
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(savedGames.size)
-        {
-            CompletedGameCard(savedGames[it])
+    savedGames.sortedBy { it.saveDate }
+    Column{
+        Text(text = "List of saved games ordered by completion time")
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(savedGames.size)
+            {
+                CompletedGameCard(savedGames[it])
+            }
         }
     }
+
+
 }
+
 
 @Composable
 fun CompletedGameCard(sudokuGameModel: SudokuGameModel)
