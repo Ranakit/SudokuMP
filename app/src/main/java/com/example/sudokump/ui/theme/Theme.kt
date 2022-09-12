@@ -16,10 +16,7 @@ private val DarkColorPalette = darkColors(
     onBackground = Teal100,
     secondaryVariant = RedD,
     error = YellowD,
-    onError = GreenD,
-    onPrimary = Gold,
-    onSurface = Silver,
-    background = Bronze
+    onError = GreenD
 )
 
 private val LightColorPalette = lightColors(
@@ -31,10 +28,7 @@ private val LightColorPalette = lightColors(
     onSecondary = Purple200,
     secondaryVariant = Color.Red,
     error = Color.Yellow,
-    onError = Color.Green,
-    onPrimary = Gold,
-    onSurface = Silver,
-    background = Bronze
+    onError = Color.Green
 )
 
 @Composable

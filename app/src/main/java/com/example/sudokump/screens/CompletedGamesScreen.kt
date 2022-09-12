@@ -50,9 +50,9 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
 fun CompletedGameCard(sudokuGameModel: SudokuGameModel, int: Int)
 {
     val color = when (int) {
-        0 -> MaterialTheme.colors.onPrimary
-        1 -> MaterialTheme.colors.onSurface
-        2 -> MaterialTheme.colors.background
+        0 -> Color(red = 172, green = 158, blue = 39, alpha = 255)
+        1 ->  Color(red = 184, green = 180, blue = 154, alpha = 255)
+        2 -> Color(red = 87, green = 63, blue = 55, alpha = 255)
         else -> MaterialTheme.colors.primary
     }
     Card( backgroundColor =  color ,
