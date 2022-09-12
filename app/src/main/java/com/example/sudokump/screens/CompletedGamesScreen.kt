@@ -66,10 +66,7 @@ fun CompletedGameCard(sudokuGameModel: SudokuGameModel,int: Int)
 
             val (grid, id, timePassed, completionPercent, difficulty, saveDate) = createRefs()
 
-            Image(painter = painter  , contentDescription = "", modifier = Modifier.constrainAs(id){
-                start.linkTo(parent.start, 4.dp)
-                end.linkTo(grid.start)
-            })
+            Image(painter = painter  , contentDescription = "")
 
             CompleteGridCanvas(schema = mapToList(sudokuGameModel.schema.map), modifier = Modifier
                 .size(150.dp)

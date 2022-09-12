@@ -45,9 +45,9 @@ class SudokuNode(
     private fun freeValue() {
         if(this.value != 0) {
             if(this.isCorrect) {
-                row.availableValues.add(this.value)
-                column.availableValues.add(this.value)
-                square.availableValues.add(this.value)
+                row.propagateFreeValue(this.value)
+                column.propagateFreeValue(this.value)
+                square.propagateFreeValue(this.value)
             }
             this.value = 0
             this.isCorrect = true

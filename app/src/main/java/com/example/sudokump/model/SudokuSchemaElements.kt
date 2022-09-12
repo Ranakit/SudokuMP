@@ -44,9 +44,10 @@ abstract class SudokuComposition
     protected abstract fun hasOnlyThatPossibleValue() : MutableSet<Pair<Int, SudokuNode>>
     protected abstract fun isTheOnlyPossibleValue() : MutableSet<Pair<Int, SudokuNode>>
     abstract fun checkIsComplete() : Boolean
+    abstract fun propagateFreeValue(freedValue : Int)
 }
 
-abstract class LinearSudokuComposition(private val nodes : List<SudokuNode>) : SudokuComposition()
+abstract class LinearSudokuComposition(protected val nodes : List<SudokuNode>) : SudokuComposition()
 {
     override fun checkIsCorrect() : Boolean
     {
@@ -130,6 +131,16 @@ class SudokuRow(nodes: List<SudokuNode>) : LinearSudokuComposition(nodes)
             availableValues.remove(node.getValue())
         }
     }
+
+    override fun propagateFreeValue(freedValue: Int) {
+        this.availableValues.add(freedValue)
+        for (node in nodes) {
+            if(!node.isCorrect) {
+                val value = node.getValue()
+                node.setValue(value)
+            }
+        }
+    }
 }
 
 class SudokuColumn(nodes: List<SudokuNode>) : LinearSudokuComposition(nodes)
@@ -141,6 +152,16 @@ class SudokuColumn(nodes: List<SudokuNode>) : LinearSudokuComposition(nodes)
         {
             node.column = this
             availableValues.remove(node.getValue())
+        }
+    }
+
+    override fun propagateFreeValue(freedValue: Int) {
+        this.availableValues.add(freedValue)
+        for (node in nodes) {
+            if(!node.isCorrect) {
+                val value = node.getValue()
+                node.setValue(value)
+            }
         }
     }
 }
@@ -223,6 +244,16 @@ class SudokuSquare(private val matrix: HashMap<Int, SudokuNode>) : SudokuComposi
         }
 
         return retVal
+    }
+
+    override fun propagateFreeValue(freedValue: Int) {
+        this.availableValues.add(freedValue)
+        for (node in matrix.values) {
+            if(!node.isCorrect) {
+                val value = node.getValue()
+                node.setValue(value)
+            }
+        }
     }
 }
 
