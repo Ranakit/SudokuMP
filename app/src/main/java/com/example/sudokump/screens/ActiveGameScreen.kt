@@ -398,8 +398,9 @@ fun HintDialog(viewModel: ActiveGameViewModel, contentTransitionState: MutableTr
             Box(modifier = Modifier.background(Color.White)) {
                 Column(modifier = Modifier.padding(5.dp), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly) {
-                    Text(text = "Do you really want to get an hint? You will get a 10 seconds penalty if you do so")
+                    Text(text = stringResource(id = R.string.ask_hint))
 
+                    val error = stringResource(id = R.string.no_hint_found)
                     Row(modifier = Modifier.padding(5.dp), horizontalArrangement = Arrangement.SpaceAround) {
                         Button(onClick = {
                             try {
@@ -408,20 +409,21 @@ fun HintDialog(viewModel: ActiveGameViewModel, contentTransitionState: MutableTr
                                     contentTransitionState.targetState = ActiveGameScreenState.COMPLETE
                                 }
                             } catch (e : HintNotFoundException) {
-                                Toast.makeText(context, "No hint has been found, please check the board for errors", Toast.LENGTH_SHORT).show()
+
+                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                             }
                             viewModel.startTimer()
                             viewModel.isHintPopupVisible.value = false
 
                         }, modifier = Modifier.padding(10.dp)) {
-                            Text(text = "Get a hint")
+                            Text(text = stringResource(id = R.string.hint_button_desc))
                         }
 
                         Button(onClick = {
                             viewModel.startTimer()
                             viewModel.isHintPopupVisible.value = false },
                             modifier = Modifier.padding(10.dp)) {
-                            Text(text = "Refuse")
+                            Text(text = stringResource(id = R.string.refuse_button_desc))
                         }
                     }
                 }

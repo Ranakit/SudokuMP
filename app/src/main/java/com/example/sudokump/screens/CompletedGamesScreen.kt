@@ -39,7 +39,7 @@ fun CompletedGamesScreen(viewModel: CompletedGamesScreenViewModel) {
     val sortedList = savedGames.sortedBy { it.timePassed }
     var i = 0
     Column{
-        Text(text = "List of completed games ordered by completion time:")
+        Text(text = stringResource(id = R.string.completed_games_list))
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(sortedList.size)
             {

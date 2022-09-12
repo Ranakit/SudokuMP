@@ -15,10 +15,10 @@ interface SavedGamesDAO {
     @Update
     fun updateGame(savedGame: SavedGameDBEntity)
 
-    @Query("SELECT * FROM saved_games WHERE completion_percent != '100.00%'")
+    @Query("SELECT * FROM saved_games WHERE completion_percent != '100.00%' AND completion_percent != '100,00%'")
     fun getSavedGames() : List<SavedGameDBEntity>
 
-    @Query("SELECT * FROM saved_games WHERE completion_percent == '100.00%'")
+    @Query("SELECT * FROM saved_games WHERE completion_percent == '100.00%' OR completion_percent == '100,00%'")
     fun getCompletedGames() : List<SavedGameDBEntity>
 
     @Query("SELECT * FROM saved_games WHERE id == :id")

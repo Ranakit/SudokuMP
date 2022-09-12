@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">SudokuMP</string>
     <string name="timePassed">Timp trecut</string>
-    <string name="completionPercent">Procent finalizare</string>
+    <string name="completionPercent">Finalizare</string>
     <string name="difficulty">Dificultate</string>
     <string name="savedWhen">Salvat</string>
     <string name="easy">Ușor</string>
@@ -10,4 +10,20 @@
     <string name="hard">Dificil</string>
     <string name="delete_game">Șterge</string>
     <string name="continue_game">Continuă</string>
+    <string name="generic_error">Eroare</string>
+    <string name="logo_description">Sigla aplicației</string>
+    <string name="loading">Sudoku</string>
+    <string name="game_complete">Joc complet!</string>
+    <string name="total_time">Timp total:</string>
+    <string name="ask_hint">Ești sigur că vrei un hint? O să ai o penalizare de 10 secunde dacă o faci</string>
+    <string name="no_hint_found">Nu a fost găsit nicun hint, controlează dacă sunt eroare în tabla de joc</string>
+    <string name="hint_button_desc">Obține</string>
+    <string name="refuse_button_desc">Refuză</string>
+    <string name="completed_games_list">Lista jocurilor complete ordonată pe timpul de completare</string>
+    <string name="welcome_first">Bine ai venit pe SudokuMP!</string>
+    <string name="welcome_back">Bine te ai întors!</string>
+    <string name="start_new_game">Joc nou</string>
+    <string name="continue_last_game">Continuă ultimul joc</string>
+    <string name="view_saved_games">Vizionează jocurile salvate</string>
+    <string name="view_complete_games">Vizionează jocurile complete</string>
 </resources>

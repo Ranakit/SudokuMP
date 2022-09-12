@@ -191,7 +191,12 @@ class ActiveGameViewModel @AssistedInject constructor(
     fun onStop() {
         this.id = game.saveInDB(context)
         val editor = sharedPreferences.edit()
-        editor.putInt("id", this.id)
+        if(this.game.schema.overallCheck() && this.game.schema.overallCompletenessCheck()) {
+            editor.putInt("id", -1)
+        } else {
+            editor.putInt("id", this.id)
+
+        }
         editor.apply()
     }
 

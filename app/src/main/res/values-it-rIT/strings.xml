@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">SudokuMP</string>
     <string name="timePassed">Tempo trascorso</string>
-    <string name="completionPercent">Percentuale completamento</string>
+    <string name="completionPercent">Completo</string>
     <string name="difficulty">Difficoltà</string>
     <string name="savedWhen">Salvato</string>
     <string name="easy">Facile</string>
@@ -10,4 +10,20 @@
     <string name="hard">Difficile</string>
     <string name="delete_game">Elimina</string>
     <string name="continue_game">Continua</string>
+    <string name="generic_error">Errore</string>
+    <string name="logo_description">Logo applicaz.</string>
+    <string name="loading">Sudoku</string>
+    <string name="game_complete">Gioco completo!</string>
+    <string name="total_time">Tempo totale:</string>
+    <string name="ask_hint">Vuoi veramente ottenere un suggerimento? Verrà applicata una èenalità di 10 secondi se lo fai</string>
+    <string name="no_hint_found">Nessun suggerimento trovato, controlla se ci sono errori nella griglia</string>
+    <string name="hint_button_desc">Ottieni</string>
+    <string name="refuse_button_desc">Rifiuta</string>
+    <string name="completed_games_list">Lista dei giochi completi per tempo di completamento</string>
+    <string name="welcome_first">Benvenuto su SudokuMP!</string>
+    <string name="welcome_back">Bentornato!</string>
+    <string name="start_new_game">Nuova partita</string>
+    <string name="continue_last_game">Continua l\'ultima partita</string>
+    <string name="view_saved_games">Vedi le partite salvate</string>
+    <string name="view_complete_games">Vedi le partite complete</string>
 </resources>

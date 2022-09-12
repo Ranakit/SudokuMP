@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -70,8 +71,10 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
             backgroundColor = MaterialTheme.colors.primary,
             title = {
                 Text(
-                    text = if(viewModel.isCompletedGames && viewModel.isSavedGames){"Welcome back!"}
-                    else{"Welcome to SudokuMP!"},
+                    text = if(viewModel.isCompletedGames && viewModel.isSavedGames){
+                        stringResource(id = R.string.welcome_back)}
+                    else{
+                        stringResource(id = R.string.welcome_first)},
                     color = MaterialTheme.colors.onBackground
                 )
             }
@@ -93,7 +96,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                 )
                 {
                     Text(
-                        text = "Start New Game",
+                        text = stringResource(id = R.string.start_new_game),
                         style = MaterialTheme.typography.button
                     )
                 }
@@ -115,7 +118,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     )
                     {
                         Text(
-                            text = "Continue Last Game",
+                            text = stringResource(id = R.string.continue_last_game),
                             style = MaterialTheme.typography.button,
                         )
                     }
@@ -133,7 +136,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     )
                     {
                         Text(
-                            text = "View List of Saved Games",
+                            text = stringResource(id = R.string.view_saved_games),
                             style = MaterialTheme.typography.button
                         )
                     }
@@ -150,7 +153,7 @@ fun InitialScreen(sharedPreferences: SharedPreferences, sudokuMP: SudokuMP, navC
                     )
                     {
                         Text(
-                            text = "View List of Completed Games",
+                            text = stringResource(id = R.string.view_complete_games),
                             style = MaterialTheme.typography.button
                         )
                     }
@@ -176,7 +179,7 @@ fun Buttons(navigator : NavController) {
     )
     {
         Text(
-            text = "Easy"
+            text = stringResource(id = R.string.easy)
         )
     }
     Button(
@@ -192,7 +195,7 @@ fun Buttons(navigator : NavController) {
     )
     {
         Text(
-            text = "Medium"
+            text = stringResource(id = R.string.medium)
         )
     }
     Button(
@@ -208,7 +211,7 @@ fun Buttons(navigator : NavController) {
     )
     {
         Text(
-            text = "Hard"
+            text = stringResource(id = R.string.hard)
         )
     }
 }
