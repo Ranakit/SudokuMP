@@ -665,7 +665,9 @@ fun SubGrid(modifier: Modifier, array: Array<MutableState<Boolean>>){
             drawIntoCanvas {
                 val textPaint = Paint().apply {
                     textSize = (unitSize/3).sp.toPx()
+                    color = 0XFF629749.toInt()
                 }
+
                 it.nativeCanvas.drawText(
                     "${if(array[j].value){
                         j+1

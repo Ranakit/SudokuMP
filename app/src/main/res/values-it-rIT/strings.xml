@@ -15,7 +15,7 @@
     <string name="loading">Sudoku</string>
     <string name="game_complete">Gioco completo!</string>
     <string name="total_time">Tempo totale:</string>
-    <string name="ask_hint">Vuoi veramente ottenere un suggerimento? Verrà applicata una èenalità di 10 secondi se lo fai</string>
+    <string name="ask_hint">Vuoi veramente ottenere un suggerimento? Verrà applicata una penalità di 10 secondi se lo fai</string>
     <string name="no_hint_found">Nessun suggerimento trovato, controlla se ci sono errori nella griglia</string>
     <string name="hint_button_desc">Ottieni</string>
     <string name="refuse_button_desc">Rifiuta</string>
