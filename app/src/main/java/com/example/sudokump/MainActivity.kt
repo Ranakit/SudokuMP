@@ -1,6 +1,7 @@
 package com.example.sudokump
 
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,7 @@ class MainActivity: ComponentActivity() {
             val isDarkInit = sharedPreferences.getBoolean("isDark", isSystemInDarkTheme())
             sharedPreferences.getInt("id", -1)
             sudokuMP.isDark.value = isDarkInit
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
             SudokuMPTheme(darkTheme = sudokuMP.isDark.value) {
                 NavigationComponent(sharedPreferences, sudokuMP, navController)
             }
